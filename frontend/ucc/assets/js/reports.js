@@ -47,7 +47,6 @@ function populateSelects() {
   const batches = [...new Set(REPORT_DATA.students.map(s => s.batch))];
   $('batchFilter').innerHTML = '<option value="all">All batches</option>';
   batches.forEach(b => { $('batchFilter').insertAdjacentHTML('beforeend', `<option value="${esc(b)}">${esc(b)}</option>`) });
-  $('studentLedgerSelect').innerHTML = REPORT_DATA.students.map(s => `<option value="${s.roll}">${esc(s.name)} · ${s.roll} · ${esc(s.batch)}</option>`).join('');
 }
 function renderSummary() {
   let sts = selectedStudents(), tx = selectedTransactions(),
@@ -122,12 +121,29 @@ function renderCollection() {
       { label: 'Admissions', data: ad, backgroundColor: '#3b82f6', borderRadius: 5 },
       { label: 'Payments', data: pay, backgroundColor: '#10b981', borderRadius: 5 }
     ]
-  }, { scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v => '৳' + v / 1000 + 'k' } } } });
-  $('collectionTableMeta').textContent = `${tx.length} entries matched your filters`;
-  $('collectionRows').innerHTML = tx.slice().sort((a, b) => b.date.localeCompare(a.date)).map(t => {
+  }, {
+    scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v => '৳' + v / 1000 + 'k' } } },
+    onClick: (e, els) => {
+      if (els && els.length) {
+        const d = day[els[0].index];
+        if (d) { $('collectionDate').value = d; renderCollection(); }
+      }
+    }
+  });
+  const date = $('collectionDate').value;
+  const dtx = date ? tx.filter(t => t.date === date) : tx;
+  const dateTotal = dtx.reduce((a, t) => a + t.amount, 0);
+  $('collectionTableMeta').innerHTML = date
+    ? `Showing <b>${dtx.length} entries</b> for <b>${new Date(date + 'T12:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</b> · Total <b>${money(dateTotal)}</b>`
+    : `${tx.length} entries matched your filters`;
+  $('collectionRows').innerHTML = dtx.slice().sort((a, b) => b.date.localeCompare(a.date)).map(t => {
     let s = student(t.roll) || { name: t.studentName || 'Unknown', batch: t.batch || t.batchName || '' };
     return `<tr><td>${t.date}</td><td><b>${esc(t.receipt)}</b></td><td>${esc(s.name)}<br><small>Roll ${s.roll || t.roll}</small></td><td>${esc(s.batch || t.batch || '')}</td><td><span class="type-pill type-${(t.type || '').toLowerCase()}">${t.type}</span></td><td>${esc(t.method)}</td><td class="money">${money(t.amount)}</td></tr>`;
-  }).join('') || emptyRow(7);
+  }).join('') || emptyRow(7, date ? 'No collection found for the selected date.' : 'No records matched the selected filters.');
+}
+function clearCollectionDate() {
+  $('collectionDate').value = '';
+  renderCollection();
 }
 function dueClass(amount) { return amount >= 10000 ? 'critical' : amount >= 5000 ? 'high' : 'standard' }
 function renderDues() {
@@ -180,10 +196,163 @@ function renderMaterials() {
   }).join('') || emptyRow(8, 'No material data available from database.');
 }
 function renderLedger() {
-  let s = student($('studentLedgerSelect').value) || REPORT_DATA.students[0];
+  if (!ledgerStudentRoll && REPORT_DATA.students.length) ledgerStudentRoll = REPORT_DATA.students[0].roll;
+  const s = ledgerStudentRoll ? student(ledgerStudentRoll) : null;
   if (!s) { $('ledgerContent').innerHTML = '<p class="attention-meta">No students in database yet.</p>'; return; }
   let history = REPORT_DATA.transactions.filter(t => t.roll === s.roll).sort((a, b) => b.date.localeCompare(a.date));
-  $('ledgerContent').innerHTML = `<article class="ledger-sheet"><div class="ledger-top"><div><h3>${esc(s.name)}</h3><p>Roll ${s.roll} · ${esc(s.batch)} · Guardian: ${esc(s.guardian || s.guardianPhone || '')}</p></div><div class="ledger-balance"><small>Current due</small><strong>${money(due(s))}</strong></div></div><div class="ledger-summary"><div><small>Course fee</small><strong>${money(s.fee)}</strong></div><div><small>Total paid</small><strong style="color:#059669">${money(s.paid)}</strong></div><div><small>Payment status</small><strong>${due(s) ? 'Partial / Due' : 'Paid'}</strong></div></div><div class="ledger-section"><h4>Payment history</h4><div class="table-responsive"><table><thead><tr><th>Date</th><th>Receipt</th><th>Method</th><th class="money">Amount</th></tr></thead><tbody>${history.map(t => `<tr><td>${t.date}</td><td>${t.receipt}</td><td>${t.method}</td><td class="money">${money(t.amount)}</td></tr>`).join('') || emptyRow(4, 'No payment receipt in current database.')}</tbody></table></div></div><div class="ledger-section"><h4>Distributed materials</h4><div class="material-tags">${(s.materials || []).length ? s.materials.map(x => `<span class="material-tag"><i class="fas fa-book"></i> ${esc(x)}</span>`).join('') : '<span class="attention-meta">No materials delivered yet.</span>'}</div></div></article>`;
+  const d = due(s);
+  const pct = s.fee ? Math.min(100, Math.round((s.paid || 0) / s.fee * 100)) : 0;
+  const now = new Date().toLocaleString('en-GB');
+  const materials = s.materials || [];
+  const rows = history.map(t => `<tr><td>${esc(t.date)}</td><td><b>${esc(t.receipt)}</b></td><td><span class="type-pill type-${(t.type || '').toLowerCase()}">${esc(t.type)}</span></td><td>${esc(t.method)}</td><td class="money">${money(t.amount)}</td></tr>`).join('')
+    || emptyRow(5, 'No payment receipt in current database.');
+  $('ledgerContent').innerHTML = `
+  <article class="ledger-sheet">
+    <div class="ledger-top">
+      <div>
+        <span class="ledger-eyebrow">UCC PABNA · STUDENT LEDGER</span>
+        <h3>${esc(s.name)}</h3>
+        <p><b>Roll:</b> ${esc(s.roll)} &nbsp;·&nbsp; <b>Batch:</b> ${esc(s.batch)}</p>
+        <p><b>Guardian:</b> ${esc(s.guardian || '—')} ${s.guardianPhone ? '· ' + esc(s.guardianPhone) : ''}</p>
+      </div>
+      <div class="ledger-balance">
+        <span class="ledger-status ${d ? 'due' : 'paid'}">${d ? 'Partial / Due' : 'Paid in full'}</span>
+        <small>Current due</small>
+        <strong>${money(d)}</strong>
+      </div>
+    </div>
+    <div class="ledger-top-line"></div>
+    <div class="ledger-progress">
+      <div class="ledger-progress-top"><span>Payment progress</span><strong>${pct}%</strong></div>
+      <div class="ledger-progress-track"><span class="ledger-progress-fill ${d ? 'partial' : 'full'}" style="width:${pct}%"></span></div>
+    </div>
+    <div class="ledger-summary">
+      <div class="ledger-sum-box"><small>Course fee</small><strong>${money(s.fee)}</strong></div>
+      <div class="ledger-sum-box paid"><small>Total paid</small><strong>${money(s.paid)}</strong></div>
+      <div class="ledger-sum-box due"><small>Outstanding due</small><strong>${money(d)}</strong></div>
+    </div>
+    <div class="ledger-section">
+      <h4><i class="fas fa-receipt"></i> Payment history <span class="ledger-sec-count">${history.length} receipts</span></h4>
+      <div class="table-responsive">
+        <table class="ledger-table">
+          <thead><tr><th>Date</th><th>Receipt</th><th>Type</th><th>Method</th><th class="money">Amount</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="ledger-section">
+      <h4><i class="fas fa-box-open"></i> Distributed materials <span class="ledger-sec-count">${materials.length} items</span></h4>
+      <div class="material-tags">${materials.length ? materials.map(x => `<span class="material-tag"><i class="fas fa-book"></i> ${esc(x)}</span>`).join('') : '<span class="attention-meta">No materials delivered yet.</span>'}</div>
+    </div>
+    <div class="ledger-foot">Computer generated statement · ${now}</div>
+  </article>`;
+}
+function printLedger() {
+  const s = ledgerStudentRoll ? student(ledgerStudentRoll) : REPORT_DATA.students[0];
+  if (!s) { toast('No student selected.'); return; }
+  const history = REPORT_DATA.transactions.filter(t => t.roll === s.roll).sort((a, b) => b.date.localeCompare(a.date));
+  const d = due(s);
+  const pct = s.fee ? Math.min(100, Math.round((s.paid || 0) / s.fee * 100)) : 0;
+  const now = new Date().toLocaleString('en-GB');
+  const materials = s.materials || [];
+  const rows = history.map((t, i) => `<tr><td class="num">${i + 1}</td><td>${esc(t.date)}</td><td>${esc(t.receipt)}</td><td>${esc(t.type)}</td><td>${esc(t.method)}</td><td class="num amount">${money(t.amount)}</td></tr>`).join('')
+    || `<tr><td colspan="6" class="ledger-print-empty">No payment receipts recorded.</td></tr>`;
+
+  const sheet = document.createElement('section');
+  sheet.className = 'ledger-print-sheet';
+  sheet.id = 'ledgerPrintSheet';
+  sheet.innerHTML = `
+    <div class="ledger-print-head">
+      <div class="ledger-print-brand">
+        <div class="ledger-print-logo"><i class="fas fa-graduation-cap"></i></div>
+        <div>
+          <h1>UCC পাবনা শাখা</h1>
+          <p>এডওয়ার্ড কলেজ, রথঘর সংলগ্ন, রাধানগর, পাবনা · 01312-427799</p>
+          <p>Student Ledger · Generated: ${now}</p>
+        </div>
+      </div>
+      <div class="ledger-print-meta">
+        <span>${esc(s.batch)}</span>
+        <span>Roll ${esc(s.roll)}</span>
+      </div>
+    </div>
+    <div class="ledger-print-line"></div>
+    <div class="ledger-print-student">
+      <div>
+        <div class="ledger-print-name">${esc(s.name)}</div>
+        <div class="ledger-print-id">Roll: ${esc(s.roll)} &nbsp;·&nbsp; Batch: ${esc(s.batch)} &nbsp;·&nbsp; Guardian: ${esc(s.guardian || '—')} ${s.guardianPhone ? '· ' + esc(s.guardianPhone) : ''}</div>
+      </div>
+      <div class="ledger-print-status ${d ? 'due' : 'paid'}">${d ? 'Due ' + money(d) : 'Paid in full'}</div>
+    </div>
+    <div class="ledger-print-summary">
+      <div><small>Course Fee</small><b>${money(s.fee)}</b></div>
+      <div class="paid"><small>Total Paid</small><b>${money(s.paid)}</b></div>
+      <div class="due"><small>Outstanding Due</small><b>${money(d)}</b></div>
+      <div><small>Payment Progress</small><b>${pct}%</b></div>
+    </div>
+    <div class="ledger-print-section">
+      <div class="ledger-print-section-title"><span><i class="fas fa-receipt"></i> Payment History</span><span>${history.length} receipts</span></div>
+      <table class="ledger-print-table">
+        <thead><tr><th>#</th><th>Date</th><th>Receipt No</th><th>Type</th><th>Method</th><th class="num">Amount (৳)</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="ledger-print-section">
+      <div class="ledger-print-section-title"><span><i class="fas fa-box-open"></i> Distributed Materials</span><span>${materials.length} items</span></div>
+      <div class="ledger-print-materials">${materials.length ? materials.map(x => `<span class="ledger-print-mat">${esc(x)}</span>`).join('') : '<span class="ledger-print-empty">No materials delivered yet.</span>'}</div>
+    </div>
+    <div class="ledger-print-sigs">
+      <div>Prepared by</div><div>Checked by</div><div>Branch Head</div>
+    </div>
+    <p class="ledger-print-footer">UCC Pabna · Student Ledger · ${now}</p>`;
+  document.body.appendChild(sheet);
+  document.body.classList.add('printing-ledger');
+
+  const cleanup = () => {
+    document.body.classList.remove('printing-ledger');
+    sheet.remove();
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup, { once: true });
+  window.print();
+  setTimeout(cleanup, 1500);
+}
+let ledgerStudentRoll = null;
+function ledgerSearch() {
+  const input = $('studentLedgerSearch');
+  const q = (input.value || '').trim().toLowerCase();
+  const box = $('ledgerSearchResults');
+  if (!q) { closeLedgerResults(); return; }
+  const matches = REPORT_DATA.students.filter(s =>
+    String(s.roll || '').toLowerCase().includes(q) ||
+    String(s.name || '').toLowerCase().includes(q) ||
+    String(s.phone || '').toLowerCase().includes(q) ||
+    String(s.guardian || s.guardianPhone || '').toLowerCase().includes(q)
+  ).slice(0, 8);
+  box.innerHTML = matches.length
+    ? matches.map(s => `<div class="ledger-search-item" onmousedown="selectLedgerStudent('${esc(s.roll)}')"><span class="ls-name">${esc(s.name)}</span><span class="ls-meta">${esc(s.roll)} · ${esc(s.batch)} · ${esc(s.phone || '')}</span></div>`).join('')
+    : '<div class="ledger-search-empty">No student found with that roll, phone or name.</div>';
+  box.classList.add('open');
+}
+function ledgerSearchKey(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const first = document.querySelector('#ledgerSearchResults .ledger-search-item');
+    if (first) first.onmousedown();
+  } else if (e.key === 'Escape') {
+    closeLedgerResults();
+  }
+}
+function selectLedgerStudent(roll) {
+  ledgerStudentRoll = roll;
+  const s = student(roll);
+  if (s) $('studentLedgerSearch').value = `${s.name} · ${s.roll} · ${s.batch}`;
+  closeLedgerResults();
+  renderLedger();
+}
+function closeLedgerResults() {
+  const box = $('ledgerSearchResults');
+  if (box) box.classList.remove('open');
 }
 function emptyRow(cols, msg = 'No records matched the selected filters.') {
   return `<tr><td colspan="${cols}" style="text-align:center;color:#64748b;padding:25px">${msg}</td></tr>`;
@@ -230,11 +399,71 @@ function printDailyStatement() {
   const date = $('dailyStatementDate').value;
   if (!date) { toast('Please select a date for the daily statement.'); return; }
 
-  /* Open daily-statement.html with date param — it fetches real data from backend itself */
-  const url = `daily-statement.html?date=${date}&autoprint=1`;
-  window.open(url, '_blank');
+  /* Load daily-statement.html inside a hidden iframe (fetches real data from the
+     backend itself) and print it directly — no new browser window/tab. */
+  const old = document.getElementById('dailyPrintFrame');
+  if (old) old.remove();
+
+  const frame = document.createElement('iframe');
+  frame.id = 'dailyPrintFrame';
+  frame.setAttribute('aria-hidden', 'true');
+  frame.style.cssText = 'position:fixed;left:-9999px;top:0;width:10px;height:10px;border:0;';
+  frame.src = 'daily-statement.html?date=' + encodeURIComponent(date);
+
+  frame.addEventListener('load', () => {
+    let tries = 0;
+    const timer = setInterval(() => {
+      tries++;
+      let win = null;
+      try { win = frame.contentWindow; } catch (e) { win = null; }
+      let ready = false;
+      if (win && win.document) {
+        const gen = win.document.getElementById('dsGenerated');
+        ready = win.document.readyState === 'complete' && gen && gen.textContent.indexOf('Report generated') !== -1;
+      }
+      if (ready || tries > 40) {
+        clearInterval(timer);
+        setTimeout(() => {
+          try {
+            if (!win) throw new Error('frame window unavailable');
+            const cleanup = () => frame.remove();
+            win.addEventListener('afterprint', cleanup, { once: true });
+            win.print();
+            setTimeout(cleanup, 3000);
+          } catch (e) { console.error(e); frame.remove(); }
+        }, 300);
+      }
+    }, 200);
+  });
+
+  document.body.appendChild(frame);
 }
 function printActiveReport() { window.print(); }
+
+/* ── Chart.js print fix ──
+   Chart.js resizes hidden/detached canvases to 0x0 during print layout,
+   which wipes the chart bitmap and makes charts blank in the print output.
+   Re-render every chart at a fixed print size in beforeprint, then rebuild
+   them (responsive) again in afterprint. */
+function fixChartsForPrint() {
+  const all = {};
+  Object.assign(all, charts, bwCharts);
+  Object.keys(all).forEach(id => {
+    const c = all[id], el = $(id);
+    if (!c || !el) return;
+    const wrap = el.parentElement;
+    const w = el.clientWidth || (wrap && wrap.clientWidth) || 400;
+    c.options.responsive = false;
+    c.options.maintainAspectRatio = false;
+    c.resize(w, 210);
+  });
+}
+function restoreChartsAfterPrint() {
+  renderAll();
+  renderBatchwise();
+}
+window.addEventListener('beforeprint', fixChartsForPrint);
+window.addEventListener('afterprint', restoreChartsAfterPrint);
 function printBatchLists() {
   const batch = $('batchFilter').value;
   if (batch === 'all') { toast('Please select one batch from the filter first.'); return; }
@@ -260,19 +489,20 @@ function printBatchLists() {
   sheet.innerHTML = `
     <div class="bw-print-head">
       <div class="bw-print-brand">
-        <div class="bw-print-logo">UCC</div>
+        <div class="bw-print-logo"><i class="fas fa-graduation-cap"></i></div>
         <div>
-          <h1>UCC Pabna</h1>
-          <p>Batch payment status details</p>
+          <h1>UCC পাবনা শাখা</h1>
+          <p>এডওয়ার্ড কলেজ, রথঘর সংলগ্ন, রাধানগর, পাবনা · 01312-427799</p>
+          <p>Batch payment status details · Generated: ${now}</p>
           <h2>${esc(batch)}</h2>
         </div>
       </div>
       <div class="bw-print-meta">
-        <span>Generated: ${now}</span>
         <span>Total students: ${students.length}</span>
         <span>Collection rate: ${rate}%</span>
       </div>
     </div>
+    <div class="bw-print-line"></div>
     <div class="bw-print-summary-cards">
       <div><small>Batch</small><b>${esc(batch)}</b></div>
       <div><small>Total Students</small><b>${students.length}</b></div>
@@ -675,8 +905,10 @@ function bwOpenPrintPreview(batchId) {
     </div>
     <div class="bw-report-preview">
       <div class="bw-report-brand">
-        <div class="bw-report-title">UCC Pabna</div>
-        <div class="bw-report-sub">Pabna, Bangladesh · +880 1234-567890 · info@uccpabna.edu.bd</div>
+        <div class="bw-report-brand-main">
+          <div class="bw-report-title">UCC পাবনা শাখা</div>
+          <div class="bw-report-sub">এডওয়ার্ড কলেজ, রথঘর সংলগ্ন, রাধানগর, পাবনা · 01312-427799</div>
+        </div>
         <div class="bw-report-batch">${esc(name)} · ${esc(monthLabel)}</div>
       </div>
       <div class="bw-report-divider"></div>
@@ -944,6 +1176,11 @@ document.addEventListener('DOMContentLoaded', () => {
   setDefaultDates();
 
   document.querySelectorAll('.report-tab').forEach(b => b.addEventListener('click', () => openTab(b.dataset.tab)));
+
+  document.addEventListener('click', e => {
+    const w = $('ledgerSearchWrap');
+    if (w && !w.contains(e.target)) closeLedgerResults();
+  });
 
   let user = JSON.parse(sessionStorage.getItem('uccAdminUser') || '{}');
   if (user.username) $('uccAdminName').textContent = user.username;
