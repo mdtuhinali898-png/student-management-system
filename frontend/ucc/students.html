@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Directory — UCC Pabna Admin</title>
+  
+  <!-- FontAwesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="assets/css/design-system.css?v=2">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  
+  <style>
+    .page-header-action {
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: white;
+      padding: 24px 30px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-md);
+    }
+    .page-header-action h2 { margin: 0 0 6px 0; font-size: 20px; font-weight: 800; color: #ffffff; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+    .page-header-action p { margin: 0; opacity: 0.9; font-size: 13.5px; color: #e0e7ff; }
+
+    .filter-card {
+      background: var(--bg-card);
+      padding: 20px 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      align-items: center;
+    }
+    .form-control-custom {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      outline: none;
+      transition: all 0.2s ease;
+      background: #fff;
+    }
+    .form-control-custom:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    .badge-distributed { background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 12px; font-weight: 700; font-size: 11px; }
+    .badge-partial { background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 12px; font-weight: 700; font-size: 11px; }
+    .badge-pending { background: #fee2e2; color: #b91c1c; padding: 4px 10px; border-radius: 12px; font-weight: 700; font-size: 11px; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 9999; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: all 0.25s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-box {
+      background: #fff; width: 90%; max-width: 650px; border-radius: var(--radius-lg);
+      padding: 28px; box-shadow: var(--shadow-xl); max-height: 90vh; overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="ucc-loading" id="uccLoading">
+  <div class="ucc-spinner"></div>
+  <div class="ucc-loading-text" id="uccLoadingText">Loading Student Directory...</div>
+  <div class="ucc-loading-sub">Connecting to UCC Database...</div>
+</div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html" class="sidebar-logo">
+      <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+      <span>UCC <span class="gradient-text">Pabna</span> <small class="admin-badge">Admin</small></span>
+    </a>
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+  </div>
+  <div class="sidebar-search">
+    <div class="search-box sidebar-search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+    </div>
+    <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+    <a href="students.html" class="nav-item active"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+    <a href="admission.html" class="nav-item"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+    <a href="payment.html" class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payment</span><span class="nav-tooltip">Payment</span></a>
+    <a href="exams.html" class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+    <a href="distribution.html" class="nav-item"><i class="fas fa-book-open"></i><span>Distribution</span><span class="nav-tooltip">Distribution</span></a>
+    <a href="batches.html" class="nav-item"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+    <a href="reports.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+    <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="index.html" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span><span class="nav-tooltip">View Website</span></a>
+    <a href="admin-login.html" class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span><span class="nav-tooltip">Logout</span></a>
+  </div>
+</aside>
+
+<main class="main-content" id="mainContent">
+
+  <header class="top-header">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div>
+        <h1 class="page-title">Student Directory</h1>
+        <div style="font-size:12.5px;color:var(--text-muted);margin-top:2px;">
+          Manage student enrollments, batch assignments & financial ledger
+        </div>
+      </div>
+    </div>
+    <div class="user-info">
+      <div class="user-avatar-placeholder" style="width:38px;height:38px;border-radius:50%;background:#e0e7ff;color:#4f46e5;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;"><i class="fas fa-user-shield"></i></div>
+      <div class="user-details">
+        <span class="user-name" id="uccAdminName">UCC Admin</span>
+        <span class="user-role">UCC পাবনা শাখা</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header-action">
+    <div>
+      <h2>👥 Student Directory Register</h2>
+      <p>View, filter, collect dues, and manage book distribution vouchers for all enrolled students.</p>
+    </div>
+    <a href="admission.html" class="btn btn-secondary" style="background:#fff;color:var(--primary);font-weight:700;"><i class="fas fa-user-plus"></i> + New Admission</a>
+  </div>
+
+  <div class="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px;">
+    <div class="stat-card" style="background:#fff;padding:20px;border-radius:var(--radius-lg);border:1px solid var(--border-color);">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Total Enrolled</div>
+      <div style="font-size:26px;font-weight:800;color:var(--primary);" id="statTotal">0</div>
+    </div>
+    <div class="stat-card" style="background:#fff;padding:20px;border-radius:var(--radius-lg);border:1px solid var(--border-color);">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Fully Paid</div>
+      <div style="font-size:26px;font-weight:800;color:var(--success-color);" id="statPaid">0</div>
+    </div>
+    <div class="stat-card" style="background:#fff;padding:20px;border-radius:var(--radius-lg);border:1px solid var(--border-color);">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Due / Overdue</div>
+      <div style="font-size:26px;font-weight:800;color:var(--danger-color);" id="statDue">0</div>
+    </div>
+    <div class="stat-card" style="background:#fff;padding:20px;border-radius:var(--radius-lg);border:1px solid var(--border-color);">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Books Issued</div>
+      <div style="font-size:26px;font-weight:800;color:var(--purple);" id="statMaterials">0</div>
+    </div>
+  </div>
+
+  <div class="filter-card">
+    <div class="filter-grid">
+      <div>
+        <label style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:4px;display:block;">Search Student</label>
+        <input type="text" id="studentSearch" class="form-control-custom" placeholder="Search by name, roll or phone..." oninput="applyFilters()">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:4px;display:block;">Batch Filter</label>
+        <select id="filterBatch" class="form-control-custom" onchange="applyFilters()">
+          <option value="all">All Batches</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:4px;display:block;">Payment Status</label>
+        <select id="filterPayment" class="form-control-custom" onchange="applyFilters()">
+          <option value="all">All Payment Status</option>
+          <option value="Paid">Full Paid</option>
+          <option value="Due">Due / Overdue</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:4px;display:block;">Book Distribution</label>
+        <select id="filterDistribution" class="form-control-custom" onchange="applyFilters()">
+          <option value="all">All Distribution Status</option>
+          <option value="Distributed">Fully Issued</option>
+          <option value="Partial">Partially Issued</option>
+          <option value="Pending">Pending</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-card" style="background:#fff;padding:24px;border-radius:var(--radius-lg);border:1px solid var(--border-color);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="margin:0;font-size:16px;font-weight:800;color:var(--text-main);"><i class="fas fa-list" style="color:var(--primary);margin-right:8px;"></i> Student Directory List</h3>
+      <span style="font-size:13px;font-weight:700;color:var(--text-muted);" id="recordCount">Total: 0 Students</span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="ucc-table" style="width:100%;">
+        <thead>
+          <tr>
+            <th>Roll #</th>
+            <th>Student Name & Phone</th>
+            <th>Guardian Phone</th>
+            <th>Course / Batch</th>
+            <th>Net Fee</th>
+            <th>Paid</th>
+            <th>Due</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody">
+          <tr>
+            <td colspan="9" style="text-align:center;padding:30px;color:var(--text-muted);">
+              Loading student directory records...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer class="main-footer">© 2026 UCC পাবনা শাখা। All rights reserved. Designed and developed by Tuhin.</footer>
+
+<script src="assets/js/sidebar.js?v=2"></script>
+<script>
+let allStudents = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await fetchStudentsData();
+});
+
+function fmt(n) {
+  return '৳' + Number(n || 0).toLocaleString('en-IN');
+}
+
+async function fetchStudentsData() {
+  const loading = document.getElementById('uccLoading');
+  if (loading) loading.classList.remove('hidden');
+  
+  try {
+    const res = await fetch('/api/ucc/students');
+    const data = await res.json();
+    
+    if (data.success && data.students) {
+      allStudents = data.students.map(s => ({
+        _id: s._id,
+        roll: s.roll || '001',
+        studentId: s.studentId,
+        name: s.name,
+        phone: s.phone,
+        guardian: s.guardianPhone || s.guardianName || 'N/A',
+        batch: s.batchName || 'General',
+        totalFee: s.finalFee || s.courseFee || 15000,
+        paid: s.totalPaid || 0,
+        due: s.totalDue || 0,
+        paymentStatus: s.paymentStatus || (s.totalDue > 0 ? 'Due' : 'Paid'),
+        materials: s.distributionOverride ? 'Distributed' : (s.totalDue === 0 ? 'Distributed' : 'Pending')
+      }));
+    }
+  } catch (err) {
+    console.error('Error fetching students:', err);
+  } finally {
+    if (loading) loading.classList.add('hidden');
+    populateBatchFilter();
+    renderStudentTable(allStudents);
+    updateStats(allStudents);
+  }
+}
+
+function populateBatchFilter() {
+  const batches = [...new Set(allStudents.map(s => s.batch))];
+  const select = document.getElementById('filterBatch');
+  if (!select) return;
+  select.innerHTML = '<option value="all">All Batches</option>';
+  batches.forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b;
+    opt.textContent = b;
+    select.appendChild(opt);
+  });
+}
+
+function updateStats(data) {
+  document.getElementById('statTotal').textContent     = data.length;
+  document.getElementById('statPaid').textContent      = data.filter(s => s.due === 0).length;
+  document.getElementById('statDue').textContent       = data.filter(s => s.due > 0).length;
+  document.getElementById('statMaterials').textContent = data.filter(s => s.materials === 'Distributed').length;
+  document.getElementById('recordCount').textContent   = `Total: ${data.length} Students`;
+}
+
+function renderStudentTable(data) {
+  const tbody = document.getElementById('studentTableBody');
+  if (!tbody) return;
+
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-muted);">No student records found in Database</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(s => {
+    const matBadge = s.materials === 'Distributed' 
+      ? '<span class="badge-distributed">Eligible / Issued</span>' 
+      : '<span class="badge-pending">Due Locked</span>';
+
+    const dueText = s.due > 0 
+      ? `<strong style="color:var(--danger-color);">${fmt(s.due)}</strong>` 
+      : `<span style="color:var(--success-color);font-weight:700;">Paid</span>`;
+
+    return `
+      <tr style="border-bottom:1px solid var(--border-color);">
+        <td style="font-weight:700;color:var(--primary);">${s.roll}</td>
+        <td>
+          <div style="font-weight:700;color:var(--text-main);">${s.name}</div>
+          <div style="font-size:11.5px;color:var(--text-muted);">${s.phone}</div>
+        </td>
+        <td style="font-size:12.5px;color:var(--text-main);">${s.guardian}</td>
+        <td><span class="badge badge-primary">${s.batch}</span></td>
+        <td style="font-weight:600;">${fmt(s.totalFee)}</td>
+        <td style="color:var(--success-color);font-weight:600;">${fmt(s.paid)}</td>
+        <td>${dueText}</td>
+        <td>${matBadge}</td>
+        <td>
+          <div style="display:flex;gap:6px;">
+            <a href="payment.html?id=${s._id || s.roll}" class="ucc-btn ucc-btn-green ucc-btn-sm" title="Collect Payment">
+              <i class="fas fa-money-bill"></i> Payment
+            </a>
+            <a href="distribution.html?id=${s._id || s.roll}" class="ucc-btn ucc-btn-purple ucc-btn-sm" title="Issue Materials">
+              <i class="fas fa-box"></i> Material
+            </a>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function applyFilters() {
+  const batch = document.getElementById('filterBatch').value;
+  const pay   = document.getElementById('filterPayment').value;
+  const mat   = document.getElementById('filterDistribution').value;
+  const q     = document.getElementById('studentSearch').value.trim().toLowerCase();
+
+  const filtered = allStudents.filter(s => {
+    const matchBatch = batch === 'all' || s.batch === batch;
+    const matchPay   = pay === 'all' || (pay === 'Paid' ? s.due === 0 : s.due > 0);
+    const matchMat   = mat === 'all' || s.materials === mat;
+    const matchQuery = !q || s.name.toLowerCase().includes(q) || s.roll.toLowerCase().includes(q) || s.phone.includes(q);
+
+    return matchBatch && matchPay && matchMat && matchQuery;
+  });
+
+  renderStudentTable(filtered);
+  updateStats(filtered);
+}
+</script>
+
+</body>
+</html>

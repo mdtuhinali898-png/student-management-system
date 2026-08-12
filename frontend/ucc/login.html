@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UCC পাবনা — Student Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 50%, #EFF6FF 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem 2.25rem;
+      max-width: 420px; width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(79,70,229,0.18);
+      border: 1px solid rgba(226,232,240,0.8);
+    }
+    .logo { display:flex; align-items:center; gap:0.65rem; margin-bottom:1.75rem; }
+    .logo-icon {
+      width:42px; height:42px; border-radius:12px;
+      background:linear-gradient(135deg,#6366F1,#8B5CF6,#3B82F6);
+      display:flex; align-items:center; justify-content:center;
+      color:white; font-size:1.2rem;
+      box-shadow:0 6px 12px rgba(99,102,241,0.3);
+    }
+    .logo span { font-family:'Outfit',sans-serif; font-weight:800; font-size:1.35rem; color:#0F172A; }
+    .logo span em { font-style:normal; background:linear-gradient(135deg,#6366F1,#8B5CF6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    h2 { font-family:'Outfit',sans-serif; font-size:1.6rem; font-weight:800; color:#0F172A; margin-bottom:0.4rem; }
+    p.sub { color:#64748B; font-size:0.9rem; margin-bottom:1.75rem; }
+    .form-group { margin-bottom:1.1rem; }
+    label { display:block; font-size:0.85rem; font-weight:600; color:#374151; margin-bottom:0.4rem; }
+    input {
+      width:100%; padding:0.85rem 1rem;
+      border:1.5px solid #E2E8F0; border-radius:12px;
+      font-size:0.95rem; font-family:inherit; outline:none;
+      transition:all 0.25s ease; background:#F8FAFC;
+    }
+    input:focus { border-color:#6366F1; background:white; box-shadow:0 0 0 4px rgba(99,102,241,0.1); }
+    .btn {
+      width:100%; padding:0.95rem;
+      background:linear-gradient(135deg,#6366F1,#8B5CF6);
+      color:white; border:none; border-radius:12px;
+      font-size:1rem; font-weight:700; cursor:pointer;
+      transition:all 0.25s ease;
+      box-shadow:0 10px 20px -5px rgba(99,102,241,0.4);
+      margin-top:0.5rem;
+    }
+    .btn:hover { transform:translateY(-2px); box-shadow:0 15px 30px -5px rgba(99,102,241,0.5); filter:brightness(1.05); }
+    .back-link { display:block; text-align:center; margin-top:1.25rem; color:#6366F1; font-size:0.88rem; font-weight:600; text-decoration:none; }
+    .back-link:hover { text-decoration:underline; }
+    .coming-soon {
+      background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:12px;
+      padding:1rem 1.25rem; margin-bottom:1.5rem;
+      color:#166534; font-size:0.88rem; font-weight:600;
+      display:flex; align-items:center; gap:0.6rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+      <span>UCC <em>পাবনা</em></span>
+    </div>
+    <h2>Student Login</h2>
+    <p class="sub">আপনার Roll Number দিয়ে Login করুন</p>
+
+    <div class="coming-soon">
+      <i class="fas fa-tools"></i>
+      Student Portal শীঘ্রই আসছে — Coming Soon!
+    </div>
+
+    <div class="form-group">
+      <label><i class="fas fa-id-card"></i> Student Roll Number</label>
+      <input type="text" placeholder="e.g. 101" disabled>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-phone"></i> Mobile Number</label>
+      <input type="text" placeholder="01XXXXXXXXX" disabled>
+    </div>
+    <button class="btn" disabled><i class="fas fa-sign-in-alt"></i> Login — Coming Soon</button>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> UCC Landing Page-এ ফিরুন</a>
+  </div>
+</body>
+</html>

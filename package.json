@@ -1,0 +1,14 @@
+{
+  "name": "edusmart-backend",
+  "version": "1.0.0",
+  "description": "EduSmart Student Management System Backend",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "seed": "node backend/seed-expense-categories.js"
+  },
+  "dependencies": {
+    "multer": "^2.2.0"
+  }
+}

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Admission - EduSmart Admin</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/add-student.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- Unified EduSmart Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <span>Edu<span class="gradient-text">Smart</span> <small class="admin-badge">Admin</small></span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+            <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+            <a href="add-student.html" class="nav-item active"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+            <a href="exams.html" class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+            <a href="payments.html" class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payments</span><span class="nav-tooltip">Payments</span></a>
+            <a href="receipt.html" class="nav-item"><i class="fas fa-receipt"></i><span>Receipts</span><span class="nav-tooltip">Receipts</span></a>
+            <a href="reports.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+            <a href="finance.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Finance</span><span class="nav-tooltip">Finance</span></a>
+            <a href="expenses.html" class="nav-item"><i class="fas fa-shopping-cart"></i><span>Expenses</span><span class="nav-tooltip">Expenses</span></a>
+            <a href="batches.html" class="nav-item"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+            <a href="batch-transfer.html" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Batch Transfer</span><span class="nav-tooltip">Batch Transfer</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span><span class="nav-tooltip">View Website</span></a>
+            <a href="login.html" class="nav-item logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span><span class="nav-tooltip">Logout</span></a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <h1 class="page-title">Student Admission Form</h1>
+            <div class="user-info">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Admin Avatar" class="user-avatar">
+                <div class="user-details">
+                    <span class="user-name">Administrator</span>
+                    <span class="user-role">Super Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Header Action Banner -->
+        <div class="page-header-action">
+            <div>
+                <h2>Enroll New Student</h2>
+                <p>Fill in student credentials, guardian info, batch assignment, and initial payments.</p>
+            </div>
+            <a href="students.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Student Directory</a>
+        </div>
+
+        <!-- Form Card -->
+        <div class="data-card">
+            <form id="addStudentForm" class="admission-form">
+                
+                <!-- Section 1: Basic Student Details -->
+                <div class="form-section-title">
+                    <i class="fas fa-user-graduate"></i> Personal Information
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="studentName"><i class="fas fa-user"></i> Full Name <span class="required">*</span></label>
+                        <input type="text" id="studentName" placeholder="e.g. Tanvir Hasan" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone"><i class="fas fa-phone"></i> Student Mobile <span class="required">*</span></label>
+                        <input type="text" id="phone" placeholder="e.g. 01700000000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="guardianPhone"><i class="fas fa-user-shield"></i> Parent / Guardian Mobile <span class="required">*</span></label>
+                        <input type="text" id="guardianPhone" placeholder="e.g. 01800000000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="institution"><i class="fas fa-university"></i> School / College Name</label>
+                        <input type="text" id="institution" placeholder="e.g. Notre Dame College">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reference"><i class="fas fa-user-check"></i> Reference Name</label>
+                        <input type="text" id="reference" placeholder="Enter reference name (optional)">
+                    </div>
+                </div>
+
+                <!-- Section 2: Course & Batch Details -->
+                <div class="form-section-title" style="margin-top: 2rem;">
+                    <i class="fas fa-layer-group"></i> Academic & Batch Enrollment
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="batch"><i class="fas fa-layer-group"></i> Select Batch <span class="required">*</span></label>
+                        <select id="batch" required>
+                            <option value="">Select Batch...</option>
+                        </select>
+                        <small id="batchHelp" style="display:block; margin-top:7px; color:#6b7280;"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rollNo"><i class="fas fa-id-badge"></i> Roll Number</label>
+                        <input type="number" id="rollNo" placeholder="Auto generated or manual roll">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="monthlyFee"><i class="fas fa-money-bill"></i> Monthly Course Fee (BDT) <span class="required">*</span></label>
+                        <input type="number" id="monthlyFee" placeholder="e.g. 2500" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admissionFee"><i class="fas fa-receipt"></i> Admission Fee (BDT)</label>
+                        <input type="number" id="admissionFee" placeholder="e.g. 1000" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admissionMonth"><i class="fas fa-calendar"></i> Admission Month <span class="required">*</span></label>
+                        <select id="admissionMonth" required>
+                            <option value="">Select Month</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July" selected>July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                        <small style="display:block; margin-top:7px; color:#6b7280;">এই মাসের মাসিক ফি সহ অ্যাডমিশন ফি হিসেবে রিসিট তৈরি হবে।</small>
+                    </div>
+
+                </div>
+
+                <!-- Section 3: Photo Upload -->
+                <div class="form-section-title" style="margin-top: 2rem;">
+                    <i class="fas fa-camera"></i> Student Photo Upload
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="studentPhoto"><i class="fas fa-image"></i> Select Profile Picture</label>
+                        <input type="file" id="studentPhoto" accept="image/*">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div style="margin-top: 2.5rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary btn-lg" style="flex: 1;">
+                        <i class="fas fa-check-circle"></i> Save & Complete Admission
+                    </button>
+                    <a href="students.html" class="btn btn-secondary btn-lg">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Admission Success Modal -->
+        <div class="modal-backdrop" id="admissionSuccessModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
+                    <h2>Admission Successful!</h2>
+                    <p class="modal-subtitle">The student has been enrolled successfully.</p>
+                    <button class="modal-close" id="modalClose">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="success-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Student ID</span>
+                            <span class="detail-value" id="modalStudentId">---</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Student Name</span>
+                            <span class="detail-value" id="modalStudentName">---</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Course / Batch</span>
+                            <span class="detail-value" id="modalBatch">---</span>
+                        </div>
+                        <div class="detail-item total">
+                            <span class="detail-label">Total Paid</span>
+                            <span class="detail-value" id="modalTotalAmount">৳0.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="modalCloseBtn">Close</button>
+                    <button class="btn btn-primary" id="modalPrintBtn"><i class="fas fa-print"></i> Print Receipt</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>© 2026 EduSmart Coaching & Student Management System</p>
+        </footer>
+    </main>
+
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/add-student.js"></script>
+</body>
+</html>
+

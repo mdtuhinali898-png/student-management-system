@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Dashboard — UCC Pabna Admin</title>
+  
+  <!-- FontAwesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="assets/css/design-system.css?v=2">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- ==========================================================================
+     1. LOADING OVERLAY
+     ========================================================================== -->
+<div class="ucc-loading" id="uccLoading">
+  <div class="ucc-spinner"></div>
+  <div class="ucc-loading-text" id="uccLoadingText">Loading UCC Dashboard...</div>
+  <div class="ucc-loading-sub">Please wait a moment</div>
+</div>
+
+<!-- ==========================================================================
+     2. SIDEBAR (EduSmart Executive Style — UCC Navigation)
+     ========================================================================== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html" class="sidebar-logo">
+      <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+      <span>UCC <span class="gradient-text">Pabna</span> <small class="admin-badge">Admin</small></span>
+    </a>
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+  </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item active">
+      <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+      <span class="nav-tooltip">Dashboard</span>
+    </a>
+    <a href="students.html" class="nav-item">
+      <i class="fas fa-users"></i><span>Students</span>
+      <span class="nav-tooltip">Students</span>
+    </a>
+    <a href="admission.html" class="nav-item">
+      <i class="fas fa-user-plus"></i><span>Admission</span>
+      <span class="nav-tooltip">Admission</span>
+    </a>
+    <a href="payment.html" class="nav-item">
+      <i class="fas fa-money-bill-wave"></i><span>Payment</span>
+      <span class="nav-tooltip">Payment</span>
+    </a>
+    <a href="exams.html" class="nav-item">
+      <i class="fas fa-pencil-alt"></i><span>Exams</span>
+      <span class="nav-tooltip">Exams</span>
+    </a>
+    <a href="distribution.html" class="nav-item">
+      <i class="fas fa-book-open"></i><span>Distribution</span>
+      <span class="nav-tooltip">Distribution</span>
+    </a>
+    <a href="batches.html" class="nav-item">
+      <i class="fas fa-layer-group"></i><span>Batches</span>
+      <span class="nav-tooltip">Batches</span>
+    </a>
+    <a href="reports.html" class="nav-item">
+      <i class="fas fa-chart-bar"></i><span>Reports</span>
+      <span class="nav-tooltip">Reports</span>
+    </a>
+    <a href="settings.html" class="nav-item">
+      <i class="fas fa-cog"></i><span>Settings</span>
+      <span class="nav-tooltip">Settings</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="index.html" class="nav-item website-link">
+      <i class="fas fa-globe"></i><span>View Website</span>
+      <span class="nav-tooltip">View Website</span>
+    </a>
+    <a href="/index.html" class="nav-item" title="Switch to EduSmart" style="color:var(--primary);">
+      <i class="fas fa-arrow-left"></i><span>EduSmart System</span>
+      <span class="nav-tooltip">EduSmart</span>
+    </a>
+    <a href="admin-login.html" class="nav-item logout" id="logoutBtn">
+      <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      <span class="nav-tooltip">Logout</span>
+    </a>
+  </div>
+</aside>
+
+<!-- ==========================================================================
+     3. MAIN CONTENT (EduSmart SaaS Layout + UCC Logic)
+     ========================================================================== -->
+<main class="main-content" id="mainContent">
+
+  <!-- Top Executive Header -->
+  <header class="top-header">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div>
+        <h1 class="page-title">Executive Dashboard</h1>
+        <div style="font-size:12.5px;color:var(--text-muted);margin-top:2px;">
+          <i class="fas fa-school" style="color:var(--primary);margin-right:4px;"></i> UCC Pabna Branch — Admission, Fee Collection & Material Distribution Dashboard
+        </div>
+      </div>
+    </div>
+    
+    <div class="user-info">
+      <div style="text-align:right;margin-right:12px;" class="hide-mobile">
+        <div style="font-size:16px;font-weight:800;color:var(--primary);letter-spacing:0.5px;" id="uccClock">--:--:--</div>
+        <div style="font-size:11px;color:var(--text-muted);" id="uccLastUpdated">Last updated: --</div>
+      </div>
+      <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100"
+           alt="Admin Avatar" class="user-avatar">
+      <div class="user-details">
+        <span class="user-name" id="uccAdminName">UCC Administrator</span>
+        <span class="user-role">Pabna Branch Head</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── 4. Stat Cards Grid (EduSmart Visual Style) ── -->
+  <section class="stat-cards" id="uccSummaryCards">
+    <!-- Card 1: Total UCC Admissions -->
+    <div class="stat-card card-blue">
+      <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+      <div class="stat-info">
+        <h3 id="cStudents">--</h3>
+        <p>Total Admissions</p>
+        <small class="stat-change positive" id="cStudentsSub">
+          <i class="fas fa-arrow-up"></i> Loading...
+        </small>
+      </div>
+    </div>
+
+    <!-- Card 2: Total Fee Collection -->
+    <div class="stat-card card-green">
+      <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+      <div class="stat-info">
+        <h3 id="cCollection">--</h3>
+        <p>Total Revenue (BDT)</p>
+        <small class="stat-change positive" id="cCollectionSub">
+          <i class="fas fa-check-circle"></i> Loading...
+        </small>
+      </div>
+    </div>
+
+    <!-- Card 3: Material Distribution -->
+    <div class="stat-card card-purple">
+      <div class="stat-icon"><i class="fas fa-boxes-packing"></i></div>
+      <div class="stat-info">
+        <h3 id="cDistribution">--</h3>
+        <p>Material Distribution</p>
+        <small class="stat-change" id="cDistributionSub">
+          <i class="fas fa-book-open"></i> Loading...
+        </small>
+      </div>
+    </div>
+
+    <!-- Card 4: Pending Installment Dues -->
+    <div class="stat-card card-red">
+      <div class="stat-icon"><i class="fas fa-clock-rotate-left"></i></div>
+      <div class="stat-info">
+        <h3 id="cDue">--</h3>
+        <p>Pending Dues (BDT)</p>
+        <small class="stat-change negative" id="cDueSub">
+          <i class="fas fa-exclamation-triangle"></i> Loading...
+        </small>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. Controls & Action Bar ── -->
+  <div class="ucc-controls" style="margin-bottom: 24px;">
+    <div class="ucc-ctrl-grp">
+      <label for="batchFilter"><i class="fas fa-layer-group" style="color:var(--primary);"></i> Course / Batch:</label>
+      <select id="batchFilter" onchange="applyBatchFilter()">
+        <option value="all">All Batches (Varsity / Medical / Engineering)</option>
+      </select>
+    </div>
+
+    <!-- Quick Action Pills -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="admission.html" class="ucc-btn ucc-btn-primary">
+        <i class="fas fa-user-plus"></i> New Admission
+      </a>
+      <a href="payment.html" class="ucc-btn ucc-btn-green">
+        <i class="fas fa-money-bill-wave"></i> Collect Payment
+      </a>
+      <a href="distribution.html" class="ucc-btn ucc-btn-purple">
+        <i class="fas fa-book-open"></i> Distribute Materials
+      </a>
+      <button class="ucc-btn ucc-btn-outline" onclick="refreshDashboard()">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+      <button class="ucc-btn ucc-btn-outline" onclick="exportCSV()">
+        <i class="fas fa-file-csv"></i> Export CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- ── 6. Student Quick Search ── -->
+  <div class="ucc-search-bar" style="margin-bottom: 28px;">
+    <h4 style="margin:0 0 10px 0;font-size:14px;font-weight:700;color:var(--text-main);">
+      <i class="fas fa-search" style="color:var(--primary);margin-right:6px;"></i> Quick Student Search (Roll / Name / Mobile)
+    </h4>
+    <div class="ucc-search-row">
+      <input type="text" id="searchInput" placeholder="Type student Roll number, Name, or Phone number..."
+             onkeyup="handleSearchKey(event)">
+      <button class="ucc-btn ucc-btn-primary" onclick="doSearch()"><i class="fas fa-search"></i> Search</button>
+      <button class="ucc-btn ucc-btn-outline" onclick="clearSearch()">✕ Clear</button>
+    </div>
+    <div class="ucc-search-results" id="searchResults"></div>
+  </div>
+
+  <!-- ── 7. Charts Row (EduSmart Aesthetic Chart Cards) ── -->
+  <section class="charts-row" style="margin-bottom: 32px;">
+    <!-- Chart 1: Course Collection & Performance -->
+    <div class="chart-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="margin:0;font-size:16px;font-weight:700;">
+          <i class="fas fa-chart-bar" style="color:var(--primary);margin-right:8px;"></i> Course & Batch Revenue Collection (BDT)
+        </h3>
+        <span class="badge badge-primary" id="chart1Badge">UCC Pabna Branch</span>
+      </div>
+      <div style="position:relative;height:280px;">
+        <canvas id="paymentBarChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Chart 2: Material Distribution Breakdown -->
+    <div class="chart-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="margin:0;font-size:16px;font-weight:700;">
+          <i class="fas fa-pie-chart" style="color:var(--purple);margin-right:8px;"></i> Books & Lecture Sheets Distribution Status
+        </h3>
+        <span class="badge badge-success">Distribution</span>
+      </div>
+      <div style="position:relative;height:280px;">
+        <canvas id="distributionPieChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 8. Executive Tabs & Tables ── -->
+  <div class="ucc-tabs" id="uccTabs" style="margin-bottom: 20px;">
+    <button class="ucc-tab active" onclick="switchTab('overview')">📊 Batch Performance</button>
+    <button class="ucc-tab" onclick="switchTab('distribution')">📦 Material Distribution Log</button>
+    <button class="ucc-tab" onclick="switchTab('due')">⚠️ Overdue Dues List</button>
+    <button class="ucc-tab" onclick="switchTab('transactions')">💳 Recent Transactions</button>
+  </div>
+
+  <!-- TAB 1: OVERVIEW & BATCH PERFORMANCE -->
+  <div id="tab-overview" class="tab-content active">
+    <div class="ucc-grid2">
+      <!-- Batch Performance List -->
+      <div class="ucc-panel">
+        <div class="ucc-panel-hdr">
+          <span class="ucc-panel-title"><i class="fas fa-layer-group" style="color:var(--primary);margin-right:6px;"></i> Batch Progress & Collection</span>
+          <span class="ucc-panel-badge" id="batchCountBadge">0 Batches</span>
+        </div>
+        <div id="batchPerformance" style="padding:16px;">
+          <div style="text-align:center;padding:30px;color:#9ca3af;">
+            <div style="font-size:36px;margin-bottom:8px;opacity:.5;">📊</div>
+            <div>Loading batch performance...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Quick Alerts & Summary -->
+      <div>
+        <div class="ucc-panel" style="margin-bottom:18px;">
+          <div class="ucc-panel-hdr">
+            <span class="ucc-panel-title"><i class="fas fa-bullhorn" style="color:var(--orange);margin-right:6px;"></i> Branch Alerts & Notices</span>
+          </div>
+          <div id="alertsBox" style="padding:16px;">
+            <div style="text-align:center;padding:20px;color:#9ca3af;">Loading alerts...</div>
+          </div>
+        </div>
+
+        <div class="ucc-panel">
+          <div class="ucc-panel-hdr">
+            <span class="ucc-panel-title"><i class="fas fa-book" style="color:var(--purple);margin-right:6px;"></i> Popular Material Status</span>
+          </div>
+          <div id="materialsQuickBox" style="padding:16px;">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;">
+              Overview of Lecture Sheets 1-12 & Guidebooks distribution:
+            </div>
+            <div class="progress-bar-group" style="display:flex;flex-direction:column;gap:12px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:4px;">
+                  <span>Varsity Lecture Sheet 01-05</span>
+                  <span style="color:var(--success-color);">85% Issued</span>
+                </div>
+                <div style="background:#e2e8f0;height:8px;border-radius:4px;overflow:hidden;">
+                  <div style="background:var(--success-color);width:85%;height:100%;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:4px;">
+                  <span>Medical Question Bank 2026</span>
+                  <span style="color:var(--primary);">62% Issued</span>
+                </div>
+                <div style="background:#e2e8f0;height:8px;border-radius:4px;overflow:hidden;">
+                  <div style="background:var(--primary);width:62%;height:100%;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:4px;">
+                  <span>Engineering Physics Practice Sheet</span>
+                  <span style="color:var(--warning-color);">40% Issued</span>
+                </div>
+                <div style="background:#e2e8f0;height:8px;border-radius:4px;overflow:hidden;">
+                  <div style="background:var(--warning-color);width:40%;height:100%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: MATERIAL DISTRIBUTION LOG -->
+  <div id="tab-distribution" class="tab-content" style="display:none;">
+    <div class="ucc-panel">
+      <div class="ucc-panel-hdr">
+        <span class="ucc-panel-title"><i class="fas fa-boxes-packing" style="color:var(--purple);margin-right:6px;"></i> Recent Books & Lecture Sheets Distribution Log</span>
+        <a href="distribution.html" class="ucc-btn ucc-btn-purple ucc-btn-sm">+ New Entry</a>
+      </div>
+      <div style="overflow-x:auto;padding:16px;">
+        <table class="ucc-table">
+          <thead>
+            <tr>
+              <th>Roll #</th>
+              <th>Student Name</th>
+              <th>Course / Batch</th>
+              <th>Issued Items</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="distributionLogTable">
+            <tr>
+              <td colspan="7" style="text-align:center;padding:24px;color:#9ca3af;">Loading material distribution logs...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: DUE STUDENTS LIST -->
+  <div id="tab-due" class="tab-content" style="display:none;">
+    <div class="ucc-panel">
+      <div class="ucc-panel-hdr">
+        <span class="ucc-panel-title"><i class="fas fa-exclamation-circle" style="color:var(--danger-color);margin-right:6px;"></i> Overdue Students List & Installment Dues</span>
+        <button class="ucc-btn ucc-btn-outline ucc-btn-sm" onclick="sendBulkSMSReminder()">📱 Bulk SMS Reminder</button>
+      </div>
+      <div style="overflow-x:auto;padding:16px;">
+        <table class="ucc-table">
+          <thead>
+            <tr>
+              <th>Roll #</th>
+              <th>Name & Phone</th>
+              <th>Course / Batch</th>
+              <th>Total Fee</th>
+              <th>Paid</th>
+              <th>Due Amount</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="dueStudentsTable">
+            <tr>
+              <td colspan="7" style="text-align:center;padding:24px;color:#9ca3af;">Loading overdue list...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: TRANSACTIONS -->
+  <div id="tab-transactions" class="tab-content" style="display:none;">
+    <div class="ucc-panel">
+      <div class="ucc-panel-hdr">
+        <span class="ucc-panel-title"><i class="fas fa-history" style="color:var(--primary);margin-right:6px;"></i> Recent Payment Transactions History</span>
+        <a href="payment.html" class="ucc-btn ucc-btn-primary ucc-btn-sm">+ Collect Payment</a>
+      </div>
+      <div style="overflow-x:auto;padding:16px;">
+        <table class="ucc-table">
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Receipt #</th>
+              <th>Student Roll & Name</th>
+              <th>Method</th>
+              <th>Amount</th>
+              <th>Voucher</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsTable">
+            <tr>
+              <td colspan="6" style="text-align:center;padding:24px;color:#9ca3af;">Loading transaction history...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="main-footer">© 2026 UCC পাবনা শাখা। All rights reserved. Designed and developed by Tuhin.</footer>
+
+<!-- JS Scripts -->
+<script src="assets/js/sidebar.js?v=2"></script>
+<script src="assets/js/dashboard.js"></script>
+
+</body>
+</html>
+

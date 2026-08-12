@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses - EduSmart Admin</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .expense-filters {
+            background: var(--bg-card);
+            padding: 18px 20px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+        }
+        .expense-filters .filter-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .expense-filters .filter-row .filter-group-item {
+            flex: 1;
+            min-width: 140px;
+        }
+        .expense-filters .filter-row .filter-group-item label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .expense-filters .filter-row .filter-group-item input,
+        .expense-filters .filter-row .filter-group-item select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            background: var(--bg-main);
+        }
+        .expense-filters .filter-row .filter-group-item input:focus,
+        .expense-filters .filter-row .filter-group-item select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .expense-filters .filter-actions {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+        .expense-filters .filter-actions .btn {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+        .data-table tbody tr.selected { background: #eef2ff !important; }
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-badge.draft { background: #f3f4f6; color: #6b7280; }
+        .status-badge.pending { background: #fef3c7; color: #92400e; }
+        .status-badge.approved { background: #d1fae5; color: #065f46; }
+        .status-badge.rejected { background: #fee2e2; color: #991b1b; }
+        .status-badge.voided { background: #e5e7eb; color: #374151; }
+        .receipt-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .receipt-badge.has-receipt { background: #d1fae5; color: #065f46; }
+        .receipt-badge.no-receipt { background: #fee2e2; color: #991b1b; }
+        .filtered-total {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            border-radius: var(--radius-md);
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .bulk-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .bulk-actions .bulk-info { font-size: 0.85rem; color: var(--text-muted); }
+        .voucher-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+        .voucher-header { text-align: center; border-bottom: 2px double #1e40af; padding-bottom: 16px; margin-bottom: 20px; }
+        .voucher-header h2 { color: #1e40af; font-size: 1.2rem; }
+        .voucher-body table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        .voucher-body td { padding: 8px 12px; border: 1px solid #e5e7eb; font-size: 0.9rem; }
+        .voucher-body td.label { font-weight: 700; background: #f9fafb; width: 140px; }
+        .voucher-footer { margin-top: 30px; display: flex; justify-content: space-between; }
+        .voucher-footer .signature { text-align: center; width: 45%; }
+        .voucher-footer .signature .line { margin-top: 40px; border-top: 1px solid #374151; padding-top: 6px; }
+    </style>
+</head>
+<body>
+
+    <!-- EduSmart Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <span>Edu<span class="gradient-text">Smart</span> <small class="admin-badge">Admin</small></span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+            <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+            <a href="add-student.html" class="nav-item"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+            <a href="exams.html" class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+            <a href="payments.html" class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payments</span><span class="nav-tooltip">Payments</span></a>
+            <a href="receipt.html" class="nav-item"><i class="fas fa-receipt"></i><span>Receipts</span><span class="nav-tooltip">Receipts</span></a>
+            <a href="reports.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+            <a href="finance.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Finance</span><span class="nav-tooltip">Finance</span></a>
+            <a href="expenses.html" class="nav-item active"><i class="fas fa-shopping-cart"></i><span>Expenses</span><span class="nav-tooltip">Expenses</span></a>
+            <a href="payroll.html" class="nav-item"><i class="fas fa-users-cog"></i><span>Payroll</span><span class="nav-tooltip">Payroll</span></a>
+            <a href="batches.html" class="nav-item"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+            <a href="batch-transfer.html" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Batch Transfer</span><span class="nav-tooltip">Batch Transfer</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span></a>
+            <a href="login.html" class="nav-item logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Expense Management</h1>
+            <div class="user-info">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Admin Avatar" class="user-avatar">
+                <div class="user-details">
+                    <span class="user-name">Administrator</span>
+                    <span class="user-role">Finance Manager</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Header Actions -->
+        <div class="page-header-action">
+            <div>
+                <h2><i class="fas fa-list-alt"></i> Expense Records</h2>
+                <p>Add, edit, view and manage all institutional expenses.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fas fa-plus-circle"></i> Add Expense
+                </button>
+            </div>
+        </div>
+
+        <!-- Advanced Filters -->
+        <div class="expense-filters">
+            <div class="filter-row">
+                <div class="filter-group-item">
+                    <label>Search</label>
+                    <input type="text" id="searchInput" placeholder="ID, Vendor, Description...">
+                </div>
+                <div class="filter-group-item">
+                    <label>Category</label>
+                    <select id="categoryFilter">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+                <div class="filter-group-item">
+                    <label>Payment Method</label>
+                    <select id="methodFilter">
+                        <option value="all">All Methods</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Bank">Bank</option>
+                        <option value="bKash">bKash</option>
+                        <option value="Nagad">Nagad</option>
+                        <option value="Rocket">Rocket</option>
+                        <option value="Card">Card</option>
+                        <option value="Cheque">Cheque</option>
+                    </select>
+                </div>
+                <div class="filter-group-item">
+                    <label>Status</label>
+                    <select id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="Draft">Draft</option>
+                        <option value="Pending Approval">Pending Approval</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Voided">Voided</option>
+                    </select>
+                </div>
+                <div class="filter-group-item">
+                    <label>Vendor</label>
+                    <select id="vendorFilter">
+                        <option value="all">All Vendors</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-row" style="margin-top:12px;">
+                <div class="filter-group-item">
+                    <label>From Date</label>
+                    <input type="date" id="fromDateFilter">
+                </div>
+                <div class="filter-group-item">
+                    <label>To Date</label>
+                    <input type="date" id="toDateFilter">
+                </div>
+                <div class="filter-group-item">
+                    <label>Min Amount</label>
+                    <input type="number" id="amountMinFilter" min="0" placeholder="৳ 0">
+                </div>
+                <div class="filter-group-item">
+                    <label>Max Amount</label>
+                    <input type="number" id="amountMaxFilter" min="0" placeholder="৳ ∞">
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-primary" onclick="loadExpenses()"><i class="fas fa-search"></i> Search</button>
+                    <button class="btn btn-secondary" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions">
+            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+            <label for="selectAll" style="font-size:0.85rem;font-weight:600;">Select All</label>
+            <span class="bulk-info" id="selectedCount">0 selected</span>
+            <button class="btn btn-sm btn-primary" onclick="bulkExport()" id="bulkExportBtn" style="display:none;">
+                <i class="fas fa-file-export"></i> Bulk Export
+            </button>
+            <button class="btn btn-sm btn-success" onclick="bulkPrint()" id="bulkPrintBtn" style="display:none;">
+                <i class="fas fa-print"></i> Bulk Print
+            </button>
+        </div>
+
+        <!-- Category Management -->
+        <div class="data-card">
+            <div class="card-header">
+                <h3><i class="fas fa-tags"></i> Category Management</h3>
+                <button class="btn btn-sm btn-primary" onclick="openCategoryModal()">
+                    <i class="fas fa-plus"></i> Add Category
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Sub Categories</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoryTableBody">
+                        <tr><td colspan="4" class="text-center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Expense Table -->
+        <div class="data-card">
+            <div class="card-header">
+                <h3><i class="fas fa-table"></i> Expense Records</h3>
+                <span class="badge badge-primary" id="expenseCount">Total: 0</span>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30px;"><input type="checkbox" id="selectAllHeader" onchange="toggleSelectAll()"></th>
+                            <th>Expense ID</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Receipt</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenseTableBody">
+                        <tr><td colspan="9" class="text-center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="filteredTotalContainer"></div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>© 2026 EduSmart Coaching & Student Management System</p>
+        </footer>
+    </main>
+
+    <!-- Category Management Modal -->
+    <div class="modal-overlay" id="categoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="categoryModalTitle"><i class="fas fa-plus-circle"></i> Add Category</h3>
+                <button class="modal-close" onclick="closeCategoryModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId">
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Category Name <span class="required">*</span></label>
+                        <input type="text" id="categoryName" placeholder="e.g., Office Supplies" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-info-circle"></i> Description</label>
+                        <textarea id="categoryDescription" rows="2" placeholder="Brief description..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-tags"></i> Sub Categories</label>
+                        <input type="text" id="subCategoriesInput" placeholder="Enter sub-categories separated by commas (e.g., Stationery, Ink, Paper)">
+                        <small style="color: #666;">Separate multiple sub-categories with commas</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeCategoryModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Save Category
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="expenseModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fas fa-plus-circle"></i> Add Expense</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="expenseForm">
+                    <input type="hidden" id="expenseId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> Date <span class="required">*</span></label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-clock"></i> Time <span class="required">*</span></label>
+                            <input type="time" id="time" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-tag"></i> Category <span class="required">*</span></label>
+                            <select id="category" required onchange="loadSubCategories()">
+                                <option value="">Select Category</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-tags"></i> Sub Category</label>
+                            <select id="subCategory">
+                                <option value="">Select Sub Category</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-credit-card"></i> Payment Method <span class="required">*</span></label>
+                            <select id="paymentMethod" required>
+                                <option value="">Select Method</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Bank">Bank</option>
+                                <option value="bKash">bKash</option>
+                                <option value="Nagad">Nagad</option>
+                                <option value="Rocket">Rocket</option>
+                                <option value="Card">Card</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-dollar-sign"></i> Amount (৳) <span class="required">*</span></label>
+                            <input type="number" id="amount" min="0" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-user-tie"></i> Vendor/Supplier</label>
+                        <input type="text" id="vendor" placeholder="Enter vendor name">
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-sticky-note"></i> Description/Notes</label>
+                        <textarea id="description" rows="2" placeholder="Optional notes..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-info-circle"></i> Status</label>
+                        <select id="expenseStatus">
+                            <option value="Draft">Draft</option>
+                            <option value="Pending Approval" selected>Pending Approval</option>
+                            <option value="Approved">Approved</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-paperclip"></i> Receipt Attachment</label>
+                        <input type="file" id="receiptFile" accept="image/*,.pdf">
+                        <div id="receiptPreview" style="margin-top:8px;display:none;"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Save Expense
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approval Modal -->
+    <div class="modal-overlay" id="approvalModal">
+        <div class="modal" style="max-width: 450px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
+                <h3 id="approvalModalTitle"><i class="fas fa-check-circle"></i> Approve Expense</h3>
+                <button class="modal-close" onclick="closeApprovalModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="approvalForm">
+                    <p id="approvalExpenseInfo" style="font-size:0.9rem;margin-bottom:16px;"></p>
+                    <div id="approvalActionArea">
+                        <div class="form-group">
+                            <label>Approved By</label>
+                            <input type="text" id="approvedBy" value="Admin">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="closeApprovalModal()">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="confirmApprove()"><i class="fas fa-check"></i> Approve</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="rejectionForm" style="display:none;">
+                    <div class="form-group">
+                        <label>Rejected By</label>
+                        <input type="text" id="rejectedBy" value="Admin">
+                    </div>
+                    <div class="form-group">
+                        <label>Rejection Reason *</label>
+                        <textarea id="rejectionReason" rows="3" required placeholder="Why is this being rejected?"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeApprovalModal()">Cancel</button>
+                        <button type="button" class="btn btn-danger" onclick="confirmReject()"><i class="fas fa-times"></i> Reject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Void Modal -->
+    <div class="modal-overlay" id="voidModal">
+        <div class="modal" style="max-width: 450px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">
+                <h3><i class="fas fa-ban"></i> Void Expense</h3>
+                <button class="modal-close" onclick="closeVoidModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p id="voidExpenseInfo" style="font-size:0.9rem;margin-bottom:16px;"></p>
+                <div class="form-group">
+                    <label>Void Reason *</label>
+                    <textarea id="voidReason" rows="3" required placeholder="Why is this being voided?"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeVoidModal()">Cancel</button>
+                    <button type="button" class="btn btn-secondary" onclick="confirmVoid()"><i class="fas fa-ban"></i> Void</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voucher Modal -->
+    <div class="modal-overlay" id="voucherModal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);">
+                <h3><i class="fas fa-file-invoice"></i> Expense Voucher</h3>
+                <button class="modal-close" onclick="closeVoucherModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="voucherContent"></div>
+        </div>
+    </div>
+
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/expenses.js"></script>
+</body>
+</html>
+

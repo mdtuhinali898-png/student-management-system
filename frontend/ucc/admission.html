@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Admission - UCC Pabna Admin</title>
+  
+  <!-- FontAwesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- EduSmart & UCC Design System -->
+  <link rel="stylesheet" href="assets/css/design-system.css?v=2">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/add-student.css">
+  <link rel="stylesheet" href="assets/css/receipt-print.css">
+  
+  <style>
+    /* Custom Styling Enhancements for UCC EduSmart Layout */
+    .highlight-roll { 
+      color: #2563eb !important; 
+      font-size: 18px !important; 
+      font-weight: 800 !important;
+      background-color: #eff6ff !important; 
+      border: 2px solid #3b82f6 !important; 
+    }
+    
+    .info-box-pro {
+      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+      border: 1.5px solid #6366f1;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .info-box-pro .info-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e1b4b;
+    }
+    
+    .info-box-pro .info-pill strong {
+      color: #4f46e5;
+    }
+
+    .discount-options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .discount-radio-card {
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      background: #ffffff;
+    }
+
+    .discount-radio-card:hover {
+      border-color: var(--primary);
+      background: #f8fafc;
+    }
+
+    .discount-radio-card input[type="radio"] {
+      width: auto;
+      margin: 0;
+      accent-color: var(--primary);
+    }
+
+    .discount-radio-card.active {
+      border-color: var(--primary);
+      background: #eef2ff;
+      color: var(--primary);
+    }
+
+    .calculation-card {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1.5px solid #f59e0b;
+      padding: 20px;
+      border-radius: var(--radius-md);
+      margin: 24px 0;
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+      color: #78350f;
+    }
+
+    .calc-row.total {
+      border-top: 2px solid #f59e0b;
+      margin-top: 8px;
+      padding-top: 10px;
+      font-weight: 800;
+      font-size: 16px;
+      color: #047857;
+    }
+
+    .calc-row.due {
+      border-top: 2px solid #ef4444;
+      margin-top: 8px;
+      padding-top: 10px;
+      font-weight: 900;
+      font-size: 18px;
+      color: #dc2626;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255, 255, 255, 0.2);
+      border-top: 5px solid #6366f1;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text" style="margin-top:16px; font-size:18px; font-weight:700;">Loading...</div>
+    <div class="loading-subtext" style="margin-top:6px; font-size:14px; color:#cbd5e1;">Please wait</div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+        <span>UCC <span class="gradient-text">পাবনা</span> <small class="admin-badge">Admin</small></span>
+      </a>
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+    </div>
+    <div class="sidebar-search">
+      <div class="search-box sidebar-search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+      </div>
+      <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+      <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+      <a href="admission.html" class="nav-item active"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+      <a href="payment.html" class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payment</span><span class="nav-tooltip">Payment</span></a>
+      <a href="exams.html" class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+      <a href="distribution.html" class="nav-item"><i class="fas fa-book-open"></i><span>Distribution</span><span class="nav-tooltip">Distribution</span></a>
+      <a href="batches.html" class="nav-item"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+      <a href="reports.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+      <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="index.html" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span><span class="nav-tooltip">View Website</span></a>
+      <a href="admin-login.html" class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span><span class="nav-tooltip">Logout</span></a>
+    </div>
+  </aside>
+
+  <!-- Main Content Layout -->
+  <main class="main-content" id="mainContent">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <h1 class="page-title"><i class="fas fa-user-plus" style="margin-right:10px; color:var(--primary);"></i>Student Admission Portal</h1>
+      <div class="user-info">
+        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100" alt="Admin" class="user-avatar">
+        <div class="user-details">
+          <span class="user-name">UCC Admin</span>
+          <span class="user-role">UCC পাবনা শাখা</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- EduSmart Action Banner -->
+    <div class="page-header-action">
+      <div>
+        <h2>🎓 Enroll New UCC Student</h2>
+        <p>Select coaching program batch, auto-generate roll number, apply percentage/fixed discounts & process initial admission fee.</p>
+      </div>
+      <a href="students.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Student Directory</a>
+    </div>
+
+    <!-- Step 1: Batch Selection Card -->
+    <div class="data-card" id="batchSection">
+      <div class="form-section-title">
+        <i class="fas fa-layer-group"></i> Step 1: Select Coaching Program & Batch
+      </div>
+      <div class="form-grid">
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label for="batchSelect"><i class="fas fa-graduation-cap"></i> Program Batch <span class="required">*</span></label>
+          <select id="batchSelect" style="width: 100%; padding: 12px; border-radius: var(--radius-md); font-size: 15px;">
+            <option value="">-- Select Coaching Batch --</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top: 16px;">
+        <button class="btn btn-primary btn-lg" onclick="loadBatch()"><i class="fas fa-arrow-right"></i> Load Batch Info & Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Admission Form Card -->
+    <div class="data-card hidden" id="admissionSection">
+      
+      <!-- Live Info Banner -->
+      <div class="info-box-pro">
+        <div class="info-pill"><i class="fas fa-layer-group" style="color:#4f46e5;"></i> <span>Batch: <strong id="aBatch">---</strong></span></div>
+        <div class="info-pill"><i class="fas fa-users" style="color:#059669;"></i> <span>Enrolled Students: <strong id="aCount">0</strong></span></div>
+        <div class="info-pill"><i class="fas fa-id-badge" style="color:#2563eb;"></i> <span>Next Available Roll: <strong id="aRollPreview">001</strong></span></div>
+      </div>
+
+      <!-- Section 1: Academic & Roll Details -->
+      <div class="form-section-title">
+        <i class="fas fa-user-graduate"></i> Personal & Academic Details
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="aRoll"><i class="fas fa-id-card"></i> Student Roll (Auto-generated)</label>
+          <input type="text" id="aRoll" readonly class="highlight-roll">
+        </div>
+        <div class="form-group">
+          <label for="aName"><i class="fas fa-user"></i> Full Student Name <span class="required">*</span></label>
+          <input type="text" id="aName" placeholder="Enter student full name" required>
+        </div>
+        <div class="form-group">
+          <label for="aPhone"><i class="fas fa-phone"></i> Student Mobile Number <span class="required">*</span></label>
+          <input type="text" id="aPhone" placeholder="e.g. 01712345678" required>
+        </div>
+        <div class="form-group">
+          <label for="aGuardian"><i class="fas fa-user-shield"></i> Parent / Guardian Mobile <span class="required">*</span></label>
+          <input type="text" id="aGuardian" placeholder="e.g. 01812345678" required>
+        </div>
+        <div class="form-group">
+          <label for="aGuardianName"><i class="fas fa-user-friends"></i> Father / Guardian Name</label>
+          <input type="text" id="aGuardianName" placeholder="Enter guardian name (optional)">
+        </div>
+        <div class="form-group">
+          <label for="aInstitution"><i class="fas fa-university"></i> Previous School / College</label>
+          <input type="text" id="aInstitution" placeholder="e.g. Pabna Zilla School / College">
+        </div>
+      </div>
+
+      <!-- Section 2: Fee & Discount Management -->
+      <div class="form-section-title" style="margin-top: 28px;">
+        <i class="fas fa-tags"></i> Course Fee & Discount Setup
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="aFee"><i class="fas fa-money-bill-wave"></i> Total Course Fee (BDT) <span class="required">*</span></label>
+          <input type="number" id="aFee" value="15000" oninput="calculateAll()" required>
+        </div>
+
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label><i class="fas fa-percent"></i> Select Discount Policy</label>
+          <div class="discount-options-grid">
+            <label class="discount-radio-card active" id="cardDiscNone">
+              <input type="radio" name="discountType" value="none" checked onchange="calculateAll()">
+              <span>No Discount</span>
+            </label>
+            <label class="discount-radio-card" id="cardDiscPerc">
+              <input type="radio" name="discountType" value="percentage" onchange="calculateAll()">
+              <span>Percentage (%)</span>
+            </label>
+            <label class="discount-radio-card" id="cardDiscFix">
+              <input type="radio" name="discountType" value="fixed" onchange="calculateAll()">
+              <span>Fixed Amount (৳)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" id="discountValueGroup" style="display:none;">
+          <label for="aDiscountValue"><i class="fas fa-calculator"></i> Discount Value</label>
+          <input type="number" id="aDiscountValue" value="0" placeholder="e.g. 10 for 10% or 2000 for ৳2000" oninput="calculateAll()">
+        </div>
+
+        <div class="form-group" id="discountRefGroup" style="display:none;">
+          <label for="aReference"><i class="fas fa-user-check"></i> Discount Reference Person Name</label>
+          <input type="text" id="aReference" placeholder="Enter reference name (optional)">
+        </div>
+      </div>
+
+      <!-- Section 3: Initial Payment & Ledger -->
+      <div class="form-section-title" style="margin-top: 28px;">
+        <i class="fas fa-receipt"></i> Initial Payment Collection
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="aInitialPayment"><i class="fas fa-hand-holding-usd"></i> Initial Paid Amount (BDT)</label>
+          <input type="number" id="aInitialPayment" value="0" placeholder="e.g. 5000" oninput="calculateAll()">
+        </div>
+        <div class="form-group">
+          <label for="aPaymentMethod"><i class="fas fa-credit-card"></i> Payment Method</label>
+          <select id="aPaymentMethod">
+            <option value="Cash" selected>Cash</option>
+            <option value="bKash">bKash</option>
+            <option value="Nagad">Nagad</option>
+            <option value="Bank">Bank Transfer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="aTrxId"><i class="fas fa-hashtag"></i> Transaction ID (Optional)</label>
+          <input type="text" id="aTrxId" placeholder="e.g. TRX12345678">
+        </div>
+      </div>
+
+      <!-- Section 4: Financial Calculation Summary -->
+      <div class="calculation-card">
+        <div class="calc-row">
+          <span>Base Course Fee:</span>
+          <span>৳ <span id="calcFee">15,000</span></span>
+        </div>
+        <div class="calc-row" id="calcDiscountRow" style="display:none;">
+          <span>Discount Amount:</span>
+          <span style="color:#7c3aed; font-weight:700;">- ৳ <span id="calcDiscount">0</span></span>
+        </div>
+        <div class="calc-row total">
+          <span>Net Payable Amount:</span>
+          <span>৳ <span id="calcNet">15,000</span></span>
+        </div>
+        <div class="calc-row" id="calcPaymentRow" style="display:none;">
+          <span>Initial Paid Amount:</span>
+          <span style="color:#059669; font-weight:700;">- ৳ <span id="calcPayment">0</span></span>
+        </div>
+        <div class="calc-row due">
+          <span>Remaining Due Balance:</span>
+          <span>৳ <span id="calcDue">15,000</span></span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:20px;">
+        <button class="btn btn-primary btn-lg" onclick="submitAdmission()" style="flex:1;"><i class="fas fa-check-circle"></i> Complete Admission & Issue Receipt</button>
+        <button class="btn btn-secondary" onclick="resetForm()"><i class="fas fa-undo"></i> Reset</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Printable Receipt Section -->
+    <div id="receiptSection" class="hidden" style="margin-top: 24px;">
+      <div id="receiptArea">
+        <div class="stamp">
+          <div class="stamp-circle">
+            <div class="stamp-text" id="rStamp">ADMITTED</div>
+            <div class="stamp-subtext">Student Enrolled</div>
+            <div class="stamp-date" id="rStampDate">Aug 10, 2026</div>
+          </div>
+        </div>
+        
+        <div class="header">
+          <div class="header-top">
+            <div class="institute-info">
+              <h1>UCC পাবনা শাখা</h1>
+              <p>স্বপ্ন যেখানে সার্থক<br>এডওয়ার্ড কলেজ, রথঘর সংলগ্ন, রাধানগর, পাবনা<br>Phone: 01312-427799, 01775-932188</p>
+            </div>
+            <div class="receipt-badge">
+              <div class="label">Admission ID</div>
+              <div class="value" id="rAdmissionId">ADM-2026-0001</div>
+            </div>
+          </div>
+          <div class="doc-title">Admission Receipt</div>
+        </div>
+        
+        <div class="content">
+          <div class="student-section">
+            <div class="section-label">Student Information</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Student Roll</label>
+                <p id="rRoll">001</p>
+              </div>
+              <div class="info-item">
+                <label>Student Name</label>
+                <p id="rName">Student Name</p>
+              </div>
+              <div class="info-item">
+                <label>Batch</label>
+                <p id="rBatch">Medical Admission 2026</p>
+              </div>
+              <div class="info-item">
+                <label>Admission Date</label>
+                <p id="rDate">August 10, 2026</p>
+              </div>
+              <div class="info-item">
+                <label>Student Phone</label>
+                <p id="rPhone">01712345678</p>
+              </div>
+              <div class="info-item">
+                <label>Guardian Phone</label>
+                <p id="rGuardian">01812345678</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="amount-section">
+            <div class="section-label">Fee & Ledger Details</div>
+            <div class="amount-grid">
+              <div class="amount-card">
+                <label>Course Fee</label>
+                <div class="value" id="rFee">৳ 15,000</div>
+              </div>
+              <div class="amount-card highlight">
+                <label>Net Payable</label>
+                <div class="value" id="rNetFee">৳ 13,500</div>
+              </div>
+              <div class="amount-card due">
+                <label>Remaining Due</label>
+                <div class="value" id="rDue">৳ 8,500</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; margin-top: 1.5mm; flex-wrap: wrap; gap: 1.5mm;">
+              <span class="discount-badge" id="rDiscountBadge">Discount: ৳ 1,500</span>
+              <span class="status-badge" id="rStatus">Due</span>
+            </div>
+            
+            <div id="rRefContainer" class="discount-ref-display" style="display: none;">
+              <strong>📌 Reference:</strong> 
+              <span id="rRef"></span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-left">
+            <strong>Welcome to UCC পাবনা শাখা!</strong>
+            For queries: 01312-427799
+          </div>
+          <div class="signature">
+            <div class="signature-line"></div>
+            <p>Authorized Signature</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="no-print" style="margin-top: 20px; display:flex; gap:12px;">
+        <button class="btn btn-primary" onclick="printReceipt()"><i class="fas fa-print"></i> Print A5 Receipt</button>
+        <button class="btn btn-secondary" onclick="resetForm()"><i class="fas fa-plus-circle"></i> New Admission</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let currentBatch = '';
+    let nextRoll = '001';
+
+    // Load batches from database on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/ucc/batches');
+        const data = await res.json();
+        if (data.success && data.batches) {
+          const select = document.getElementById('batchSelect');
+          select.innerHTML = '<option value="">-- Select Coaching Batch --</option>';
+          data.batches.forEach(b => {
+            const opt = document.createElement('option');
+            opt.value = b.batchCode;
+            opt.textContent = `${b.batchName} — Base Fee: ৳${b.baseFee.toLocaleString()}`;
+            opt.dataset.batchName = b.batchName;
+            opt.dataset.baseFee = b.baseFee;
+            select.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        console.error('Error loading batches:', err);
+      }
+    });
+
+    function showLoading(title, subtitle) {
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.querySelector('.loading-text').innerText = title || 'Loading...';
+      overlay.querySelector('.loading-subtext').innerText = subtitle || 'Please wait';
+      overlay.classList.add('active');
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').classList.remove('active');
+    }
+
+    function calculateAll() {
+      const fee = parseFloat(document.getElementById('aFee').value) || 0;
+      const discountTypeRadio = document.querySelector('input[name="discountType"]:checked');
+      const discountType = discountTypeRadio ? discountTypeRadio.value : 'none';
+      const discountValue = parseFloat(document.getElementById('aDiscountValue').value) || 0;
+      const initialPayment = parseFloat(document.getElementById('aInitialPayment').value) || 0;
+      
+      const discountValueGroup = document.getElementById('discountValueGroup');
+      const discountRefGroup = document.getElementById('discountRefGroup');
+      
+      // Toggle radio card styling
+      document.querySelectorAll('.discount-radio-card').forEach(card => card.classList.remove('active'));
+      if (discountType === 'none') {
+        document.getElementById('cardDiscNone').classList.add('active');
+        discountValueGroup.style.display = 'none';
+        discountRefGroup.style.display = 'none';
+      } else if (discountType === 'percentage') {
+        document.getElementById('cardDiscPerc').classList.add('active');
+        discountValueGroup.style.display = 'block';
+        discountRefGroup.style.display = 'block';
+      } else if (discountType === 'fixed') {
+        document.getElementById('cardDiscFix').classList.add('active');
+        discountValueGroup.style.display = 'block';
+        discountRefGroup.style.display = 'block';
+      }
+      
+      let discountAmount = 0;
+      if (discountType === 'percentage') {
+        discountAmount = Math.round((fee * discountValue) / 100);
+      } else if (discountType === 'fixed') {
+        discountAmount = discountValue;
+      }
+      
+      const netFee = Math.max(0, fee - discountAmount);
+      const due = Math.max(0, netFee - initialPayment);
+      
+      document.getElementById('calcFee').innerText = fee.toLocaleString();
+      
+      if (discountAmount > 0) {
+        document.getElementById('calcDiscountRow').style.display = 'flex';
+        document.getElementById('calcDiscount').innerText = discountAmount.toLocaleString();
+      } else {
+        document.getElementById('calcDiscountRow').style.display = 'none';
+      }
+      
+      document.getElementById('calcNet').innerText = netFee.toLocaleString();
+      
+      if (initialPayment > 0) {
+        document.getElementById('calcPaymentRow').style.display = 'flex';
+        document.getElementById('calcPayment').innerText = initialPayment.toLocaleString();
+      } else {
+        document.getElementById('calcPaymentRow').style.display = 'none';
+      }
+      
+      document.getElementById('calcDue').innerText = due.toLocaleString();
+    }
+
+    async function loadBatch() {
+      const batchSelect = document.getElementById('batchSelect');
+      const batchCode = batchSelect.value;
+      if (!batchCode) return alert("Please select a coaching batch first!");
+      
+      const selectedOption = batchSelect.options[batchSelect.selectedIndex];
+      const batchName = selectedOption.dataset.batchName || selectedOption.text.split('—')[0].trim();
+      const baseFee = parseFloat(selectedOption.dataset.baseFee) || 15000;
+      currentBatch = batchCode;
+      
+      showLoading('Loading Batch Info...', 'Fetching next roll for ' + batchName);
+      
+      try {
+        const res = await fetch(`/api/ucc/admission/next-roll/${encodeURIComponent(batchCode)}`);
+        const data = await res.json();
+        
+        hideLoading();
+        
+        let rollVal = 1;
+        if (data.success && data.nextRoll) {
+          rollVal = data.nextRoll;
+        }
+        
+        nextRoll = String(rollVal).padStart(3, '0');
+        
+        document.getElementById('aBatch').innerText = batchName;
+        document.getElementById('aCount').innerText = Math.max(0, rollVal - 1);
+        document.getElementById('aRollPreview').innerText = nextRoll;
+        document.getElementById('aRoll').value = nextRoll;
+        
+        // Set base fee from database
+        document.getElementById('aFee').value = baseFee;
+        
+        document.getElementById('batchSection').classList.add('hidden');
+        document.getElementById('admissionSection').classList.remove('hidden');
+        
+        calculateAll();
+      } catch (err) {
+        hideLoading();
+        // Fallback if offline
+        nextRoll = '001';
+        document.getElementById('aBatch').innerText = batchName;
+        document.getElementById('aRollPreview').innerText = nextRoll;
+        document.getElementById('aRoll').value = nextRoll;
+        document.getElementById('aFee').value = baseFee;
+        document.getElementById('batchSection').classList.add('hidden');
+        document.getElementById('admissionSection').classList.remove('hidden');
+        calculateAll();
+      }
+    }
+
+    async function submitAdmission() {
+      const name = document.getElementById('aName').value.trim();
+      const phone = document.getElementById('aPhone').value.trim();
+      const guardian = document.getElementById('aGuardian').value.trim();
+      const guardianName = document.getElementById('aGuardianName').value.trim();
+      const fee = parseFloat(document.getElementById('aFee').value) || 0;
+      const discountTypeRadio = document.querySelector('input[name="discountType"]:checked');
+      const discountType = discountTypeRadio ? discountTypeRadio.value : 'none';
+      const discountValue = parseFloat(document.getElementById('aDiscountValue').value) || 0;
+      const reference = document.getElementById('aReference').value.trim();
+      const initialPayment = parseFloat(document.getElementById('aInitialPayment').value) || 0;
+      const paymentMethod = document.getElementById('aPaymentMethod').value;
+      const trxId = document.getElementById('aTrxId').value.trim();
+      
+      if (!name || !phone || !guardian) {
+        return alert("Please fill in Student Name, Phone, and Guardian Phone!");
+      }
+      
+      showLoading('Processing Admission...', 'Saving student credentials for Roll: ' + nextRoll);
+      
+      const payload = {
+        name,
+        phone,
+        guardianPhone: guardian,
+        guardianName,
+        batchName: document.getElementById('aBatch').innerText,
+        courseFee: fee,
+        discountType,
+        discountValue,
+        discountReference: reference,
+        initialPayment,
+        paymentMethod,
+        transactionId: trxId,
+        collector: 'UCC Admin'
+      };
+      
+      try {
+        const response = await fetch('/api/ucc/admission', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        const result = await response.json();
+        hideLoading();
+        
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || 'Failed to complete admission');
+        }
+        
+        // Show receipt section
+        let discountAmount = 0;
+        if (discountType === 'percentage') {
+          discountAmount = Math.round((fee * discountValue) / 100);
+        } else if (discountType === 'fixed') {
+          discountAmount = discountValue;
+        }
+        
+        const netFee = Math.max(0, fee - discountAmount);
+        const due = Math.max(0, netFee - initialPayment);
+        const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        document.getElementById('rAdmissionId').innerText = result.student ? result.student.studentId : ('UCC-ADM-' + nextRoll);
+        document.getElementById('rDate').innerText = dateStr;
+        document.getElementById('rStampDate').innerText = dateStr;
+        document.getElementById('rRoll').innerText = result.student ? result.student.roll : nextRoll;
+        document.getElementById('rName').innerText = name;
+        document.getElementById('rBatch').innerText = document.getElementById('aBatch').innerText;
+        document.getElementById('rPhone').innerText = phone;
+        document.getElementById('rGuardian').innerText = guardian;
+        document.getElementById('rFee').innerText = '৳ ' + fee.toLocaleString();
+        document.getElementById('rNetFee').innerText = '৳ ' + netFee.toLocaleString();
+        document.getElementById('rDue').innerText = '৳ ' + due.toLocaleString();
+        
+        const rDiscountBadge = document.getElementById('rDiscountBadge');
+        if (discountAmount > 0) {
+          rDiscountBadge.innerText = 'Discount: ৳ ' + discountAmount.toLocaleString();
+        } else {
+          rDiscountBadge.innerText = 'No Discount';
+        }
+        
+        const statusElem = document.getElementById('rStatus');
+        if (due <= 0) {
+          statusElem.innerText = 'Paid';
+          document.getElementById('rStamp').innerText = 'PAID';
+        } else {
+          statusElem.innerText = 'Due';
+          document.getElementById('rStamp').innerText = 'DUE';
+        }
+        
+        if (reference) {
+          document.getElementById('rRefContainer').style.display = 'block';
+          document.getElementById('rRef').innerText = reference;
+        } else {
+          document.getElementById('rRefContainer').style.display = 'none';
+        }
+        
+        document.getElementById('admissionSection').classList.add('hidden');
+        document.getElementById('receiptSection').classList.remove('hidden');
+        
+      } catch (err) {
+        hideLoading();
+        alert('Error: ' + err.message);
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('receiptSection').classList.add('hidden');
+      document.getElementById('admissionSection').classList.add('hidden');
+      document.getElementById('batchSection').classList.remove('hidden');
+      document.getElementById('batchSelect').value = '';
+      document.getElementById('aName').value = '';
+      document.getElementById('aPhone').value = '';
+      document.getElementById('aGuardian').value = '';
+      document.getElementById('aGuardianName').value = '';
+      document.getElementById('aInstitution').value = '';
+      document.getElementById('aFee').value = '15000';
+      document.getElementById('aInitialPayment').value = '0';
+      document.getElementById('aDiscountValue').value = '0';
+      document.getElementById('aReference').value = '';
+      document.getElementById('aTrxId').value = '';
+      const cardNoneRadio = document.querySelector('input[name="discountType"][value="none"]');
+      if (cardNoneRadio) cardNoneRadio.checked = true;
+      calculateAll();
+    }
+
+    function printReceipt() {
+      window.print();
+    }
+  </script>
+</body>
+</html>

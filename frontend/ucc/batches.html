@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Batch Management | UCC Pabna</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/design-system.css?v=2">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link rel="stylesheet" href="assets/css/batches.css?v=2">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- ============================================================
+     SIDEBAR NAVIGATION
+     ============================================================ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html" class="sidebar-logo">
+      <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+      <span>UCC <span class="gradient-text">Pabna</span> <small class="admin-badge">Admin</small></span>
+    </a>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+    <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Students</span></a>
+    <a href="admission.html" class="nav-item"><i class="fas fa-user-plus"></i><span>Admission</span></a>
+    <a href="payment.html" class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payment</span></a>
+    <a href="exams.html" class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span></a>
+    <a href="distribution.html" class="nav-item"><i class="fas fa-book-open"></i><span>Distribution</span></a>
+    <a href="batches.html" class="nav-item active"><i class="fas fa-layer-group"></i><span>Batches</span></a>
+    <a href="reports.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span></a>
+    <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="index.html" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span></a>
+    <a href="admin-login.html" class="nav-item logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+  </div>
+</aside>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<main class="main-content">
+  <header class="top-header">
+    <h1 class="page-title">Batch Management</h1>
+    <div class="user-info">
+      <div class="batch-avatar"><i class="fas fa-user-shield"></i></div>
+      <div class="user-details">
+        <span class="user-name">UCC Administrator</span>
+        <span class="user-role">Pabna Branch Head</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="batch-hero">
+    <div>
+      <span class="batch-eyebrow">UCC PABNA · ACADEMIC OPERATIONS</span>
+      <h2>Build and manage every course batch.</h2>
+      <p>Create course batches, monitor enrollment and keep collection health in view.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openBatchModal()"><i class="fas fa-plus"></i> Add new batch</button>
+  </section>
+
+  <!-- KPI Cards -->
+  <section class="batch-kpis">
+    <article>
+      <span class="kpi-icon blue"><i class="fas fa-layer-group"></i></span>
+      <div>
+        <small>Total batches</small>
+        <strong id="totalBatches">0</strong>
+        <em id="activeBatches">0 active</em>
+      </div>
+    </article>
+    <article>
+      <span class="kpi-icon green"><i class="fas fa-users"></i></span>
+      <div>
+        <small>Total enrollment</small>
+        <strong id="totalStudents">0</strong>
+        <em id="capacityText">0% capacity used</em>
+      </div>
+    </article>
+    <article>
+      <span class="kpi-icon purple"><i class="fas fa-wallet"></i></span>
+      <div>
+        <small>Target collection</small>
+        <strong id="targetCollection">৳0</strong>
+        <em>From active batches</em>
+      </div>
+    </article>
+    <article>
+      <span class="kpi-icon rose"><i class="fas fa-hand-holding-dollar"></i></span>
+      <div>
+        <small>Outstanding due</small>
+        <strong id="totalDue">৳0</strong>
+        <em id="lowHealthText">0 batches need attention</em>
+      </div>
+    </article>
+  </section>
+
+  <!-- Filters -->
+  <section class="batch-filter">
+    <div class="batch-search">
+      <i class="fas fa-search"></i>
+      <input id="batchSearch" placeholder="Search by batch or course" oninput="renderBatches()">
+    </div>
+    <select id="categoryFilter" onchange="renderBatches()">
+      <option value="all">All courses</option>
+      <option value="Medical">Medical</option>
+      <option value="Engineering">Engineering</option>
+      <option value="Varsity">Varsity</option>
+    </select>
+    <select id="statusFilter" onchange="renderBatches()">
+      <option value="all">All status</option>
+      <option value="Active">Active</option>
+      <option value="Inactive">Inactive</option>
+      <option value="Archived">Archived</option>
+    </select>
+    <button class="filter-reset" onclick="resetBatchFilters()"><i class="fas fa-rotate-left"></i> Reset</button>
+  </section>
+
+  <!-- Charts -->
+  <section class="batch-grid">
+    <article class="batch-card">
+      <div class="card-top">
+        <div>
+          <h3>Enrollment by batch</h3>
+          <p>Student count and capacity</p>
+        </div>
+      </div>
+      <div class="chart-holder"><canvas id="enrollmentChart"></canvas></div>
+    </article>
+    <article class="batch-card">
+      <div class="card-top">
+        <div>
+          <h3>Collection health</h3>
+          <p>Collected versus outstanding due</p>
+        </div>
+      </div>
+      <div class="chart-holder"><canvas id="batchHealthChart"></canvas></div>
+    </article>
+  </section>
+
+  <!-- Batch Table -->
+  <section class="batch-card batch-table-card">
+    <div class="card-top">
+      <div>
+        <h3>All batches</h3>
+        <p id="batchTableMeta">Manage active, inactive and archived course batches.</p>
+      </div>
+      <button class="btn btn-secondary small-btn" onclick="exportBatches()"><i class="fas fa-file-csv"></i> Export CSV</button>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Batch / course</th>
+            <th>Session</th>
+            <th>Students</th>
+            <th>Fee plan</th>
+            <th>Collected</th>
+            <th>Due</th>
+            <th>Health</th>
+            <th>Status</th>
+            <th class="no-print">Action</th>
+          </tr>
+        </thead>
+        <tbody id="batchRows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="main-footer">© 2026 UCC পাবনা শাখা। All rights reserved. Designed and developed by Tuhin.</footer>
+</main>
+
+<!-- ============================================================
+     ADD / EDIT BATCH MODAL
+     ============================================================ -->
+<div class="modal-backdrop" id="batchModal">
+  <section class="batch-modal">
+    <div class="modal-head">
+      <div>
+        <h3 id="modalTitle">Add new batch</h3>
+        <p>Set the course, fee plan and enrollment capacity.</p>
+      </div>
+      <button onclick="closeBatchModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <form id="batchForm" onsubmit="saveBatch(event)">
+      <input type="hidden" id="editBatchId">
+      <div class="form-grid">
+        <label>Batch name *
+          <input id="batchName" required placeholder="e.g. Medical-2026-C">
+        </label>
+        <label>Course category *
+          <select id="batchCategory" required>
+            <option value="Medical">Medical</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Varsity">Varsity</option>
+          </select>
+        </label>
+        <label>Session / year *
+          <input id="batchSession" required placeholder="2026">
+        </label>
+        <label>Batch capacity *
+          <input id="batchCapacity" required type="number" min="1" placeholder="60">
+        </label>
+        <label>Start date
+          <input id="batchStart" type="date">
+        </label>
+        <label>Expected end date
+          <input id="batchEnd" type="date">
+        </label>
+        <label>Total course fee (৳) *
+          <input id="batchFee" required type="number" min="0" placeholder="15000">
+        </label>
+        <label>Admission fee (৳)
+          <input id="batchAdmissionFee" type="number" min="0" placeholder="5000">
+        </label>
+        <label>Coordinator / teacher
+          <input id="batchCoordinator" placeholder="Name of coordinator">
+        </label>
+        <label>Status
+          <select id="batchStatus">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </label>
+        <label class="span-two">Material package / notes
+          <textarea id="batchNotes" placeholder="e.g. Physics sheets, Biology Q-Bank, weekly exams"></textarea>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeBatchModal()">Cancel</button>
+        <button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk"></i> Save batch</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<!-- ============================================================
+     BATCH DETAIL MODAL
+     ============================================================ -->
+<div class="modal-backdrop" id="detailModal">
+  <section class="batch-modal detail-modal">
+    <div class="modal-head">
+      <div>
+        <h3>Batch overview</h3>
+        <p>Course, financial and enrollment snapshot.</p>
+      </div>
+      <button onclick="closeDetails()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div id="batchDetails"></div>
+  </section>
+</div>
+
+<div class="batch-toast" id="batchToast"></div>
+
+<script src="assets/js/sidebar.js?v=2"></script>
+<script src="assets/js/batches.js"></script>
+</body>
+</html>

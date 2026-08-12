@@ -1,0 +1,258 @@
+f<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Management - Student ERP</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/batches.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <span>Edu<span class="gradient-text">Smart</span> <small class="admin-badge">Admin</small></span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+            <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+            <a href="add-student.html" class="nav-item"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+            <a href="exams.html" class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+            <a href="payments.html" class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payments</span><span class="nav-tooltip">Payments</span></a>
+            <a href="receipt.html" class="nav-item"><i class="fas fa-receipt"></i><span>Receipts</span><span class="nav-tooltip">Receipts</span></a>
+            <a href="reports.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+            <a href="finance.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Finance</span><span class="nav-tooltip">Finance</span></a>
+            <a href="expenses.html" class="nav-item"><i class="fas fa-shopping-cart"></i><span>Expenses</span><span class="nav-tooltip">Expenses</span></a>
+            <a href="batches.html" class="nav-item active"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+            <a href="batch-transfer.html" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Batch Transfer</span><span class="nav-tooltip">Batch Transfer</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span><span class="nav-tooltip">View Website</span></a>
+            <a href="login.html" class="nav-item logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span><span class="nav-tooltip">Logout</span></a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <h1 class="page-title">Batch Management</h1>
+            <div class="user-info">
+                <img src="https://i.pravatar.cc/45" alt="Admin" class="user-avatar">
+                <div class="user-details">
+                    <span class="user-name">Administrator</span>
+                    <span class="user-role">Super Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Header -->
+        <div class="page-header-action">
+            <div>
+                <h2>Manage Batches</h2>
+                <p>Create, edit and manage all student batches</p>
+            </div>
+            <button class="btn-primary" onclick="openAddBatchModal()">
+                <i class="fas fa-plus"></i> Add New Batch
+            </button>
+        </div>
+
+        <!-- Batch Statistics Cards -->
+        <section class="batch-stats">
+            <div class="stat-card card-blue">
+                <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                <div class="stat-info">
+                    <h3 id="totalBatches">0</h3>
+                    <p>Total Batches</p>
+                </div>
+            </div>
+            <div class="stat-card card-green">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-info">
+                    <h3 id="totalStudentsInBatches">0</h3>
+                    <p>Total Students</p>
+                </div>
+            </div>
+            <div class="stat-card card-purple">
+                <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="stat-info">
+                    <h3 id="totalCollection">৳0</h3>
+                    <p>Total Collection</p>
+                </div>
+            </div>
+            <div class="stat-card card-red">
+                <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="stat-info">
+                    <h3 id="totalDue">৳0</h3>
+                    <p>Total Due</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie"></i> Students per Batch</h3>
+                <canvas id="batchStudentsChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-bar"></i> Collection per Batch</h3>
+                <canvas id="batchCollectionChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Batch List -->
+        <section class="data-card">
+            <div class="card-header">
+                <h3><i class="fas fa-list"></i> All Batches</h3>
+                <div class="header-actions">
+                    <select id="filterStatus" class="filter-select">
+                        <option value="all">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table batch-table">
+                    <thead>
+                        <tr>
+                            <th>Batch Name</th>
+                            <th>Year</th>
+                            <th>Students</th>
+                            <th>Monthly Fee</th>
+                            <th>Expected</th>
+                            <th>Collected</th>
+                            <th>Due</th>
+                            <th>Collection Rate</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="batchTableBody">
+                        <!-- Data will be injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Excel Export Section -->
+        <section class="data-card" style="margin-top: 20px;">
+            <div class="card-header">
+                <h3><i class="fas fa-file-excel"></i> Export Batch Data to Excel</h3>
+                <button class="btn-primary" onclick="exportAllBatchesToExcel()" style="padding: 8px 16px; font-size: 13px;">
+                    <i class="fas fa-download"></i> Download All Batches
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Batch Name</th>
+                            <th>Year</th>
+                            <th>Total Students</th>
+                            <th>Active</th>
+                            <th>Monthly Fee</th>
+                            <th>Expected</th>
+                            <th>Collected</th>
+                            <th>Due</th>
+                            <th>Collection Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="exportBatchTableBody">
+                        <!-- Data will be injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>© 2026 Student ERP Management System | Developed by Tuhin Ali</p>
+        </footer>
+    </main>
+
+    <!-- Add/Edit Batch Modal -->
+    <div class="modal" id="batchModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fas fa-plus-circle"></i> Add New Batch</h3>
+                <button class="modal-close" onclick="closeBatchModal()">&times;</button>
+            </div>
+            <form id="batchForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Batch Name <span class="required">*</span></label>
+                        <input type="text" id="batchName" placeholder="e.g., HSC 2026" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Year <span class="required">*</span></label>
+                        <input type="number" id="batchYear" placeholder="2026" min="2020" max="2030" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Student ID Prefix <span class="required">*</span></label>
+                        <input type="text" id="batchPrefix" placeholder="e.g., HSC, SSC, MED" required>
+                        <small style="color: #666; display: block; margin-top: 5px;">Student ID will be: PREFIX-001, PREFIX-002 etc. Example: HSC-001</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Default Monthly Fee (৳)</label>
+                        <input type="number" id="batchFee" placeholder="1500" min="0" value="1500">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="batchDescription" rows="3" placeholder="Brief description about this batch..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="batchStatus">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeBatchModal()">Cancel</button>
+                    <button type="submit" class="btn-save" id="saveBatchBtn">
+                        <i class="fas fa-save"></i> Save Batch
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Batch Details Modal -->
+    <div class="modal" id="viewBatchModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> Batch Details</h3>
+                <button class="modal-close" onclick="closeViewBatchModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="viewBatchContent">
+                <!-- Content will be injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/batches.js"></script>
+</body>
+</html>
+

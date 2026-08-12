@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Collection — UCC Pabna Admin</title>
+  
+  <!-- FontAwesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="assets/css/design-system.css?v=2">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <!-- Premium Receipt Print Design -->
+  <link rel="stylesheet" href="assets/css/receipt-print.css">
+
+  <style>
+    /* Full Width Container Fitting the Page */
+    .payment-full-container {
+      width: 100%;
+    }
+
+    .page-header-banner {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+      color: #ffffff;
+      padding: 28px 32px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(49, 46, 129, 0.3);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+    .page-header-banner h2 { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #ffffff; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+    .page-header-banner p { margin: 0; opacity: 0.9; font-size: 14px; color: #e0e7ff; }
+
+    .header-chip {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 10px 18px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Step 1: Search Card */
+    .search-card-pro {
+      background: #ffffff;
+      padding: 28px 32px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 28px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    .search-card-pro:hover {
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.12);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+    .search-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .search-input-wrapper {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .search-field-container {
+      position: relative;
+      flex: 1;
+    }
+    .search-icon-inside {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: var(--primary);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .search-input-field {
+      width: 100%;
+      padding: 14px 18px 14px 50px !important;
+      font-size: 15px;
+      font-weight: 600;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: all 0.2s ease;
+      background: #f8fafc;
+    }
+    .search-input-field:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    }
+
+    .quick-chips-wrapper {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .quick-chip-btn {
+      background: #f1f5f9;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .quick-chip-btn:hover {
+      background: var(--primary-50);
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* Animation for smooth reveal */
+    .fade-slide-in {
+      animation: fadeSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Step 2: Student Financial Profile Card */
+    .student-profile-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 28px;
+      overflow: hidden;
+      width: 100%;
+    }
+    .profile-header {
+      background: #f8fafc;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .profile-body {
+      padding: 28px;
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    .student-avatar-box {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: var(--primary-50);
+      border: 3px solid var(--primary);
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-md);
+    }
+    .student-avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .fin-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      width: 100%;
+    }
+    .fin-metric-item {
+      background: #f8fafc;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .fin-metric-item small {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .fin-metric-item strong {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* Step 3: Payment Form Card */
+    .payment-form-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 32px;
+      margin-bottom: 28px;
+      width: 100%;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group-pro {
+      margin-bottom: 18px;
+    }
+    .form-group-pro label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+    .form-control-pro {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 14.5px;
+      font-weight: 600;
+      outline: none;
+      transition: all 0.2s ease;
+      background: #ffffff;
+    }
+    .form-control-pro:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    }
+
+    .eligibility-box-pro {
+      background: #fffbeb;
+      border: 1.5px solid #f59e0b;
+      padding: 18px 22px;
+      border-radius: var(--radius-md);
+      margin: 20px 0;
+    }
+
+    .summary-calc-banner {
+      background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 22px 26px;
+      margin-top: 24px;
+    }
+    .calc-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 15px;
+      color: var(--text-main);
+    }
+    .calc-line.due-line {
+      border-top: 2px dashed var(--danger-color);
+      margin-top: 10px;
+      padding-top: 12px;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--danger-color);
+    }
+
+    /* Modal backdrop — handled by receipt-print.css */
+    .modal-backdrop-custom {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75);
+      z-index: 9999; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: all 0.25s ease;
+    }
+    .modal-backdrop-custom.active { opacity: 1; pointer-events: auto; }
+  </style>
+</head>
+<body>
+
+<!-- ==========================================================================
+     1. LOADING OVERLAY
+     ========================================================================== -->
+<div class="ucc-loading hidden" id="uccLoading">
+  <div class="ucc-spinner"></div>
+  <div class="ucc-loading-text" id="uccLoadingText">Processing Payment...</div>
+</div>
+
+<!-- ==========================================================================
+     2. SIDEBAR
+     ========================================================================== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html" class="sidebar-logo">
+      <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+      <span>UCC <span class="gradient-text">Pabna</span> <small class="admin-badge">Admin</small></span>
+    </a>
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+  </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item">
+      <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+      <span class="nav-tooltip">Dashboard</span>
+    </a>
+    <a href="students.html" class="nav-item">
+      <i class="fas fa-users"></i><span>Students</span>
+      <span class="nav-tooltip">Students</span>
+    </a>
+    <a href="admission.html" class="nav-item">
+      <i class="fas fa-user-plus"></i><span>Admission</span>
+      <span class="nav-tooltip">Admission</span>
+    </a>
+    <a href="payment.html" class="nav-item active">
+      <i class="fas fa-money-bill-wave"></i><span>Payment</span>
+      <span class="nav-tooltip">Payment</span>
+    </a>
+    <a href="exams.html" class="nav-item">
+      <i class="fas fa-pencil-alt"></i><span>Exams</span>
+      <span class="nav-tooltip">Exams</span>
+    </a>
+    <a href="distribution.html" class="nav-item">
+      <i class="fas fa-book-open"></i><span>Distribution</span>
+      <span class="nav-tooltip">Distribution</span>
+    </a>
+    <a href="batches.html" class="nav-item">
+      <i class="fas fa-layer-group"></i><span>Batches</span>
+      <span class="nav-tooltip">Batches</span>
+    </a>
+    <a href="reports.html" class="nav-item">
+      <i class="fas fa-chart-bar"></i><span>Reports</span>
+      <span class="nav-tooltip">Reports</span>
+    </a>
+    <a href="settings.html" class="nav-item">
+      <i class="fas fa-cog"></i><span>Settings</span>
+      <span class="nav-tooltip">Settings</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="index.html" class="nav-item website-link">
+      <i class="fas fa-globe"></i><span>View Website</span>
+      <span class="nav-tooltip">View Website</span>
+    </a>
+    <a href="/index.html" class="nav-item" title="Switch to EduSmart" style="color:var(--primary);">
+      <i class="fas fa-arrow-left"></i><span>EduSmart System</span>
+      <span class="nav-tooltip">EduSmart</span>
+    </a>
+    <a href="admin-login.html" class="nav-item logout" id="logoutBtn">
+      <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      <span class="nav-tooltip">Logout</span>
+    </a>
+  </div>
+</aside>
+
+<!-- ==========================================================================
+     3. MAIN CONTENT
+     ========================================================================== -->
+<main class="main-content" id="mainContent">
+
+  <!-- Top Executive Header -->
+  <header class="top-header">
+    <h1 class="page-title">Fee Collection Portal</h1>
+    <div class="user-info">
+      <div class="user-avatar-placeholder" style="width:38px;height:38px;border-radius:50%;background:#e0e7ff;color:#4f46e5;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;"><i class="fas fa-user-shield"></i></div>
+      <div class="user-details">
+        <span class="user-name" id="uccAdminName">UCC Administrator</span>
+        <span class="user-role">Pabna Branch Head</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Action Banner -->
+  <div class="page-header-banner">
+    <div>
+      <h2><i class="fas fa-wallet" style="margin-right:10px;"></i> UCC Installment Fee Collection</h2>
+      <p>Enter Student Roll number to fetch financial record, process installment, and generate A5 receipt.</p>
+    </div>
+    <div class="header-chip">
+      <i class="fas fa-coins" style="color:#10b981;"></i> Today's Collection: <strong>৳ 18,75,000</strong>
+    </div>
+  </div>
+
+  <div class="payment-full-container">
+
+    <!-- ============================================ -->
+    <!-- STEP 1: STUDENT SEARCH CARD                  -->
+    <!-- ============================================ -->
+    <div class="search-card-pro">
+      <div class="search-title">
+        <i class="fas fa-search" style="color:var(--primary);"></i> Step 1: Search Student Record
+      </div>
+      <div class="search-sub">
+        Type Student Roll Number below to load details & payment form.
+      </div>
+
+      <div class="search-input-wrapper">
+        <div class="search-field-container">
+          <i class="fas fa-id-card search-icon-inside"></i>
+          <input type="text" id="searchRoll" class="search-input-field" placeholder="Enter Student Roll Number (e.g. 105, 101, 203, 312)..." onkeyup="handleSearchKey(event)">
+        </div>
+        <button class="btn btn-primary" onclick="executeStudentSearch()" style="padding:0 28px;font-weight:800;height:48px;">
+          <i class="fas fa-search"></i> Search Student
+        </button>
+        <button class="btn btn-secondary" onclick="resetPaymentPortal()" style="padding:0 20px;height:48px;">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+
+      <!-- Quick Test Roll Chips -->
+      <div class="quick-chips-wrapper">
+        <span style="font-size:12px;font-weight:700;color:var(--text-muted);">Quick Sample Rolls:</span>
+        <button class="quick-chip-btn" onclick="selectQuickRoll('105')">Roll 105 (Tanvir - Medical)</button>
+        <button class="quick-chip-btn" onclick="selectQuickRoll('101')">Roll 101 (Rahim - Medical)</button>
+        <button class="quick-chip-btn" onclick="selectQuickRoll('203')">Roll 203 (Sadia - Engineering)</button>
+        <button class="quick-chip-btn" onclick="selectQuickRoll('312')">Roll 312 (Nafis - Medical)</button>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- STEP 2: STUDENT FINANCIAL PROFILE CARD       -->
+    <!-- (HIDDEN UNTIL SEARCHED)                      -->
+    <!-- ============================================ -->
+    <div class="student-profile-card fade-slide-in" id="studentProfileSection" style="display: none;">
+      <div class="profile-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <i class="fas fa-user-graduate" style="color:var(--primary);font-size:20px;"></i>
+          <h3 style="margin:0;font-size:17px;font-weight:800;color:var(--text-main);">Step 2: Student Financial Profile</h3>
+        </div>
+        <span class="badge badge-primary" id="pBatch" style="font-size:12px;padding:6px 14px;">Medical-2026-A</span>
+      </div>
+
+      <div class="profile-body">
+        <div class="student-avatar-box">
+          <img id="pAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="Student">
+        </div>
+
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+            <div>
+              <h2 style="margin:0;font-size:20px;font-weight:800;color:var(--text-main);" id="pName">Tanvir Ahmed</h2>
+              <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">
+                Roll: <strong style="color:var(--primary);" id="pRoll">105</strong> | Phone: <span id="pPhone">01712345678</span> | Guardian: <span id="pGuardian">01812345678</span>
+              </div>
+            </div>
+            <span class="badge badge-danger" id="pStatusBadge" style="font-size:12px;">Installment Due</span>
+          </div>
+
+          <div class="fin-metrics-grid">
+            <div class="fin-metric-item">
+              <small>Course Fee</small>
+              <strong id="pTotalFee">৳ 15,000</strong>
+            </div>
+            <div class="fin-metric-item">
+              <small>Applied Discount</small>
+              <strong style="color:#7c3aed;" id="pDiscount">৳ 0</strong>
+            </div>
+            <div class="fin-metric-item">
+              <small>Total Paid</small>
+              <strong style="color:var(--success-color);" id="pTotalPaid">৳ 10,000</strong>
+            </div>
+            <div class="fin-metric-item" style="border:2px solid var(--danger-color);background:#fef2f2;">
+              <small style="color:var(--danger-color);">Current Due</small>
+              <strong style="color:var(--danger-color);font-size:18px;" id="pCurrentDue">৳ 5,000</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- STEP 3: PAYMENT ENTRY FORM                   -->
+    <!-- (HIDDEN UNTIL SEARCHED)                      -->
+    <!-- ============================================ -->
+    <div class="payment-form-card fade-slide-in" id="paymentFormSection" style="display: none;">
+      <div class="search-title" style="margin-bottom:20px;border-bottom:1px solid var(--border-color);padding-bottom:12px;">
+        <i class="fas fa-money-bill-wave" style="color:var(--primary);"></i> Step 3: Process Installment Payment
+      </div>
+
+      <form id="paymentForm" onsubmit="event.preventDefault(); submitPayment();">
+        
+        <div class="form-grid-3">
+          <div class="form-group-pro">
+            <label for="payAmount"><i class="fas fa-coins"></i> New Payment Amount (BDT) *</label>
+            <input type="number" id="payAmount" class="form-control-pro" value="5000" oninput="calculateNewDue()" required>
+          </div>
+
+          <div class="form-group-pro">
+            <label for="pPaymentMethod"><i class="fas fa-credit-card"></i> Payment Method *</label>
+            <select id="pPaymentMethod" class="form-control-pro" required>
+              <option value="Cash">Cash</option>
+              <option value="bKash">bKash</option>
+              <option value="Nagad">Nagad</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="POS Card">POS Card</option>
+            </select>
+          </div>
+
+          <div class="form-group-pro">
+            <label for="pTrxId"><i class="fas fa-receipt"></i> Transaction TrxID / Ref</label>
+            <input type="text" id="pTrxId" class="form-control-pro" placeholder="e.g. BK7892341">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group-pro">
+            <label for="additionalDiscount"><i class="fas fa-tags"></i> Additional Waiver / Special Discount (BDT)</label>
+            <input type="number" id="additionalDiscount" class="form-control-pro" placeholder="e.g. 500" value="0" oninput="calculateNewDue()">
+          </div>
+
+          <div class="form-group-pro">
+            <label for="additionalDiscountRef"><i class="fas fa-user-check"></i> Discount Reference / Approved By</label>
+            <input type="text" id="additionalDiscountRef" class="form-control-pro" placeholder="e.g. Director's Approval">
+          </div>
+        </div>
+
+        <!-- Book & Sheet Eligibility Notice Box -->
+        <div class="eligibility-box-pro">
+          <div style="font-weight:800;font-size:14px;color:#856404;margin-bottom:6px;">
+            <i class="fas fa-book" style="color:#d97706;margin-right:6px;"></i> Book & Lecture Sheet Eligibility Preview
+          </div>
+          <div style="font-size:13.5px;color:var(--text-main);">
+            Upon receiving this payment, the student becomes eligible to collect:
+            <strong style="color:var(--success-color);font-size:15px;margin-left:6px;" id="eligibleItems">5 Lecture Sheets & 1 Question Bank Book</strong>
+          </div>
+        </div>
+
+        <!-- Real-Time Calculation Summary -->
+        <div class="summary-calc-banner">
+          <div style="font-size:15px;font-weight:800;color:var(--primary);margin-bottom:12px;">
+            <i class="fas fa-calculator"></i> Updated Dues Calculation Summary
+          </div>
+
+          <div class="calc-line">
+            <span>Previous Outstanding Due:</span>
+            <strong style="color:var(--danger-color);" id="calcPrevDue">৳ 5,000</strong>
+          </div>
+
+          <div class="calc-line" style="color:var(--success-color);font-weight:700;">
+            <span>New Payment Collected:</span>
+            <span>- ৳ <span id="calcNewPay">5,000</span></span>
+          </div>
+
+          <div class="calc-line" id="calcAddDiscRow" style="display:none;color:#7c3aed;">
+            <span>Additional Waiver Applied:</span>
+            <span>- ৳ <span id="calcAddDisc">0</span></span>
+          </div>
+
+          <div class="calc-line due-line">
+            <span>Remaining Due After Payment:</span>
+            <span>৳ <span id="calcNewDue">0</span></span>
+          </div>
+        </div>
+
+        <!-- Submit & Action Buttons -->
+        <div style="margin-top: 28px; display: flex; gap: 16px;">
+          <button type="submit" class="btn btn-primary btn-lg" style="flex: 1;font-weight:800;padding:14px;">
+            <i class="fas fa-check-circle"></i> Process Payment & Print Receipt
+          </button>
+          <button type="button" class="btn btn-secondary btn-lg" onclick="resetPaymentPortal()">Cancel</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>© 2026 UCC পাবনা শাখা। All rights reserved. Designed and developed by Tuhin.</p>
+  </footer>
+</main>
+
+<!-- Printable Payment Receipt Modal (Premium A5 Design) -->
+<div class="modal-backdrop-custom" id="receiptModal">
+  <div class="receipt-print-page">
+    <!-- Action bar (no-print) -->
+    <div class="receipt-print-actions no-print">
+      <button class="btn btn-primary" onclick="window.print()">
+        <i class="fas fa-print"></i> Print Official Receipt (A5)
+      </button>
+      <button class="btn btn-secondary" onclick="closeReceiptModal()">✕ Close</button>
+    </div>
+
+    <!-- Printable A5 Receipt Container -->
+    <div id="receiptArea" class="receipt-container">
+      <!-- Watermark -->
+      <div class="receipt-watermark">RECEIPT</div>
+      <div class="receipt-inner">
+
+        <!-- Header: Gradient with institute info + Receipt No badge -->
+        <div class="receipt-header">
+          <div class="header-shine"></div>
+          <div class="receipt-header-content">
+            <div class="receipt-brand">
+              <div class="receipt-logo"><i class="fas fa-graduation-cap"></i></div>
+              <div class="institute-info">
+                <h1>UCC পাবনা শাখা</h1>
+                <div class="address"><i class="fas fa-map-marker-alt"></i> Edward College, Rathghar Area, Radhanagar, Pabna</div>
+                <div class="contact"><i class="fas fa-phone"></i> 01312-427799, 01775-932188</div>
+              </div>
+            </div>
+            <div class="receipt-id-badge">
+              <small>Receipt No</small>
+              <strong id="rReceiptNo">#REC-2026-0847</strong>
+            </div>
+          </div>
+        </div>
+        <div class="header-bottom-line"></div>
+
+        <!-- Title Banner -->
+        <div class="receipt-title-banner">Official Payment Receipt</div>
+
+        <!-- Student Information -->
+        <div class="receipt-section">
+          <div class="section-title"><i class="fas fa-user-graduate"></i> Student Information</div>
+          <div class="receipt-info-grid">
+            <div class="receipt-info-item"><span class="label">Roll Number</span><span class="value" id="rRoll">105</span></div>
+            <div class="receipt-info-item"><span class="label">Student Name</span><span class="value" id="rName">Tanvir Ahmed</span></div>
+            <div class="receipt-info-item"><span class="label">Course Batch</span><span class="value" id="rBatch">Medical-2026-A</span></div>
+            <div class="receipt-info-item"><span class="label">Receipt Date</span><span class="value" id="rDate">--</span></div>
+            <div class="receipt-info-item"><span class="label">Student Mobile</span><span class="value" id="rPhone">01712345678</span></div>
+            <div class="receipt-info-item"><span class="label">Guardian Contact</span><span class="value" id="rGuardian">01812345678</span></div>
+          </div>
+        </div>
+
+        <!-- Fee & Payment Summary -->
+        <div class="receipt-section">
+          <div class="section-title"><i class="fas fa-credit-card"></i> Fee & Payment Summary</div>
+          <div class="receipt-amount-grid">
+            <div class="receipt-amount-card">
+              <span class="amt-label">Course Fee</span>
+              <strong class="amt-value" id="rTotalFee">৳ 0</strong>
+            </div>
+            <div class="receipt-amount-card paid">
+              <span class="amt-label">Payment Received</span>
+              <strong class="amt-value" id="rPayAmount">৳ 0</strong>
+            </div>
+            <div class="receipt-amount-card due">
+              <span class="amt-label">Remaining Due</span>
+              <strong class="amt-value" id="rNewDue">৳ 0</strong>
+            </div>
+          </div>
+
+          <!-- Payment detail row -->
+          <div class="receipt-payment-row">
+            <span><strong>Payment Method:</strong> <span id="rMethod">Cash</span> <span id="rTrx"></span></span>
+            <span id="rDiscountTag"><strong>Status:</strong> <span class="receipt-status-badge status-paid-badge">PAID</span></span>
+          </div>
+
+          <!-- Reference Approval -->
+          <div id="rRefContainer" class="receipt-ref-box" style="display:none;">
+            <strong>Special Reference Approval:</strong> <span id="rRef">--</span>
+          </div>
+        </div>
+
+        <!-- Signatures -->
+        <div class="receipt-signatures">
+          <div class="receipt-sig-box">
+            <div class="sig-line"></div>
+            <div class="sig-role">Prepared By</div>
+          </div>
+          <div class="receipt-sig-box">
+            <div class="sig-line"></div>
+            <div class="sig-role">Checked By</div>
+          </div>
+          <div class="receipt-sig-box">
+            <div class="sig-line"></div>
+            <div class="sig-role">Branch Head</div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="receipt-footer-main">
+          <div class="thank-you-msg"><i class="fas fa-heart"></i> Thank you for choosing UCC Pabna!</div>
+          <div class="institute-name-footer">UCC Pabna Branch · Edward College, Radhanagar, Pabna</div>
+          <div class="institute-details-footer">
+            ফোন: 01312-427799 | ৩য় পতি প্রতিষ্ঠান: uccpabna@gmail.com | www.uccpabna.edu.bd
+          </div>
+          <div class="tagline-footer">Your Future, Our Commitment — UCC Pabna Branch</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS Scripts -->
+<script src="assets/js/sidebar.js?v=2"></script>
+<script>
+let currentStudent = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const rollParam = urlParams.get('roll');
+  if (rollParam) {
+    document.getElementById('searchRoll').value = rollParam;
+    executeStudentSearch();
+  }
+});
+
+function fmt(n) {
+  return '৳ ' + Number(n || 0).toLocaleString('en-IN');
+}
+
+function handleSearchKey(e) {
+  if (e.key === 'Enter') executeStudentSearch();
+}
+
+function selectQuickRoll(roll) {
+  document.getElementById('searchRoll').value = roll;
+  executeStudentSearch();
+}
+
+async function executeStudentSearch() {
+  const rollInput = document.getElementById('searchRoll').value.trim();
+  if (!rollInput) {
+    alert('Please enter a Student Roll Number!');
+    return;
+  }
+
+  showLoading('Fetching Student Record...');
+
+  try {
+    // Fetch from backend API
+    const res = await fetch(`/api/ucc/students?search=${encodeURIComponent(rollInput)}`);
+    const data = await res.json();
+
+    if (data.success && data.students && data.students.length > 0) {
+      // Find exact roll match first
+      const s = data.students.find(st => st.roll === rollInput) || data.students[0];
+      currentStudent = {
+        _id: s._id,
+        roll: s.roll,
+        name: s.name,
+        phone: s.phone || 'N/A',
+        guardian: s.guardianPhone || s.guardianName || 'N/A',
+        batch: s.batchName || 'General',
+        totalFee: s.courseFee || 0,
+        discount: s.discountAmount || 0,
+        netFee: s.finalFee || s.courseFee || 0,
+        totalPaid: s.totalPaid || 0,
+        due: s.totalDue || 0,
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'
+      };
+      renderStudentProfileAndForm(currentStudent);
+    } else {
+      alert('❌ No student found with Roll: ' + rollInput + '. Please check the roll number and try again.');
+      resetPaymentPortal();
+    }
+  } catch (err) {
+    console.error('Error searching student:', err);
+    alert('❌ Error connecting to server. Please try again.');
+  } finally {
+    hideLoading();
+  }
+}
+
+function renderStudentProfileAndForm(s) {
+  document.getElementById('pRoll').textContent       = s.roll;
+  document.getElementById('pName').textContent       = s.name;
+  document.getElementById('pPhone').textContent      = s.phone;
+  document.getElementById('pGuardian').textContent   = s.guardian;
+  document.getElementById('pBatch').textContent      = s.batch;
+  document.getElementById('pTotalFee').textContent   = fmt(s.totalFee);
+  document.getElementById('pDiscount').textContent   = fmt(s.discount);
+  document.getElementById('pTotalPaid').textContent  = fmt(s.totalPaid);
+  document.getElementById('pCurrentDue').textContent  = fmt(s.due);
+  document.getElementById('pAvatar').src             = s.avatar;
+
+  const badge = document.getElementById('pStatusBadge');
+  if (s.due > 0) {
+    badge.className = 'badge badge-danger';
+    badge.textContent = 'Installment Due';
+  } else {
+    badge.className = 'badge badge-success';
+    badge.textContent = 'Full Paid';
+  }
+
+  document.getElementById('payAmount').value = s.due > 0 ? s.due : 0;
+  calculateNewDue();
+
+  const profSec = document.getElementById('studentProfileSection');
+  const formSec = document.getElementById('paymentFormSection');
+
+  profSec.style.display = 'block';
+  formSec.style.display = 'block';
+
+  profSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetPaymentPortal() {
+  document.getElementById('searchRoll').value = '';
+  document.getElementById('studentProfileSection').style.display = 'none';
+  document.getElementById('paymentFormSection').style.display = 'none';
+  currentStudent = null;
+}
+
+function calculateNewDue() {
+  if (!currentStudent) return;
+  const currentDue = currentStudent.due;
+  const payAmt     = parseFloat(document.getElementById('payAmount').value) || 0;
+  const addDisc    = parseFloat(document.getElementById('additionalDiscount').value) || 0;
+
+  const totalReduction = payAmt + addDisc;
+  const newDue = Math.max(0, currentDue - totalReduction);
+
+  document.getElementById('calcPrevDue').textContent = fmt(currentDue);
+  document.getElementById('calcNewPay').textContent  = payAmt.toLocaleString('en-IN');
+  document.getElementById('calcAddDisc').textContent = addDisc.toLocaleString('en-IN');
+  document.getElementById('calcNewDue').textContent  = newDue.toLocaleString('en-IN');
+
+  document.getElementById('calcAddDiscRow').style.display = addDisc > 0 ? 'flex' : 'none';
+
+  const totalPaidNew = currentStudent.totalPaid + payAmt;
+  if (totalPaidNew >= 10000) {
+    document.getElementById('eligibleItems').textContent = 'All 12 Lecture Sheets + Question Bank & Formula Guide Books';
+  } else if (totalPaidNew >= 5000) {
+    document.getElementById('eligibleItems').textContent = 'Lecture Sheets 01-06 + Question Bank Book';
+  } else {
+    document.getElementById('eligibleItems').textContent = 'Lecture Sheets 01-03';
+  }
+}
+
+async function submitPayment() {
+  if (!currentStudent) {
+    alert('Please search and select a student first!');
+    return;
+  }
+
+  const payAmt = parseFloat(document.getElementById('payAmount').value) || 0;
+  if (payAmt <= 0) {
+    alert('Please enter a valid payment amount!');
+    return;
+  }
+
+  const method = document.getElementById('pPaymentMethod').value;
+  const trxId  = document.getElementById('pTrxId').value.trim();
+  const ref    = document.getElementById('additionalDiscountRef').value.trim();
+  const addDisc = parseFloat(document.getElementById('additionalDiscount').value) || 0;
+
+  showLoading('Processing Payment...');
+
+  try {
+    // Submit payment to backend API
+    const res = await fetch('/api/ucc/payments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentId: currentStudent._id,
+        amount: payAmt,
+        paymentMethod: method,
+        transactionId: trxId,
+        collector: 'UCC Admin',
+        remarks: addDisc > 0 ? `Additional discount: ${addDisc} (${ref || 'No ref'})` : (ref || '')
+      })
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert('❌ Payment failed: ' + (data.message || 'Unknown error'));
+      hideLoading();
+      return;
+    }
+
+    // Update current student with new data
+    currentStudent.totalPaid = data.student.totalPaid;
+    currentStudent.due = data.student.totalDue;
+
+    const receiptNo = data.payment.receiptNo;
+    const remainingDue = data.student.totalDue;
+    function fmtBDT(n) { return Number(n).toLocaleString('en-IN'); }
+
+    document.getElementById('rReceiptNo').textContent = '#' + receiptNo;
+    document.getElementById('rRoll').textContent      = currentStudent.roll;
+    document.getElementById('rName').textContent      = currentStudent.name;
+    document.getElementById('rBatch').textContent     = currentStudent.batch;
+    document.getElementById('rDate').textContent      = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('rPhone').textContent     = currentStudent.phone;
+    document.getElementById('rGuardian').textContent  = currentStudent.guardian;
+    document.getElementById('rTotalFee').textContent  = fmt(currentStudent.netFee);
+    document.getElementById('rPayAmount').textContent = fmt(payAmt);
+    document.getElementById('rNewDue').textContent    = fmt(remainingDue);
+    document.getElementById('rMethod').textContent    = method;
+    document.getElementById('rTrx').textContent       = trxId ? `(TrxID: ${trxId})` : '';
+
+    // Dynamic discount/status tag
+    const discTag = document.getElementById('rDiscountTag');
+    if (remainingDue <= 0) {
+      discTag.innerHTML = '<strong>Status:</strong> <span class="receipt-status-badge status-paid-badge">PAID</span>';
+    } else {
+      discTag.innerHTML = '<strong>Status:</strong> <span class="receipt-status-badge status-pending-badge">PARTIAL</span>';
+    }
+    // Show additional discount if applicable
+    if (addDisc > 0) {
+      discTag.innerHTML += ' <strong style="color:#7c3aed;margin-left:8px;">Discount: ৳ ' + fmtBDT(addDisc) + '</strong>';
+    }
+
+    if (ref) {
+      document.getElementById('rRefContainer').style.display = 'block';
+      document.getElementById('rRef').textContent = ref;
+    } else {
+      document.getElementById('rRefContainer').style.display = 'none';
+    }
+
+    hideLoading();
+
+    // Redirect directly to Master UCC Receipt page with QR Code
+    window.location.href = `receipt.html?receipt=${encodeURIComponent(receiptNo)}&roll=${encodeURIComponent(currentStudent.roll)}&discountRef=${encodeURIComponent(ref)}`;
+  } catch (err) {
+    console.error('Error submitting payment:', err);
+    alert('❌ Error connecting to server. Please try again.');
+    hideLoading();
+  }
+}
+
+function closeReceiptModal() {
+  document.getElementById('receiptModal').classList.remove('active');
+  document.body.style.overflow = '';
+  var receiptModalEl = document.getElementById('receiptModal');
+  if (receiptModalEl) receiptModalEl.setAttribute('aria-hidden','true');
+}
+
+function showLoading(msg) {
+  const el = document.getElementById('uccLoading');
+  const tx = document.getElementById('uccLoadingText');
+  if (el) el.classList.remove('hidden');
+  if (tx) tx.textContent = msg || 'Loading...';
+}
+
+function hideLoading() {
+  const el = document.getElementById('uccLoading');
+  if (el) el.classList.add('hidden');
+}
+</script>
+
+</body>
+</html>
+

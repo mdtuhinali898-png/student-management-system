@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Result - Check Your Result</title>
+    <link rel="stylesheet" href="assets/css/results.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .header h1 { font-size: 32px; margin-bottom: 5px; }
+        .header h1 i { margin-right: 10px; }
+        .header p { opacity: 0.9; font-size: 16px; }
+        
+        .verify-card {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        .verify-card h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 22px;
+        }
+        .verify-card .subtitle {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .input-group { margin-bottom: 18px; }
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #333;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e3e6f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #4e73df;
+            box-shadow: 0 0 0 3px rgba(78,115,223,0.15);
+        }
+        .verify-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .verify-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+        .verify-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        
+        .error-msg {
+            background: #fce4ec;
+            color: #c62828;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            display: none;
+        }
+        .error-msg.show { display: block; }
+        
+        .result-display { display: none; }
+        .result-display.show { display: block; }
+        
+        .result-header {
+            background: linear-gradient(135deg, #4e73df, #224abe);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 12px 12px 0 0;
+        }
+        .result-header h2 { font-size: 22px; margin-bottom: 5px; }
+        .result-header p { opacity: 0.9; font-size: 14px; }
+        
+        .result-student-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 30px;
+            background: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        .result-student-info img {
+            width: 60px; height: 60px;
+            border-radius: 50%; object-fit: cover;
+            border: 3px solid #4e73df;
+        }
+        .result-student-info h3 { font-size: 18px; color: #333; }
+        .result-student-info p { font-size: 13px; color: #6c757d; }
+        
+        .result-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e3e6f0;
+            background: white;
+        }
+        .result-summary .item {
+            text-align: center;
+            padding: 12px;
+            background: #f4f6f9;
+            border-radius: 10px;
+        }
+        .result-summary .item .label {
+            font-size: 11px; text-transform: uppercase;
+            color: #6c757d; margin-bottom: 5px;
+        }
+        .result-summary .item .value {
+            font-size: 22px; font-weight: 700;
+        }
+        .result-summary .item .value.gold { color: #f39c12; }
+        .result-summary .item .value.green { color: #1cc88a; }
+        .result-summary .item .value.blue { color: #4e73df; }
+        .result-summary .item .value.red { color: #e74a3b; }
+        
+        .result-body { padding: 25px 30px; background: white; }
+        .result-body h3 { margin-bottom: 15px; font-size: 16px; color: #333; }
+        
+        .subject-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .subject-table th {
+            background: #f4f6f9;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+        .subject-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e3e6f0;
+            font-size: 14px;
+        }
+        .subject-table .subject-name { font-weight: 600; }
+        
+        .progress-section {
+            padding: 25px 30px;
+            background: white;
+            border-top: 1px solid #e3e6f0;
+            border-radius: 0 0 12px 12px;
+        }
+        .progress-section h3 { margin-bottom: 20px; font-size: 16px; color: #333; }
+        
+        .sw-section {
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid #e3e6f0;
+        }
+        .sw-section h4 { margin-bottom: 12px; color: #333; }
+        .sw-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 600px) {
+            .sw-grid { grid-template-columns: 1fr; }
+            .result-summary { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        .strength-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .strength-badge.strong { background: #e8f5e9; color: #2e7d32; }
+        .strength-badge.average { background: #fff8e1; color: #f57f17; }
+        .strength-badge.weak { background: #fce4ec; color: #c62828; }
+        
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.8;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .back-btn:hover { opacity: 1; }
+        
+        .print-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 16px;
+            background: white;
+            color: #4e73df;
+            border: 2px solid #4e73df;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+        .print-btn:hover { background: #4e73df; color: white; }
+        
+        .result-card-wrap {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .remarks-section {
+            padding: 20px 30px;
+            border-top: 1px solid #e3e6f0;
+            background: white;
+        }
+        .remarks-section h4 { margin-bottom: 8px; color: #333; }
+        .remarks-section p { font-style: italic; color: #6c757d; line-height: 1.6; }
+        
+        .batch-compare {
+            padding: 15px 30px;
+            background: #f8f9fc;
+            border-top: 1px solid #e3e6f0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+        
+        @media print {
+            body { background: white !important; }
+            .container { max-width: 100%; padding: 0; }
+            .header, .back-btn, .print-btn, .verify-card { display: none !important; }
+            .result-display.show { display: block !important; }
+            .result-card-wrap { box-shadow: none; border: 1px solid #ddd; border-radius: 0; }
+            .result-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .result-summary .item { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+        <!-- Back button (hidden initially) -->
+        <div id="topActions" style="display:none;">
+            <button class="back-btn" onclick="showVerifyForm()"><i class="fas fa-arrow-left"></i> Search Another</button>
+            <button class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Print / Download PDF</button>
+        </div>
+
+        <!-- Header -->
+        <div class="header" id="pageHeader">
+            <h1><i class="fas fa-graduation-cap"></i> Student Results</h1>
+            <p>Enter your Student ID and Phone Number to view your results</p>
+        </div>
+
+        <!-- Verification Form -->
+        <div class="verify-card" id="verifyForm">
+            <h2>🔍 Check Your Result</h2>
+            <p class="subtitle">Enter your credentials to view your academic results</p>
+            
+            <div class="error-msg" id="errorMsg"></div>
+            
+            <form id="verifyFormEl" onsubmit="verifyResult(event)">
+                <div class="input-group">
+                    <label><i class="fas fa-id-card"></i> Student ID</label>
+                    <input type="text" id="studentIdInput" placeholder="Enter your Student ID (e.g. STU-001)" required>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="phoneInput" placeholder="Enter registered phone number" required>
+                </div>
+                <button type="submit" class="verify-btn" id="verifyBtn">
+                    <i class="fas fa-search"></i> View Result
+                </button>
+            </form>
+        </div>
+
+        <!-- Result Display -->
+        <div class="result-display" id="resultDisplay">
+            <div class="result-card-wrap" id="resultCardWrap">
+                <!-- Header dynamically generated -->
+                <div id="resultHeader"></div>
+                
+                <!-- Student Info -->
+                <div id="studentInfo" class="result-student-info"></div>
+                
+                <!-- Summary -->
+                <div id="summaryGrid" class="result-summary"></div>
+                
+                <!-- Batch Comparison -->
+                <div id="batchCompare" class="batch-compare"></div>
+                
+                <!-- Subject Breakdown -->
+                <div id="subjectSection" class="result-body"></div>
+                
+                <!-- Strength & Weakness -->
+                <div id="swSection" class="sw-section"></div>
+                
+                <!-- Remarks -->
+                <div id="remarksSection" class="remarks-section"></div>
+                
+                <!-- Progress Chart -->
+                <div id="progressSection" class="progress-section"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/student-result.js"></script>
+</body>
+</html>

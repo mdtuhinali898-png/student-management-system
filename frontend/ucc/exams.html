@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exams — UCC পাবনা Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/design-system.css?v=2">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link rel="stylesheet" href="assets/css/exams.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html" class="sidebar-logo">
+      <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+      <span>UCC <span class="gradient-text">পাবনা</span> <small class="admin-badge">Admin</small></span>
+    </a>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+    <a href="dashboard.html"    class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+    <a href="students.html"     class="nav-item"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+    <a href="admission.html"    class="nav-item"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+    <a href="payment.html"      class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payment</span><span class="nav-tooltip">Payment</span></a>
+    <a href="exams.html"        class="nav-item active"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+    <a href="distribution.html" class="nav-item"><i class="fas fa-book-open"></i><span>Distribution</span><span class="nav-tooltip">Distribution</span></a>
+    <a href="batches.html"      class="nav-item"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+    <a href="reports.html"      class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+    <a href="settings.html"     class="nav-item"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="index.html" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span><span class="nav-tooltip">View Website</span></a>
+    <a href="admin-login.html" class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span><span class="nav-tooltip">Logout</span></a>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main-content" id="mainContent">
+  <header class="top-header">
+    <h1 class="page-title">Exam Management</h1>
+    <div class="user-info">
+      <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100" alt="Admin" class="user-avatar">
+      <div class="user-details">
+        <span class="user-name" id="uccAdminName">UCC Admin</span>
+        <span class="user-role">UCC পাবনা শাখা</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <div class="ex-banner">
+    <div>
+      <h2><i class="fas fa-pen-ruler"></i> Exam & Model Test Management</h2>
+      <p>নতুন exam তৈরি করুন, mark entry দিন এবং merit list print করুন।</p>
+    </div>
+    <div class="ex-banner-actions">
+      <a href="mark-entry.html" class="btn btn-secondary"><i class="fas fa-pen"></i> Mark Entry</a>
+      <a href="merit-list.html" class="btn btn-secondary"><i class="fas fa-list-ol"></i> Merit List</a>
+      <button class="btn btn-primary" onclick="openCreateModal()"><i class="fas fa-plus"></i> New Exam</button>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="ex-stat-grid">
+    <div class="ex-stat ex-stat-blue">
+      <div class="ex-stat-icon"><i class="fas fa-clipboard-list"></i></div>
+      <div><small>Total Exams</small><strong id="statTotal">0</strong></div>
+    </div>
+    <div class="ex-stat ex-stat-green">
+      <div class="ex-stat-icon"><i class="fas fa-check-circle"></i></div>
+      <div><small>Published</small><strong id="statPublished">0</strong></div>
+    </div>
+    <div class="ex-stat ex-stat-amber">
+      <div class="ex-stat-icon"><i class="fas fa-pen"></i></div>
+      <div><small>Draft</small><strong id="statDraft">0</strong></div>
+    </div>
+    <div class="ex-stat ex-stat-purple">
+      <div class="ex-stat-icon"><i class="fas fa-users"></i></div>
+      <div><small>Total Entries</small><strong id="statEntries">0</strong></div>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="ex-filter-bar">
+    <div class="ex-filter-field">
+      <label>Batch</label>
+      <select id="filterBatch" onchange="applyFilter()">
+        <option value="all">সব Batch</option>
+        <option>Medical-2026-A</option>
+        <option>Medical-2026-B</option>
+        <option>Engineering-2026</option>
+        <option>Varsity-A-2026</option>
+        <option>Varsity-B-2026</option>
+      </select>
+    </div>
+    <div class="ex-filter-field">
+      <label>Exam Type</label>
+      <select id="filterType" onchange="applyFilter()">
+        <option value="all">সব Type</option>
+        <option value="MCQ">MCQ</option>
+        <option value="Written">Written</option>
+        <option value="Mixed">Mixed</option>
+        <option value="Model Test">Model Test</option>
+      </select>
+    </div>
+    <div class="ex-filter-field">
+      <label>Status</label>
+      <select id="filterStatus" onchange="applyFilter()">
+        <option value="all">সব Status</option>
+        <option value="Published">Published</option>
+        <option value="Draft">Draft</option>
+      </select>
+    </div>
+    <div class="ex-filter-field" style="flex:1;min-width:200px;">
+      <label>Search</label>
+      <input type="text" id="filterSearch" placeholder="Exam name খুঁজুন..." oninput="applyFilter()">
+    </div>
+    <button class="btn btn-secondary" onclick="resetFilter()"><i class="fas fa-rotate-left"></i> Reset</button>
+  </div>
+
+  <!-- Exam Table -->
+  <div class="data-card">
+    <div class="card-header">
+      <h3><i class="fas fa-clipboard-list"></i> Exam List</h3>
+      <span class="badge badge-primary" id="examCountBadge">0 Exams</span>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Exam Name</th>
+            <th>Batch</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Total Marks</th>
+            <th>Entries</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="examTableBody">
+          <tr><td colspan="9" style="text-align:center;padding:40px;color:#64748b;">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="main-footer">© 2026 UCC পাবনা শাখা। All rights reserved. Designed and developed by Tuhin.</footer>
+</main>
+
+<!-- Create Exam Modal -->
+<div class="ex-modal-overlay" id="createModal" style="display:none;" onclick="closeCreateModal(event)">
+  <div class="ex-modal-box">
+    <div class="ex-modal-hdr">
+      <div>
+        <h3><i class="fas fa-plus-circle"></i> New Exam তৈরি করুন</h3>
+        <p>Exam-এর সব তথ্য দিন</p>
+      </div>
+      <button class="ex-modal-close" onclick="closeCreateModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="ex-modal-body">
+      <div class="ex-form-grid">
+        <div class="ex-field">
+          <label>Exam Name *</label>
+          <input type="text" id="newExamName" class="ex-input" placeholder="যেমন: Model Test 01">
+        </div>
+        <div class="ex-field">
+          <label>Batch *</label>
+          <select id="newExamBatch" class="ex-input">
+            <option value="">-- Batch বেছে নিন --</option>
+            <option>Medical-2026-A</option>
+            <option>Medical-2026-B</option>
+            <option>Engineering-2026</option>
+            <option>Varsity-A-2026</option>
+            <option>Varsity-B-2026</option>
+          </select>
+        </div>
+        <div class="ex-field">
+          <label>Exam Type *</label>
+          <select id="newExamType" class="ex-input">
+            <option value="">-- Type বেছে নিন --</option>
+            <option value="MCQ">MCQ</option>
+            <option value="Written">Written</option>
+            <option value="Mixed">Mixed</option>
+            <option value="Model Test">Model Test</option>
+          </select>
+        </div>
+        <div class="ex-field">
+          <label>Subject / Topic</label>
+          <input type="text" id="newExamSubject" class="ex-input" placeholder="যেমন: Physics + Chemistry">
+        </div>
+        <div class="ex-field">
+          <label>Date *</label>
+          <input type="date" id="newExamDate" class="ex-input">
+        </div>
+        <div class="ex-field">
+          <label>Total Marks *</label>
+          <input type="number" id="newExamTotal" class="ex-input" placeholder="যেমন: 100" min="1">
+        </div>
+        <div class="ex-field">
+          <label>Pass Marks</label>
+          <input type="number" id="newExamPass" class="ex-input" placeholder="যেমন: 40" min="0">
+        </div>
+        <div class="ex-field">
+          <label>Duration (minutes)</label>
+          <input type="number" id="newExamDuration" class="ex-input" placeholder="যেমন: 90" min="0">
+        </div>
+      </div>
+      <div class="ex-field" style="margin-top:12px;">
+        <label>Notes</label>
+        <textarea id="newExamNotes" class="ex-input" rows="2" placeholder="অতিরিক্ত তথ্য (optional)"></textarea>
+      </div>
+      <p class="ex-demo-note"><i class="fas fa-circle-info"></i> Demo mode — data locally stored. API connect করলে <code>POST /api/ucc/exams</code> call হবে।</p>
+      <div class="ex-modal-actions">
+        <button class="btn btn-secondary" onclick="closeCreateModal()"><i class="fas fa-times"></i> Cancel</button>
+        <button class="btn btn-primary"   onclick="saveExam()"><i class="fas fa-save"></i> Exam Save করুন</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="ex-modal-overlay" id="deleteModal" style="display:none;" onclick="closeDeleteModal(event)">
+  <div class="ex-modal-box" style="max-width:420px;">
+    <div class="ex-modal-hdr" style="background:linear-gradient(135deg,#dc2626,#991b1b);">
+      <div><h3><i class="fas fa-trash"></i> Exam Delete করবেন?</h3><p>এই কাজ undo করা যাবে না।</p></div>
+      <button class="ex-modal-close" onclick="closeDeleteModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="ex-modal-body" style="text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">🗑️</div>
+      <p style="font-size:15px;font-weight:700;color:#0f172a;" id="deleteExamName">—</p>
+      <p style="font-size:13px;color:#64748b;margin-bottom:20px;">এই exam-এর সব mark entry-ও মুছে যাবে।</p>
+      <div style="display:flex;gap:12px;justify-content:center;">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">বাতিল</button>
+        <button class="btn btn-danger"    onclick="confirmDelete()"><i class="fas fa-trash"></i> Delete করুন</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="ex-toast hidden" id="exToast"></div>
+
+<script src="assets/js/sidebar.js?v=2"></script>
+<script src="assets/js/exams.js"></script>
+</body>
+</html>
+

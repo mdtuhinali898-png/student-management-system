@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Student ERP</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/reports.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <span>Edu<span class="gradient-text">Smart</span> <small class="admin-badge">Admin</small></span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+            <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+            <a href="add-student.html" class="nav-item"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+            <a href="exams.html" class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+            <a href="payments.html" class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payments</span><span class="nav-tooltip">Payments</span></a>
+            <a href="receipt.html" class="nav-item"><i class="fas fa-receipt"></i><span>Receipts</span><span class="nav-tooltip">Receipts</span></a>
+            <a href="reports.html" class="nav-item active"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+            <a href="finance.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Finance</span><span class="nav-tooltip">Finance</span></a>
+            <a href="expenses.html" class="nav-item"><i class="fas fa-shopping-cart"></i><span>Expenses</span><span class="nav-tooltip">Expenses</span></a>
+            <a href="batches.html" class="nav-item"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+            <a href="batch-transfer.html" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Batch Transfer</span><span class="nav-tooltip">Batch Transfer</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span><span class="nav-tooltip">View Website</span></a>
+            <a href="login.html" class="nav-item logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span><span class="nav-tooltip">Logout</span></a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <h1 class="page-title">Reports & Analytics</h1>
+            <div class="user-info">
+                <img src="https://i.pravatar.cc/45" alt="Admin" class="user-avatar">
+                <div class="user-details">
+                    <span class="user-name">Administrator</span>
+                    <span class="user-role">Super Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Header -->
+        <div class="page-header-action">
+            <div>
+                <h2>Financial Reports</h2>
+                <p>Comprehensive analytics and reporting system</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-secondary" onclick="handlePrintReport()">
+                    <i class="fas fa-print"></i> Print Report
+                </button>
+                <button class="btn-primary" onclick="exportToCSV()">
+                    <i class="fas fa-file-excel"></i> Export CSV
+                </button>
+                <button class="btn-secondary" onclick="sendSMSReminder()">
+                    <i class="fas fa-sms"></i> Send SMS Reminder
+                </button>
+            </div>
+        </div>
+
+        <!-- Report Type Tabs -->
+        <section class="report-tabs">
+            <button class="tab-btn active" data-tab="collection" onclick="switchTab('collection')">
+                <i class="fas fa-money-bill-wave"></i> Collection Report
+            </button>
+            <button class="tab-btn" data-tab="due" onclick="switchTab('due')">
+                <i class="fas fa-exclamation-circle"></i> Due Report
+            </button>
+            <button class="tab-btn" data-tab="batch" onclick="switchTab('batch')">
+                <i class="fas fa-layer-group"></i> Batch-wise Report
+            </button>
+            <button class="tab-btn" data-tab="method" onclick="switchTab('method')">
+                <i class="fas fa-credit-card"></i> Payment Method
+            </button>
+            <button class="tab-btn" data-tab="student" onclick="switchTab('student')">
+                <i class="fas fa-user"></i> Student-wise
+            </button>
+        </section>
+
+        <!-- Filter Section -->
+        <section class="filter-section">
+            <!-- Date range filter: Collection, Batch, Method, Student tabs -->
+            <div class="filter-group" id="dateRangeFilter">
+                <div class="filter-item">
+                    <label><i class="fas fa-calendar-alt"></i> From Date</label>
+                    <input type="date" id="fromDate">
+                </div>
+                <div class="filter-item">
+                    <label><i class="fas fa-calendar-alt"></i> To Date</label>
+                    <input type="date" id="toDate">
+                </div>
+                <div class="filter-item">
+                    <label><i class="fas fa-layer-group"></i> Batch</label>
+                    <select id="filterBatch">
+                        <option value="all">All Batches</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label><i class="fas fa-filter"></i> Status</label>
+                    <select id="filterStatus">
+                        <option value="all">All Status</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Partial">Partial</option>
+                        <option value="Due">Due</option>
+                    </select>
+                </div>
+                <button class="btn-today" onclick="setTodayFilter()">
+                    <i class="fas fa-calendar-day"></i> Today
+                </button>
+                <button class="btn-apply" onclick="applyFilters()">
+                    <i class="fas fa-check"></i> Apply
+                </button>
+                <button class="btn-reset" onclick="resetFilters()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+
+            <!-- Month/Year filter: Due tab only -->
+            <div class="filter-group" id="dueFilterBar" style="display:none;">
+                <div class="filter-item">
+                    <label><i class="fas fa-calendar-alt"></i> Month</label>
+                    <select id="dueMonth">
+                        <option value="">-- Select Month --</option>
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label><i class="fas fa-calendar"></i> Year</label>
+                    <select id="dueYear">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label><i class="fas fa-layer-group"></i> Batch</label>
+                    <select id="dueBatch">
+                        <option value="all">All Batches</option>
+                    </select>
+                </div>
+                <button class="btn-apply" onclick="loadDueReport()">
+                    <i class="fas fa-search"></i> Show Report
+                </button>
+                <button class="btn-reset" onclick="resetDueFilter()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </section>
+
+        <!-- Summary Cards -->
+        <section class="summary-cards">
+            <div class="summary-card card-green">
+                <div class="card-icon"><i class="fas fa-coins"></i></div>
+                <div class="card-content">
+                    <h3 id="totalCollection">৳0</h3>
+                    <p>Total Collection</p>
+                </div>
+            </div>
+            <div class="summary-card card-red">
+                <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="card-content">
+                    <h3 id="totalDue">৳0</h3>
+                    <p>Total Due</p>
+                </div>
+            </div>
+            <div class="summary-card card-blue">
+                <div class="card-icon"><i class="fas fa-receipt"></i></div>
+                <div class="card-content">
+                    <h3 id="totalTransactions">0</h3>
+                    <p>Total Transactions</p>
+                </div>
+            </div>
+            <div class="summary-card card-purple">
+                <div class="card-icon"><i class="fas fa-percentage"></i></div>
+                <div class="card-content">
+                    <h3 id="collectionRate">0%</h3>
+                    <p>Collection Rate</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Print Report Header (Hidden on screen, shown in print) -->
+        <div class="print-report-header">
+            <h1 id="printInstituteName">ABC Coaching Center</h1>
+            <p class="print-institute" id="printInstituteDetails">Rajshahi, Bangladesh | Phone: 017XXXXXXXX | Email: info@abccoaching.com</p>
+            <p class="print-date-range">Collection Report: <span id="printDateRange">—</span></p>
+        </div>
+
+        <!-- Report Content -->
+        <section class="report-content">
+            
+            <!-- Collection Report Tab -->
+            <div class="tab-content active" id="collectionTab">
+
+                <!-- Daily Activity Summary -->
+                <div class="data-card daily-activity-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-simple"></i> Daily Activity Summary</h3>
+                        <span class="header-subtitle" id="dailyActivityDate">Today's overview</span>
+                    </div>
+                    <div class="daily-activity-grid">
+                        <div class="activity-item activity-admission">
+                            <div class="activity-icon" style="background: linear-gradient(135deg, #4e73df, #2e59d9);">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="activity-info">
+                                <h4 id="dailyAdmissionCount">0</h4>
+                                <p>New Admissions</p>
+                                <span class="activity-amount" id="dailyAdmissionAmount">৳0</span>
+                            </div>
+                        </div>
+                        <div class="activity-divider">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="activity-item activity-payment">
+                            <div class="activity-icon" style="background: linear-gradient(135deg, #1cc88a, #17a673);">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="activity-info">
+                                <h4 id="dailyPaymentCount">0</h4>
+                                <p>Payments</p>
+                                <span class="activity-amount" id="dailyPaymentAmount">৳0</span>
+                            </div>
+                        </div>
+                        <div class="activity-divider">
+                            <i class="fas fa-equals"></i>
+                        </div>
+                        <div class="activity-item activity-total">
+                            <div class="activity-icon" style="background: linear-gradient(135deg, #f6c23e, #d97706);">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="activity-info">
+                                <h4 id="dailyTotalAmount">৳0</h4>
+                                <p>Total Today</p>
+                                <span class="activity-amount" id="dailyTotalBreakdown">Admission + Payment</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-line"></i> Monthly Collection Trend</h3>
+                        <canvas id="collectionChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-bar"></i> Daily Collection</h3>
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Daily Collection Summary -->
+                <div class="daily-summary-section">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-day"></i> Daily Collection Summary</h3>
+                        <span class="header-subtitle">Last 30 days collection overview</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="daily-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Day</th>
+                                    <th>Transactions</th>
+                                    <th>Total Collection (৳)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dailySummaryBody">
+                                <!-- Data will be injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-list"></i> Collection Details</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Receipt</th>
+                                    <th>ID</th>
+                                    <th>Student</th>
+                                    <th>Batch</th>
+                                    <th>Month</th>
+                                    <th>Fee</th>
+                                    <th>Paid</th>
+                                    <th>Method</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="collectionTableBody">
+                                <!-- Data will be injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="data-card multi-month-status-card collection-multi-month-status">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-alt"></i> Multi-month Payment Status</h3>
+                    </div>
+                    <div class="multi-month-filters">
+                        <div class="filter-item">
+                            <label>Batch</label>
+                            <select id="collectionMultiMonthBatch"><option value="">-- Select Batch --</option></select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Year</label>
+                            <select id="collectionMultiMonthYear"></select>
+                        </div>
+                        <div class="multi-month-picker" id="collectionMultiMonthPicker">
+                            <label>Select month(s)</label>
+                            <div class="month-checkboxes">
+                                <label><input type="checkbox" value="January"> Jan</label><label><input type="checkbox" value="February"> Feb</label><label><input type="checkbox" value="March"> Mar</label><label><input type="checkbox" value="April"> Apr</label><label><input type="checkbox" value="May"> May</label><label><input type="checkbox" value="June"> Jun</label><label><input type="checkbox" value="July"> Jul</label><label><input type="checkbox" value="August"> Aug</label><label><input type="checkbox" value="September"> Sep</label><label><input type="checkbox" value="October"> Oct</label><label><input type="checkbox" value="November"> Nov</label><label><input type="checkbox" value="December"> Dec</label>
+                            </div>
+                        </div>
+                        <button class="btn-apply" type="button"><i class="fas fa-search"></i> Show Report</button>
+                    </div>
+                    <p class="multi-month-hint">Batch, year এবং এক বা একাধিক মাস বেছে নিন।</p>
+                    <div class="table-responsive" id="collectionMultiMonthTableWrap" style="display:none;">
+                        <table class="data-table multi-month-table">
+                            <thead id="collectionMultiMonthTableHead"></thead>
+                            <tbody id="collectionMultiMonthTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Due Report Tab -->
+            <div class="tab-content" id="dueTab">
+
+                <!-- Due Report Summary Cards -->
+                <div class="due-summary-cards" id="dueSummaryCards" style="display:none;">
+                    <div class="due-summary-card due-s-blue">
+                        <div class="due-s-icon"><i class="fas fa-users"></i></div>
+                        <div class="due-s-info">
+                            <h3 id="dueTotalStudents">0</h3>
+                            <p>Total Students</p>
+                        </div>
+                    </div>
+                    <div class="due-summary-card due-s-green">
+                        <div class="due-s-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="due-s-info">
+                            <h3 id="duePaidCount">0</h3>
+                            <p>Paid</p>
+                        </div>
+                    </div>
+                    <div class="due-summary-card due-s-red">
+                        <div class="due-s-icon"><i class="fas fa-times-circle"></i></div>
+                        <div class="due-s-info">
+                            <h3 id="dueUnpaidCount">0</h3>
+                            <p>Due / Unpaid</p>
+                        </div>
+                    </div>
+                    <div class="due-summary-card due-s-purple">
+                        <div class="due-s-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="due-s-info">
+                            <h3 id="dueCollectionRate">0%</h3>
+                            <p>Collection Rate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Due Report print header (hidden on screen) -->
+                <div class="due-print-header" id="duePrintHeader" style="display:none;">
+                    <h1 id="duePrintInstituteName">ABC Coaching Center</h1>
+                    <p id="duePrintInstituteDetails">Rajshahi, Bangladesh</p>
+                    <h2>Monthly Payment Status Report</h2>
+                    <p>Month: <strong id="duePrintMonth"></strong> &nbsp;|&nbsp; Batch: <strong id="duePrintBatch"></strong></p>
+                </div>
+
+                <!-- Side-by-side lists -->
+                <div class="due-lists-container" id="dueListsContainer" style="display:none;">
+
+                    <!-- Paid Students -->
+                    <div class="due-list-card due-paid-card">
+                        <div class="due-list-header">
+                            <h4><i class="fas fa-check-circle" style="color:#1cc88a;"></i> Paid Students</h4>
+                            <span class="due-count-badge due-paid-badge" id="duePaidBadge">0</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table due-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Batch</th>
+                                        <th>Paid Amount</th>
+                                        <th>Payment Date</th>
+                                        <th>Method</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="duePaidBody">
+                                    <tr><td colspan="7" class="empty-msg">Select month, year and batch then click Show Report</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Due / Unpaid Students -->
+                    <div class="due-list-card due-unpaid-card">
+                        <div class="due-list-header">
+                            <h4><i class="fas fa-times-circle" style="color:#e74a3b;"></i> Due / Unpaid Students</h4>
+                            <span class="due-count-badge due-unpaid-badge" id="dueUnpaidBadge">0</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table due-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Batch</th>
+                                        <th>Monthly Fee</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dueUnpaidBody">
+                                    <tr><td colspan="6" class="empty-msg">Select month, year and batch then click Show Report</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- placeholder shown before first search -->
+                <div class="due-placeholder" id="duePlaceholder">
+                    <i class="fas fa-search"></i>
+                    <p>মাস, বছর এবং ব্যাচ সিলেক্ট করে <strong>Show Report</strong> ক্লিক করুন</p>
+                </div>
+
+                <div class="data-card multi-month-status-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-alt"></i> Multi-month Payment Status</h3>
+                        <button class="btn-secondary" onclick="printMultiMonthPaymentStatus()" style="padding: 8px 16px; font-size: 13px;">
+                            <i class="fas fa-print"></i> Print Report
+                        </button>
+                    </div>
+                    <div class="multi-month-filters">
+                        <div class="filter-item"><label>Batch</label><select id="multiMonthBatch"><option value="">-- Select Batch --</option></select></div>
+                        <div class="filter-item"><label>Year</label><select id="multiMonthYear"></select></div>
+                        <div class="multi-month-picker" id="multiMonthPicker">
+                            <label>Select month(s)</label>
+                            <div class="month-checkboxes">
+                                <label><input type="checkbox" value="January"> Jan</label><label><input type="checkbox" value="February"> Feb</label><label><input type="checkbox" value="March"> Mar</label><label><input type="checkbox" value="April"> Apr</label><label><input type="checkbox" value="May"> May</label><label><input type="checkbox" value="June"> Jun</label><label><input type="checkbox" value="July"> Jul</label><label><input type="checkbox" value="August"> Aug</label><label><input type="checkbox" value="September"> Sep</label><label><input type="checkbox" value="October"> Oct</label><label><input type="checkbox" value="November"> Nov</label><label><input type="checkbox" value="December"> Dec</label>
+                            </div>
+                        </div>
+                        <button class="btn-apply" type="button" onclick="loadMultiMonthPaymentStatus()"><i class="fas fa-search"></i> Show Report</button>
+                    </div>
+                    <p class="multi-month-hint">Batch, year and one or more months select করুন।</p>
+                    <div class="table-responsive" id="multiMonthTableWrap" style="display:none;"><table class="data-table multi-month-table"><thead id="multiMonthTableHead"></thead><tbody id="multiMonthTableBody"></tbody></table></div>
+                </div>
+            </div>
+
+            <!-- Batch-wise Report Tab -->
+            <div class="tab-content" id="batchTab">
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-doughnut"></i> Students per Batch</h3>
+                        <canvas id="batchStudentsChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-bar"></i> Collection per Batch</h3>
+                        <canvas id="batchCollectionChart"></canvas>
+                    </div>
+                </div>
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-layer-group"></i> Batch Summary</h3>
+                        <button class="btn-primary" onclick="exportBatchToExcel()" style="padding: 8px 16px; font-size: 13px;">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
+                    </div>
+                    <!-- Search box -->
+                    <div style="margin-bottom:12px;">
+                        <input type="text" id="batchSummarySearch" placeholder="Search by Student ID, Name or Phone..."
+                            oninput="searchStudentInBatchSummary()"
+                            style="width:100%;padding:9px 14px;border:1px solid #dee2e6;border-radius:8px;font-size:13px;box-sizing:border-box;">
+                    </div>
+
+                    <!-- Single student search result -->
+                    <div id="batchSearchResult" style="display:none;margin-bottom:14px;padding:14px 16px;border:1px solid #c7d7fb;border-radius:8px;background:#f0f4ff;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <span style="font-size:13px;font-weight:700;color:#1e40af;">
+                                <i class="fas fa-user"></i> Student Found
+                            </span>
+                            <button onclick="clearBatchSearch()" style="border:none;background:none;cursor:pointer;color:#6c757d;font-size:13px;">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                        </div>
+                        <div id="batchSearchResultContent"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Batch</th>
+                                    <th>Total Students</th>
+                                    <th>Active</th>
+                                    <th>Monthly Fee</th>
+                                    <th>Expected</th>
+                                    <th>Collected</th>
+                                    <th>Due</th>
+                                    <th>Collection Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batchTableBody">
+                                <!-- Data will be injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Batch Details Panel (shown on row click) -->
+                <div class="data-card" id="batchDetailsPanel" style="display:none;">
+                    <div class="card-header">
+                        <h3><i class="fas fa-info-circle"></i> Batch Details: <span id="batchDetailTitle"></span></h3>
+                        <button onclick="closeBatchDetails()" style="padding:6px 14px;border:none;border-radius:6px;background:#e9ecef;cursor:pointer;font-size:13px;">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+
+                    <!-- Batch quick stats -->
+                    <div class="batch-detail-stats" id="batchDetailStats"></div>
+
+                    <!-- Side by side: All Students | Payment History -->
+                    <div class="bm-lists-container" style="margin-top:16px;">
+                        <!-- All students of this batch -->
+                        <div class="bm-list-card bm-paid-card">
+                            <div class="bm-list-header">
+                                <h4><i class="fas fa-users" style="color:#4e73df;"></i> All Students</h4>
+                                <span class="bm-count-badge bm-paid-badge" id="batchDetailStudentCount">0</span>
+                            </div>
+                            <!-- Search box -->
+                            <div style="padding:8px 12px;border-bottom:1px solid #e3e6f0;background:#f8f9fc;">
+                                <input type="text" id="batchStudentSearch" placeholder="Search by ID, Name or Phone..."
+                                    oninput="searchBatchStudent()"
+                                    style="width:100%;padding:7px 10px;border:1px solid #dee2e6;border-radius:6px;font-size:12px;box-sizing:border-box;">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table bm-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Phone</th>
+                                            <th>Fee</th>
+                                            <th>Status</th>
+                                            <th>Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="batchDetailStudents"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Recent payments of this batch -->
+                        <div class="bm-list-card bm-unpaid-card">
+                            <div class="bm-list-header">
+                                <h4><i class="fas fa-receipt" style="color:#1cc88a;"></i> Recent Payments</h4>
+                                <span class="bm-count-badge bm-paid-badge" id="batchDetailPaymentCount">0</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table bm-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Student</th>
+                                            <th>Month</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="batchDetailPayments"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- Batch-wise Monthly Payment Status Section -->
+                <!-- ============================================ -->
+                <div class="data-card batch-monthly-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-check"></i> Batch-wise Monthly Payment Status</h3>
+                        <div class="batch-monthly-actions">
+                            <button class="btn-secondary" onclick="printBatchMonthly()" style="padding: 8px 16px; font-size: 13px;">
+                                <i class="fas fa-print"></i> Print Report
+                            </button>
+                            <button class="btn-primary" onclick="exportBatchMonthlyToExcel()" style="padding: 8px 16px; font-size: 13px;">
+                                <i class="fas fa-file-excel"></i> Export to Excel
+                            </button>
+                        </div>
+                    </div>
+
+                        <!-- Filters for Monthly Status -->
+                    <div class="batch-monthly-filters">
+                        <div class="filter-item">
+                            <label><i class="fas fa-layer-group"></i> Select Batch</label>
+                            <select id="monthlyBatchSelect" onchange="loadBatchMonthlyStatus()">
+                                <option value="">-- Select Batch --</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label><i class="fas fa-calendar-alt"></i> Select Month</label>
+                            <select id="monthlyMonthSelect" onchange="loadBatchMonthlyStatus()">
+                                <option value="">-- Select Month --</option>
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label><i class="fas fa-calendar"></i> Select Year</label>
+                            <select id="monthlyYearSelect" onchange="loadBatchMonthlyStatus()">
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Summary Cards -->
+                    <div class="batch-monthly-summary" id="batchMonthlySummary" style="display:none;">
+                        <div class="summary-card card-blue" style="border-left-color: #4e73df;">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #4e73df, #2e59d9);"><i class="fas fa-users"></i></div>
+                            <div class="card-content">
+                                <h3 id="bmTotalStudents">0</h3>
+                                <p>Total Students</p>
+                            </div>
+                        </div>
+                        <div class="summary-card card-green">
+                            <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="card-content">
+                                <h3 id="bmPaidCount">0</h3>
+                                <p>Paid</p>
+                            </div>
+                        </div>
+                        <div class="summary-card card-red">
+                            <div class="card-icon"><i class="fas fa-times-circle"></i></div>
+                            <div class="card-content">
+                                <h3 id="bmUnpaidCount">0</h3>
+                                <p>Unpaid</p>
+                            </div>
+                        </div>
+                        <div class="summary-card card-purple">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);"><i class="fas fa-percentage"></i></div>
+                            <div class="card-content">
+                                <h3 id="bmCollectionRate">0%</h3>
+                                <p>Collection Rate</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Side-by-side Lists -->
+                    <div class="batch-monthly-lists" id="batchMonthlyLists" style="display:none;">
+                        <!-- Print Header -->
+                        <div class="bm-print-header" id="bmPrintHeader" style="display:none;">
+                            <h1 id="bmPrintInstituteName">ABC Coaching Center</h1>
+                            <p id="bmPrintInstituteDetails">Rajshahi, Bangladesh | Phone: 017XXXXXXXX | Email: info@abccoaching.com</p>
+                            <h2 id="bmPrintTitle">Batch: <span id="bmPrintBatchName"></span> - Month: <span id="bmPrintMonth"></span></h2>
+                        </div>
+
+                        <div class="bm-lists-container">
+                            <!-- LEFT: Paid Students -->
+                            <div class="bm-list-card bm-paid-card">
+                                <div class="bm-list-header">
+                                    <h4><i class="fas fa-check-circle" style="color:#1cc88a;"></i> Paid Students</h4>
+                                    <span class="bm-count-badge bm-paid-badge" id="bmPaidBadge">0</span>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="data-table bm-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Phone</th>
+                                                <th>Paid Amount</th>
+                                                <th>Payment Date</th>
+                                                <th>Receipt No</th>
+                                                <th>Method</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bmPaidBody">
+                                            <tr><td colspan="7" class="empty-msg">Select a batch and month</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- RIGHT: Unpaid Students -->
+                            <div class="bm-list-card bm-unpaid-card">
+                                <div class="bm-list-header">
+                                    <h4><i class="fas fa-times-circle" style="color:#e74a3b;"></i> Unpaid / Due Students</h4>
+                                    <span class="bm-count-badge bm-unpaid-badge" id="bmUnpaidBadge">0</span>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="data-table bm-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Phone</th>
+                                                <th>Due Amount</th>
+                                                <th>Last Payment Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bmUnpaidBody">
+                                            <tr><td colspan="5" class="empty-msg">Select a batch and month</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Payment Method Report Tab -->
+            <div class="tab-content" id="methodTab">
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-pie"></i> Payment Methods</h3>
+                        <canvas id="methodChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-bar"></i> Method-wise Collection</h3>
+                        <canvas id="methodCollectionChart"></canvas>
+                    </div>
+                </div>
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-credit-card"></i> Payment Method Summary</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Payment Method</th>
+                                    <th>Transactions</th>
+                                    <th>Total Amount</th>
+                                    <th>Average</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="methodTableBody">
+                                <!-- Data will be injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student-wise Report Tab -->
+            <div class="tab-content" id="studentTab">
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-user"></i> Student Payment Summary</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Batch</th>
+                                    <th>Total Paid</th>
+                                    <th>Total Due</th>
+                                    <th>Payments</th>
+                                    <th>Last Payment</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentTableBody">
+                                <!-- Data will be injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>© 2026 Student ERP Management System | Developed by Tuhin Ali</p>
+        </footer>
+    </main>
+
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/reports.js"></script>
+
+    <!-- Student Edit Modal -->
+    <div id="studentEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:12px;padding:28px 32px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.2);position:relative;">
+            <button onclick="closeEditModal()" style="position:absolute;top:14px;right:16px;border:none;background:none;font-size:18px;cursor:pointer;color:#6c757d;">✕</button>
+            <h3 style="margin-bottom:20px;font-size:16px;color:#2c3e50;display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-user-edit" style="color:#4e73df;"></i> Edit Student
+            </h3>
+            <input type="hidden" id="editStudentId">
+            <div style="margin-bottom:14px;">
+                <label style="font-size:12px;font-weight:600;color:#6c757d;display:block;margin-bottom:5px;">Name</label>
+                <input type="text" id="editStudentName" style="width:100%;padding:9px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:14px;">
+                <label style="font-size:12px;font-weight:600;color:#6c757d;display:block;margin-bottom:5px;">Phone</label>
+                <input type="text" id="editStudentPhone" style="width:100%;padding:9px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:14px;">
+                <label style="font-size:12px;font-weight:600;color:#6c757d;display:block;margin-bottom:5px;">Monthly Fee (৳)</label>
+                <input type="number" id="editStudentFee" style="width:100%;padding:9px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:22px;">
+                <label style="font-size:12px;font-weight:600;color:#6c757d;display:block;margin-bottom:5px;">Status</label>
+                <select id="editStudentStatus" style="width:100%;padding:9px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button onclick="closeEditModal()" style="padding:9px 20px;border:1px solid #dee2e6;background:#fff;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Cancel</button>
+                <button onclick="saveEditStudent()" id="editSaveBtn" style="padding:9px 20px;border:none;background:linear-gradient(135deg,#4e73df,#2e59d9);color:#fff;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

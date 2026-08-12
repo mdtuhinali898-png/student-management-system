@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile — UCC Pabna Admin</title>
+  
+  <!-- FontAwesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="assets/css/design-system.css?v=2">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link rel="stylesheet" href="assets/css/student-profile.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+        <span>UCC <span class="gradient-text">Pabna</span> <small class="admin-badge">Admin</small></span>
+      </a>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    </div>
+    
+    <!-- Sidebar Search -->
+    <div class="sidebar-search">
+      <div class="search-box sidebar-search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+      </div>
+      <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+        <span class="nav-tooltip">Dashboard</span>
+      </a>
+      <a href="students.html" class="nav-item active">
+        <i class="fas fa-users"></i><span>Students</span>
+        <span class="nav-tooltip">Students</span>
+      </a>
+      <a href="admission.html" class="nav-item">
+        <i class="fas fa-user-plus"></i><span>Admission</span>
+        <span class="nav-tooltip">Admission</span>
+      </a>
+      <a href="payment.html" class="nav-item">
+        <i class="fas fa-money-bill-wave"></i><span>Payment</span>
+        <span class="nav-tooltip">Payment</span>
+      </a>
+      <a href="exams.html" class="nav-item">
+        <i class="fas fa-pencil-alt"></i><span>Exams</span>
+        <span class="nav-tooltip">Exams</span>
+      </a>
+      <a href="distribution.html" class="nav-item">
+        <i class="fas fa-book-open"></i><span>Distribution</span>
+        <span class="nav-tooltip">Distribution</span>
+      </a>
+      <a href="batches.html" class="nav-item">
+        <i class="fas fa-layer-group"></i><span>Batches</span>
+        <span class="nav-tooltip">Batches</span>
+      </a>
+      <a href="reports.html" class="nav-item">
+        <i class="fas fa-chart-bar"></i><span>Reports</span>
+        <span class="nav-tooltip">Reports</span>
+      </a>
+      <a href="settings.html" class="nav-item">
+        <i class="fas fa-cog"></i><span>Settings</span>
+        <span class="nav-tooltip">Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="nav-item website-link">
+        <i class="fas fa-globe"></i><span>View Website</span>
+        <span class="nav-tooltip">View Website</span>
+      </a>
+      <a href="/index.html" class="nav-item" title="Switch to EduSmart" style="color:var(--primary);">
+        <i class="fas fa-arrow-left"></i><span>EduSmart System</span>
+        <span class="nav-tooltip">EduSmart</span>
+      </a>
+      <a href="admin-login.html" class="nav-item logout" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+        <span class="nav-tooltip">Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="top-header">
+      <h1 class="page-title">UCC Student Profile</h1>
+      <div class="user-info">
+        <img src="https://i.pravatar.cc/45?img=12" alt="Admin" class="user-avatar">
+        <div class="user-details">
+          <span class="user-name">UCC Administrator</span>
+          <span class="user-role">Branch Officer</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Profile Header Card -->
+    <section class="profile-header-card">
+      <div class="profile-banner-bg"></div>
+      <div class="profile-main-content">
+        <div class="profile-avatar-row">
+          <div class="profile-avatar-box" id="avatarLetter">
+            M
+          </div>
+          
+          <div class="profile-title-block">
+            <div class="profile-name-row">
+              <h1 id="profileName">Loading Student Name...</h1>
+              <span class="profile-roll-badge" id="profileRoll">ROLL: ---</span>
+              <span class="status-badge-custom status-active" id="profileStatus">ACTIVE</span>
+            </div>
+            <div class="profile-meta-grid">
+              <span><i class="fas fa-layer-group"></i> <strong id="profileBatch">---</strong></span>
+              <span><i class="fas fa-phone"></i> <span id="profilePhone">---</span></span>
+              <span><i class="fas fa-user-shield"></i> Guardian: <span id="profileGuardian">---</span></span>
+              <span><i class="fas fa-map-marker-alt"></i> Branch: <span id="profileBranch">Pabna</span></span>
+            </div>
+          </div>
+
+          <div class="profile-actions">
+            <a href="#" id="btnCollectPayment" class="btn-profile-action btn-pay">
+              <i class="fas fa-money-bill"></i> Collect Payment
+            </a>
+            <a href="#" id="btnIssueMaterials" class="btn-profile-action btn-issue">
+              <i class="fas fa-box"></i> Material Issue
+            </a>
+            <button class="btn-profile-action btn-outline-custom" onclick="window.print()">
+              <i class="fas fa-print"></i> Print
+            </button>
+            <a href="students.html" class="btn-profile-action btn-outline-custom">
+              <i class="fas fa-arrow-left"></i> Directory
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stat Summary Cards -->
+    <section class="profile-stats-grid">
+      <div class="stat-card-custom">
+        <div class="stat-icon-custom stat-icon-fee"><i class="fas fa-calculator"></i></div>
+        <div class="stat-info-custom">
+          <h4>Total Course Fee</h4>
+          <p class="stat-value" id="statTotalFee">৳0.00</p>
+        </div>
+      </div>
+      <div class="stat-card-custom">
+        <div class="stat-icon-custom stat-icon-paid"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-info-custom">
+          <h4>Total Paid</h4>
+          <p class="stat-value" id="statTotalPaid" style="color:var(--ucc-success);">৳0.00</p>
+        </div>
+      </div>
+      <div class="stat-card-custom">
+        <div class="stat-icon-custom stat-icon-due"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="stat-info-custom">
+          <h4>Current Due</h4>
+          <p class="stat-value" id="statTotalDue" style="color:var(--ucc-danger);">৳0.00</p>
+        </div>
+      </div>
+      <div class="stat-card-custom">
+        <div class="stat-icon-custom stat-icon-mat"><i class="fas fa-book-open"></i></div>
+        <div class="stat-info-custom">
+          <h4>Materials Status</h4>
+          <p class="stat-value" id="statMaterialStatus" style="font-size:16px;color:var(--ucc-purple);">Pending</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile Tabs Container -->
+    <section class="profile-tabs-container">
+      <div class="profile-tabs-nav">
+        <button class="tab-btn active" onclick="switchTab('overview', this)">
+          <i class="fas fa-user"></i> Student Overview
+        </button>
+        <button class="tab-btn" onclick="switchTab('payments', this)">
+          <i class="fas fa-receipt"></i> Payment History
+        </button>
+        <button class="tab-btn" onclick="switchTab('materials', this)">
+          <i class="fas fa-boxes"></i> Books & Materials
+        </button>
+        <button class="tab-btn" onclick="switchTab('exams', this)">
+          <i class="fas fa-award"></i> Exams & Merit List
+        </button>
+      </div>
+
+      <!-- Tab 1: Overview -->
+      <div class="tab-content-panel active" id="tab-overview">
+        <div class="overview-grid">
+          <div class="info-card-box">
+            <h3><i class="fas fa-id-card"></i> Personal Information</h3>
+            <div class="info-list">
+              <div class="info-item-row">
+                <span class="label">Full Name</span>
+                <span class="value" id="infoName">---</span>
+              </div>
+              <div class="info-item-row">
+                <span class="label">Roll Number</span>
+                <span class="value" id="infoRoll">---</span>
+              </div>
+              <div class="info-item-row">
+                <span class="label">Mobile Number</span>
+                <span class="value" id="infoPhone">---</span>
+              </div>
+              <div class="info-item-row">
+                <span class="label">Guardian Name</span>
+                <span class="value" id="infoGuardian">---</span>
+              </div>
+              <div class="info-item-row">
+                <span class="label">Guardian Phone</span>
+                <span class="value" id="infoGuardianPhone">---</span>
+              </div>
+              <div class="info-item-row">
+                <span class="label">Gender</span>
+                <span class="value" id="infoGender">Male</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card-box">
+            <h3><i class="fas fa-graduation-cap"></i> Admission & Unit Details</h3>
+            <div class="info-list">
+              <div class="info-item-row">
+                <span class="label">Course Batch</span>
+                <span class="value" id="infoBatch">---</span>
+              </div>
+              <div class="info-item-row">
+                <span class="label">Unit / Target</span>
+                <span class="value" id="infoUnit">Medical / Engineering</span>
+              </div>
+              <div class="info-item-row">
+                <span class="label">Branch</span>
+                <span class="value" id="infoBranch">Pabna Branch</span>
+              </div>
+              <div class="info-item-row">
+                <span class="label">Admission Date</span>
+                <span class="value" id="infoAdmissionDate">15 July 2026</span>
+              </div>
+              <div class="info-item-row">
+                <span class="label">Enrollment Status</span>
+                <span class="value" style="color:var(--ucc-success);"><i class="fas fa-check-circle"></i> Active Student</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Payments -->
+      <div class="tab-content-panel" id="tab-payments">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:16px;color:var(--ucc-dark);">Payment Transactions History</h3>
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Receipt No</th>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Method</th>
+              <th>Amount Paid</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="paymentHistoryBody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tab 3: Materials -->
+      <div class="tab-content-panel" id="tab-materials">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:16px;color:var(--ucc-dark);">Books & Lecture Materials Issued</h3>
+        <div style="background:#f8fafc;padding:20px;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:20px;">
+          <h4 style="margin:0 0 8px 0;font-size:14px;color:var(--ucc-purple);">Issued Package List:</h4>
+          <p id="materialItemsList" style="margin:0;font-size:14px;font-weight:600;color:#334155;">Physics Sheet 01-10, Chemistry Main Book, Biology Q-Bank</p>
+        </div>
+      </div>
+
+      <!-- Tab 4: Exams & Merit -->
+      <div class="tab-content-panel" id="tab-exams">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:16px;color:var(--ucc-dark);">Exam Results & UCC Merit Positions</h3>
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Exam Name</th>
+              <th>Subject</th>
+              <th>Marks Obtained</th>
+              <th>Total Marks</th>
+              <th>UCC Merit Rank</th>
+            </tr>
+          </thead>
+          <tbody id="examHistoryBody">
+            <tr>
+              <td style="font-weight:700;">Weekly Model Test - 01</td>
+              <td>Physics & Chemistry</td>
+              <td style="font-weight:800;color:var(--ucc-primary);">88.5</td>
+              <td>100</td>
+              <td><span class="badge badge-primary" style="background:#e0e7ff;color:var(--ucc-primary-dark);padding:4px 10px;border-radius:12px;font-weight:800;">Rank # 4</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Subject Final - Biology</td>
+              <td>Botany & Zoology</td>
+              <td style="font-weight:800;color:var(--ucc-primary);">92.0</td>
+              <td>100</td>
+              <td><span class="badge badge-primary" style="background:#dcfce7;color:#15803d;padding:4px 10px;border-radius:12px;font-weight:800;">Rank # 2</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/student-profile.js"></script>
+</body>
+</html>

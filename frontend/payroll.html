@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll - EduSmart Admin</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .payroll-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .payroll-stat {
+            background: var(--bg-card);
+            padding: 16px 18px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: all var(--transition-base);
+        }
+        .payroll-stat:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .payroll-stat .ps-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+        .payroll-stat .ps-value { font-size: 1.3rem; font-weight: 800; color: var(--text-main); }
+        .payroll-filters {
+            background: var(--bg-card);
+            padding: 16px 20px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .payroll-filters .filter-item { flex: 1; min-width: 140px; }
+        .payroll-filters .filter-item label { display: block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+        .payroll-filters .filter-item select,
+        .payroll-filters .filter-item input { width: 100%; padding: 8px 10px; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.85rem; background: var(--bg-main); }
+        .payroll-filters .filter-item select:focus,
+        .payroll-filters .filter-item input:focus { border-color: var(--primary); outline: none; }
+        .status-badge { padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .status-badge.paid { background: #d1fae5; color: #065f46; }
+        .status-badge.pending { background: #fef3c7; color: #92400e; }
+        .status-badge.partial { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <span>Edu<span class="gradient-text">Smart</span> <small class="admin-badge">Admin</small></span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+            <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+            <a href="add-student.html" class="nav-item"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+            <a href="exams.html" class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+            <a href="payments.html" class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payments</span><span class="nav-tooltip">Payments</span></a>
+            <a href="receipt.html" class="nav-item"><i class="fas fa-receipt"></i><span>Receipts</span><span class="nav-tooltip">Receipts</span></a>
+            <a href="reports.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+            <a href="finance.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Finance</span><span class="nav-tooltip">Finance</span></a>
+            <a href="expenses.html" class="nav-item"><i class="fas fa-shopping-cart"></i><span>Expenses</span><span class="nav-tooltip">Expenses</span></a>
+            <a href="payroll.html" class="nav-item active"><i class="fas fa-users-cog"></i><span>Payroll</span><span class="nav-tooltip">Payroll</span></a>
+            <a href="batches.html" class="nav-item"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+            <a href="batch-transfer.html" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Batch Transfer</span><span class="nav-tooltip">Batch Transfer</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span></a>
+            <a href="login.html" class="nav-item logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <h1 class="page-title"><i class="fas fa-users-cog"></i> Payroll Management</h1>
+            <div class="user-info">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Admin" class="user-avatar">
+                <div class="user-details">
+                    <span class="user-name">Administrator</span>
+                    <span class="user-role">Finance Manager</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-header-action">
+            <div>
+                <h2><i class="fas fa-money-check-alt"></i> Teacher &amp; Staff Salary</h2>
+                <p>Manage monthly payroll, salary, advance, bonus and deductions.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fas fa-plus-circle"></i> Add Payroll
+                </button>
+                <button class="btn btn-success" onclick="printPayrollSummary()">
+                    <i class="fas fa-print"></i> Print Summary
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="payroll-summary-grid" id="payrollSummary">
+            <div class="payroll-stat" style="border-left:4px solid #3b82f6;"><div class="ps-label">Total Employees</div><div class="ps-value" id="totalEmployees">-</div></div>
+            <div class="payroll-stat" style="border-left:4px solid #8b5cf6;"><div class="ps-label">Total Salary</div><div class="ps-value" id="totalSalary">-</div></div>
+            <div class="payroll-stat" style="border-left:4px solid #059669;"><div class="ps-label">Total Paid</div><div class="ps-value" id="totalPaid">-</div></div>
+            <div class="payroll-stat" style="border-left:4px solid #dc2626;"><div class="ps-label">Total Due</div><div class="ps-value" id="totalDue">-</div></div>
+            <div class="payroll-stat" style="border-left:4px solid #f59e0b;"><div class="ps-label">Paid Count</div><div class="ps-value" id="paidCount">-</div></div>
+            <div class="payroll-stat" style="border-left:4px solid #e11d48;"><div class="ps-label">Pending Count</div><div class="ps-value" id="pendingCount">-</div></div>
+        </div>
+
+        <!-- Filters -->
+        <div class="payroll-filters">
+            <div class="filter-item">
+                <label>Month</label>
+                <select id="monthFilter">
+                    <option value="January">January</option><option value="February">February</option>
+                    <option value="March">March</option><option value="April">April</option>
+                    <option value="May">May</option><option value="June">June</option>
+                    <option value="July">July</option><option value="August">August</option>
+                    <option value="September">September</option><option value="October">October</option>
+                    <option value="November">November</option><option value="December">December</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>Year</label>
+                <select id="yearFilter"></select>
+            </div>
+            <div class="filter-item">
+                <label>Status</label>
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Partial">Partial</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>Employee</label>
+                <input type="text" id="employeeSearch" placeholder="Search employee...">
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-end;">
+                <button class="btn btn-primary" onclick="loadPayroll()"><i class="fas fa-search"></i> Search</button>
+                <button class="btn btn-secondary" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+        </div>
+
+        <!-- Payroll Table -->
+        <div class="data-card">
+            <div class="card-header">
+                <h3><i class="fas fa-table"></i> Payroll Records</h3>
+                <span class="badge badge-primary" id="payrollCount">Total: 0</span>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Name</th>
+                            <th>Designation</th>
+                            <th>Salary</th>
+                            <th>Paid</th>
+                            <th>Due</th>
+                            <th>Bonus</th>
+                            <th>Deduction</th>
+                            <th>Net Payable</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payrollTableBody">
+                        <tr><td colspan="12" class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="payrollTotalFooter" style="padding:12px 16px;background:linear-gradient(135deg,#eef2ff,#e0e7ff);border-top:1px solid var(--border-color);font-weight:700;display:none;"></div>
+        </div>
+
+        <footer class="main-footer">
+            <p>© 2026 EduSmart Coaching &amp; Student Management System</p>
+        </footer>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="payrollModal">
+        <div class="modal" style="max-width:700px;">
+            <div class="modal-header" style="background:linear-gradient(135deg,#1e2050 0%,#2d3436 100%);">
+                <h3 id="modalTitle"><i class="fas fa-plus-circle"></i> Add Payroll Record</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="payrollForm">
+                    <input type="hidden" id="payrollId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-id-card"></i> Employee ID <span class="required">*</span></label>
+                            <input type="text" id="employeeId" placeholder="e.g., EMP-001" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Employee Name <span class="required">*</span></label>
+                            <input type="text" id="employeeName" placeholder="Full name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-briefcase"></i> Designation <span class="required">*</span></label>
+                            <input type="text" id="designation" placeholder="e.g., Teacher, Staff" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-money-bill-wave"></i> Salary (৳) <span class="required">*</span></label>
+                            <input type="number" id="salary" min="0" step="0.01" required oninput="calculateNet()">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> Month <span class="required">*</span></label>
+                            <select id="month" required>
+                                <option value="January">January</option><option value="February">February</option>
+                                <option value="March">March</option><option value="April">April</option>
+                                <option value="May">May</option><option value="June">June</option>
+                                <option value="July">July</option><option value="August">August</option>
+                                <option value="September">September</option><option value="October">October</option>
+                                <option value="November">November</option><option value="December">December</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-alt"></i> Year <span class="required">*</span></label>
+                            <select id="payYear" required></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-hand-holding-usd"></i> Paid Amount (৳)</label>
+                            <input type="number" id="paidAmount" min="0" step="0.01" value="0" oninput="calculateNet()">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-day"></i> Payment Date</label>
+                            <input type="date" id="paymentDate">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-plus-circle"></i> Bonus (৳)</label>
+                            <input type="number" id="bonus" min="0" step="0.01" value="0" oninput="calculateNet()">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-minus-circle"></i> Deduction (৳)</label>
+                            <input type="number" id="deduction" min="0" step="0.01" value="0" oninput="calculateNet()">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-hand-point-up"></i> Advance (৳)</label>
+                            <input type="number" id="advance" min="0" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-credit-card"></i> Payment Method</label>
+                            <select id="paymentMethod">
+                                <option value="Cash">Cash</option><option value="Bank">Bank</option>
+                                <option value="bKash">bKash</option><option value="Nagad">Nagad</option>
+                                <option value="Rocket">Rocket</option><option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Net Payable Display -->
+                    <div style="background:linear-gradient(135deg,#eef2ff,#e0e7ff);padding:14px 16px;border-radius:var(--radius-md);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-weight:700;">Net Payable:</span>
+                        <span id="netPayableDisplay" style="font-size:1.3rem;font-weight:800;color:#1e40af;">৳0.00</span>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-sticky-note"></i> Notes</label>
+                        <textarea id="notes" rows="2" placeholder="Optional notes..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()"><i class="fas fa-times"></i> Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Save Payroll</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/payroll.js"></script>
+</body>
+</html>
+

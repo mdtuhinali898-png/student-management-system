@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Student ERP</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <span>Edu<span class="gradient-text">Smart</span> <small class="admin-badge">Admin</small></span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+            <a href="students.html" class="nav-item"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+            <a href="add-student.html" class="nav-item"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+            <a href="exams.html" class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+            <a href="payments.html" class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payments</span><span class="nav-tooltip">Payments</span></a>
+            <a href="receipt.html" class="nav-item"><i class="fas fa-receipt"></i><span>Receipts</span><span class="nav-tooltip">Receipts</span></a>
+            <a href="reports.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+            <a href="finance.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Finance</span><span class="nav-tooltip">Finance</span></a>
+            <a href="expenses.html" class="nav-item"><i class="fas fa-shopping-cart"></i><span>Expenses</span><span class="nav-tooltip">Expenses</span></a>
+            <a href="batches.html" class="nav-item"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+            <a href="batch-transfer.html" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Batch Transfer</span><span class="nav-tooltip">Batch Transfer</span></a>
+            <a href="settings.html" class="nav-item active"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span><span class="nav-tooltip">View Website</span></a>
+            <a href="login.html" class="nav-item logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span><span class="nav-tooltip">Logout</span></a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <h1 class="page-title">System Settings</h1>
+            <div class="user-info">
+                <img src="https://i.pravatar.cc/45" alt="Admin" class="user-avatar">
+                <div class="user-details">
+                    <span class="user-name">Administrator</span>
+                    <span class="user-role">Super Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Header -->
+        <div class="page-header-action">
+            <div>
+                <h2>Settings & Configuration</h2>
+                <p>Manage your institute and system preferences</p>
+            </div>
+        </div>
+
+        <!-- Settings Tabs -->
+        <section class="settings-tabs">
+            <button class="tab-btn active" data-tab="institute" onclick="switchTab('institute')">
+                <i class="fas fa-building"></i> Institute Info
+            </button>
+            <button class="tab-btn" data-tab="academic" onclick="switchTab('academic')">
+                <i class="fas fa-book"></i> Academic
+            </button>
+            <button class="tab-btn" data-tab="profile" onclick="switchTab('profile')">
+                <i class="fas fa-user-cog"></i> Profile
+            </button>
+            <button class="tab-btn" data-tab="system" onclick="switchTab('system')">
+                <i class="fas fa-sliders-h"></i> System
+            </button>
+            <button class="tab-btn" data-tab="landing" onclick="switchTab('landing')">
+                <i class="fas fa-palette"></i> Landing Content
+            </button>
+            <button class="tab-btn" data-tab="notices" onclick="switchTab('notices')">
+                <i class="fas fa-bullhorn"></i> Notices
+            </button>
+            <button class="tab-btn" data-tab="backup" onclick="switchTab('backup')">
+                <i class="fas fa-database"></i> Backup
+            </button>
+        </section>
+
+        <!-- Settings Content -->
+        <section class="settings-content">
+            
+            <!-- Institute Info Tab -->
+            <div class="tab-content active" id="instituteTab">
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-building"></i> Institute Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="instituteForm">
+                            <div class="logo-upload-section">
+                                <div class="logo-preview" id="logoPreview">
+                                    <i class="fas fa-image"></i>
+                                    <p>Institute Logo</p>
+                                </div>
+                                <input type="file" id="logoInput" accept="image/*" style="display:none;">
+                                <button type="button" class="btn-upload" onclick="document.getElementById('logoInput').click()">
+                                    <i class="fas fa-upload"></i> Upload Logo
+                                </button>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Institute Name <span class="required">*</span></label>
+                                    <input type="text" id="instituteName" placeholder="ABC Coaching Center" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Director/Principal Name</label>
+                                    <input type="text" id="directorName" placeholder="Md. Tuhin Ali">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number <span class="required">*</span></label>
+                                    <input type="tel" id="institutePhone" placeholder="017XXXXXXXX" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" id="instituteEmail" placeholder="info@abc.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Website</label>
+                                    <input type="url" id="instituteWebsite" placeholder="www.abc.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Established Year</label>
+                                    <input type="number" id="establishedYear" placeholder="2020" min="1900" max="2030">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Address <span class="required">*</span></label>
+                                    <textarea id="instituteAddress" rows="3" placeholder="Full address with city and postal code" required></textarea>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>About Institute</label>
+                                    <textarea id="instituteAbout" rows="4" placeholder="Brief description about your institute..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save">
+                                    <i class="fas fa-save"></i> Save Institute Info
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Settings Tab -->
+            <div class="tab-content" id="academicTab">
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-book"></i> Academic Year Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="academicForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Current Academic Year</label>
+                                    <select id="academicYear">
+                                        <option value="2025-2026">2025-2026</option>
+                                        <option value="2026-2027" selected>2026-2027</option>
+                                        <option value="2027-2028">2027-2028</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Session Start Month</label>
+                                    <select id="sessionStart">
+                                        <option value="January">January</option>
+                                        <option value="February">February</option>
+                                        <option value="March">March</option>
+                                        <option value="April">April</option>
+                                        <option value="May">May</option>
+                                        <option value="June">June</option>
+                                        <option value="July" selected>July</option>
+                                        <option value="August">August</option>
+                                        <option value="September">September</option>
+                                        <option value="October">October</option>
+                                        <option value="November">November</option>
+                                        <option value="December">December</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Default Monthly Fee (৳)</label>
+                                    <input type="number" id="defaultFee" placeholder="1500" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Late Fee Fine (৳)</label>
+                                    <input type="number" id="lateFeeFine" placeholder="100" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fee Due Date (Day of Month)</label>
+                                    <input type="number" id="feeDueDate" placeholder="10" min="1" max="28">
+                                </div>
+                                <div class="form-group">
+                                    <label>Max Discount (%)</label>
+                                    <input type="number" id="maxDiscount" placeholder="20" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save">
+                                    <i class="fas fa-save"></i> Save Academic Settings
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-layer-group"></i> Batch Management</h3>
+                        <button class="btn-add" onclick="addBatch()">
+                            <i class="fas fa-plus"></i> Add Batch
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Batch Name</th>
+                                        <th>Year</th>
+                                        <th>Prefix</th>
+                                        <th>Students</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="batchTableBody">
+                                    <!-- Data will be injected via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div class="tab-content" id="profileTab">
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-user-cog"></i> Admin Profile</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="profileForm">
+                            <div class="profile-photo-section">
+                                <div class="profile-photo-preview" id="profilePhotoPreview">
+                                    <img src="https://i.pravatar.cc/150?img=1" alt="Admin">
+                                </div>
+                                <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;">
+                                <button type="button" class="btn-upload" onclick="document.getElementById('profilePhotoInput').click()">
+                                    <i class="fas fa-camera"></i> Change Photo
+                                </button>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Full Name <span class="required">*</span></label>
+                                    <input type="text" id="adminName" placeholder="Administrator Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Username <span class="required">*</span></label>
+                                    <input type="text" id="adminUsername" placeholder="admin" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email <span class="required">*</span></label>
+                                    <input type="email" id="adminEmail" placeholder="admin@abc.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input type="tel" id="adminPhone" placeholder="01XXXXXXXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label>Role</label>
+                                    <select id="adminRole">
+                                        <option value="Super Admin">Super Admin</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Accountant">Accountant</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Designation</label>
+                                    <input type="text" id="adminDesignation" placeholder="System Administrator">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save">
+                                    <i class="fas fa-save"></i> Update Profile
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-lock"></i> Change Password</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="passwordForm">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label>Current Password <span class="required">*</span></label>
+                                    <input type="password" id="currentPassword" placeholder="Enter current password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>New Password <span class="required">*</span></label>
+                                    <input type="password" id="newPassword" placeholder="Enter new password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirm Password <span class="required">*</span></label>
+                                    <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save">
+                                    <i class="fas fa-key"></i> Change Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Tab -->
+            <div class="tab-content" id="systemTab">
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-palette"></i> Appearance</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Theme Mode</h4>
+                                <p>Choose between light and dark theme</p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="themeToggle">
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="theme-label" id="themeLabel">Light Mode</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Primary Color</h4>
+                                <p>Choose the main color theme</p>
+                            </div>
+                            <div class="setting-control">
+                                <input type="color" id="primaryColor" value="#4e73df">
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Sidebar Position</h4>
+                                <p>Choose sidebar alignment</p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="sidebarPosition">
+                                    <option value="left">Left</option>
+                                    <option value="right">Right</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bell"></i> Notifications</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Email Notifications</h4>
+                                <p>Receive important updates via email</p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Payment Reminders</h4>
+                                <p>Send automatic payment reminders to students</p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="paymentReminders" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>System Alerts</h4>
+                                <p>Show system notifications and alerts</p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="switch">
+                                    <input type="checkbox" id="systemAlerts" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-globe"></i> Regional Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Language</label>
+                                <select id="language">
+                                    <option value="en">English</option>
+                                    <option value="bn">বাংলা (Bengali)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Currency</label>
+                                <select id="currency">
+                                    <option value="BDT">BDT (৳)</option>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="INR">INR (₹)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Date Format</label>
+                                <select id="dateFormat">
+                                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Timezone</label>
+                                <select id="timezone">
+                                    <option value="Asia/Dhaka">Asia/Dhaka (GMT+6)</option>
+                                    <option value="Asia/Kolkata">Asia/Kolkata (GMT+5:30)</option>
+                                    <option value="UTC">UTC (GMT+0)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-save" onclick="saveSystemSettings()">
+                                <i class="fas fa-save"></i> Save System Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Landing Page Settings Tab -->
+            <div class="tab-content" id="landingTab">
+                <div class="settings-card">
+                    <div class="card-header"><h3><i class="fas fa-image"></i> Header, Banner & Footer</h3></div>
+                    <div class="card-body">
+                        <form id="landingForm">
+                            <div class="form-grid">
+                                <div class="form-group"><label>Header / Brand Name</label><input type="text" id="landingBrandName" placeholder="Your institute name"></div>
+                                <div class="form-group"><label>Banner Title</label><input type="text" id="landingHeroTitle" placeholder="Banner heading"></div>
+                                <div class="form-group full-width"><label>Banner Description</label><textarea id="landingHeroDescription" rows="3" placeholder="Short banner description"></textarea></div>
+                                <div class="form-group"><label>Footer Description</label><textarea id="landingFooterDescription" rows="3" placeholder="About your institute"></textarea></div>
+                                <div class="form-group"><label>Office Hours</label><input type="text" id="landingOfficeHours" placeholder="Sat - Thu: 8:00 AM - 8:00 PM"></div>
+                                <div class="form-group full-width">
+                                    <label>Banner Image (max 2MB)</label>
+                                    <div class="landing-image-control"><img id="heroImagePreview" alt="Banner preview"><input type="file" id="heroImageInput" accept="image/*"><button type="button" class="btn-upload" onclick="document.getElementById('heroImageInput').click()"><i class="fas fa-upload"></i> Choose Banner Image</button></div>
+                                </div>
+                            </div>
+                            <div class="form-actions"><button class="btn-save" type="submit"><i class="fas fa-save"></i> Save Landing Content</button></div>
+                        </form>
+                    </div>
+                </div>
+                <div class="settings-card">
+                    <div class="card-header card-header-with-action"><h3><i class="fas fa-th-large"></i> Program Cards</h3><button class="btn-save" type="button" onclick="openProgramEditor()"><i class="fas fa-plus"></i> Add Card</button></div>
+                    <div class="card-body"><p class="content-help">Add, edit, or delete the cards shown in the landing page Programs section.</p><div id="landingProgramsList" class="landing-programs-list"></div></div>
+                </div>
+                <div class="landing-editor-modal" id="programEditorModal" aria-hidden="true">
+                    <div class="landing-editor-dialog">
+                        <button type="button" class="landing-modal-close" onclick="closeProgramEditor()">&times;</button>
+                        <h3 id="programEditorTitle">Add Program Card</h3>
+                        <form id="programEditorForm"><input type="hidden" id="programEditIndex">
+                            <div class="form-grid"><div class="form-group"><label>Card Title</label><input id="programTitle" required></div><div class="form-group"><label>Price</label><input id="programPrice" placeholder="৳ 2,500 / month"></div><div class="form-group full-width"><label>Description</label><textarea id="programDescription" rows="3" required></textarea></div><div class="form-group"><label>Icon (Font Awesome class)</label><input id="programIcon" value="fas fa-book"></div><div class="form-group"><label>Category</label><input id="programCategory" value="academic"></div><div class="form-group"><label>Class</label><input id="programClass" value="all"></div><div class="form-group"><label>Batch Type</label><input id="programType" value="regular"></div></div>
+                            <div class="form-actions"><button class="btn-save" type="submit">Save Card</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notices Tab -->
+            <div class="tab-content" id="noticesTab">
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bullhorn"></i> Notice Management</h3>
+                        <button class="btn-add" onclick="openNoticeEditor()">
+                            <i class="fas fa-plus"></i> Add Notice
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <p class="content-help">Manage notices displayed on the public landing page. Drag to reorder, enable/disable to show/hide.</p>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Badge</th>
+                                        <th>Status</th>
+                                        <th>Order</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="noticesTableBody">
+                                    <tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">Loading notices...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notice Editor Modal -->
+                <div class="landing-editor-modal" id="noticeEditorModal" aria-hidden="true">
+                    <div class="landing-editor-dialog">
+                        <button type="button" class="landing-modal-close" onclick="closeNoticeEditor()">&times;</button>
+                        <h3 id="noticeEditorTitle">Add Notice</h3>
+                        <form id="noticeEditorForm">
+                            <input type="hidden" id="noticeEditId">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label>Notice Title <span class="required">*</span></label>
+                                    <input id="noticeTitle" required placeholder="e.g. Admission Alert">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Description <span class="required">*</span></label>
+                                    <textarea id="noticeDescription" rows="3" required placeholder="Brief notice details..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Badge Text</label>
+                                    <input id="noticeBadge" value="Notice" placeholder="e.g. Admission Alert">
+                                </div>
+                                <div class="form-group">
+                                    <label>Badge Color</label>
+                                    <select id="noticeBadgeColor">
+                                        <option value="primary">Primary</option>
+                                        <option value="success">Success</option>
+                                        <option value="warning">Warning</option>
+                                        <option value="danger">Danger</option>
+                                        <option value="info">Info</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Button Text</label>
+                                    <input id="noticeButtonText" value="Learn More" placeholder="e.g. Register Now">
+                                </div>
+                                <div class="form-group">
+                                    <label>Button Link</label>
+                                    <input id="noticeButtonLink" value="#" placeholder="https://... or #">
+                                </div>
+                                <div class="form-group">
+                                    <label>Icon (Font Awesome)</label>
+                                    <input id="noticeIcon" value="fas fa-bullhorn" placeholder="fas fa-bullhorn">
+                                </div>
+                                <div class="form-group">
+                                    <label>Sort Order</label>
+                                    <input type="number" id="noticeSortOrder" value="0" placeholder="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="noticeStatus">
+                                        <option value="true">Active</option>
+                                        <option value="false">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>PDF Attachment (max 5MB)</label>
+                                    <input type="file" id="noticePdfInput" accept="application/pdf" style="display:none;">
+                                    <button type="button" class="btn-upload" onclick="document.getElementById('noticePdfInput').click()">
+                                        <i class="fas fa-file-pdf"></i> Choose PDF File
+                                    </button>
+                                    <div id="noticePdfPreview" style="margin-top:8px; font-size:0.85rem; color:var(--gray-500);"></div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-save" type="submit">Save Notice</button>
+                                <button class="btn-secondary" type="button" onclick="closeNoticeEditor()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backup Tab -->
+            <div class="tab-content" id="backupTab">
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-download"></i> Data Backup</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="backup-info">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Backup all your data including students, payments, and settings. The backup file will be downloaded as a JSON file.</p>
+                        </div>
+
+                        <div class="backup-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-users"></i>
+                                <div>
+                                    <h4 id="backupStudents">0</h4>
+                                    <p>Students</p>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-receipt"></i>
+                                <div>
+                                    <h4 id="backupPayments">0</h4>
+                                    <p>Payments</p>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-database"></i>
+                                <div>
+                                    <h4 id="backupSize">0 KB</h4>
+                                    <p>Data Size</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="backup-actions">
+                            <button class="btn-backup" onclick="createBackup()">
+                                <i class="fas fa-download"></i> Create Backup
+                            </button>
+                            <button class="btn-restore" onclick="document.getElementById('restoreInput').click()">
+                                <i class="fas fa-upload"></i> Restore Backup
+                            </button>
+                            <input type="file" id="restoreInput" accept=".json" style="display:none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card danger-zone">
+                    <div class="card-header">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="danger-item">
+                            <div class="danger-info">
+                                <h4>Clear All Data</h4>
+                                <p>This will permanently delete all students, payments, and settings. This action cannot be undone!</p>
+                            </div>
+                            <button class="btn-danger" onclick="clearAllData()">
+                                <i class="fas fa-trash"></i> Clear All Data
+                            </button>
+                        </div>
+
+                        <div class="danger-item">
+                            <div class="danger-info">
+                                <h4>Reset to Default</h4>
+                                <p>Reset all settings to default values. Student and payment data will remain intact.</p>
+                            </div>
+                            <button class="btn-warning" onclick="resetToDefault()">
+                                <i class="fas fa-redo"></i> Reset Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>© 2026 Student ERP Management System | Developed by Tuhin Ali</p>
+        </footer>
+    </main>
+
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/settings.js"></script>
+</body>
+</html>
+

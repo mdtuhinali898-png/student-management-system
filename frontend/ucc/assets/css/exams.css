@@ -1,0 +1,155 @@
+/* ==========================================================================
+   UCC পাবনা — Exam Management Styles
+   ========================================================================== */
+
+/* ── Banner ── */
+.ex-banner {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+  color: #fff; padding: 26px 32px; border-radius: 20px;
+  margin-bottom: 24px; display: flex;
+  justify-content: space-between; align-items: center;
+  gap: 16px; flex-wrap: wrap;
+  box-shadow: 0 10px 30px rgba(49,46,129,.3);
+}
+.ex-banner h2 { margin: 0 0 5px; font-size: 20px; font-weight: 800; color: #fff; }
+.ex-banner p  { margin: 0; opacity: .85; font-size: 13px; }
+.ex-banner-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ── Stat Cards ── */
+.ex-stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 22px; }
+.ex-stat {
+  background: #fff; border-radius: 16px;
+  padding: 18px 20px; border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  display: flex; align-items: center; gap: 14px;
+  transition: .2s;
+}
+.ex-stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.ex-stat-icon { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
+.ex-stat small { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); margin-bottom: 3px; }
+.ex-stat strong { font-size: 22px; font-weight: 800; color: var(--text-main); font-family: var(--font-heading); }
+.ex-stat-blue   .ex-stat-icon { background: #eff6ff; color: #3b82f6; }
+.ex-stat-green  .ex-stat-icon { background: #ecfdf5; color: #059669; }
+.ex-stat-amber  .ex-stat-icon { background: #fffbeb; color: #d97706; }
+.ex-stat-purple .ex-stat-icon { background: #f5f3ff; color: #7c3aed; }
+
+/* ── Filter Bar ── */
+.ex-filter-bar {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  background: #fff; padding: 14px 18px;
+  border: 1px solid var(--border-color); border-radius: 14px;
+  box-shadow: var(--shadow-sm); margin-bottom: 20px; align-items: flex-end;
+}
+.ex-filter-field { display: flex; flex-direction: column; gap: 4px; min-width: 140px; }
+.ex-filter-field label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+.ex-filter-field select,
+.ex-filter-field input {
+  padding: 9px 12px; border: 1.5px solid var(--border-color);
+  border-radius: 10px; font-size: 13px; font-family: inherit;
+  outline: none; background: #fff;
+}
+.ex-filter-field select:focus,
+.ex-filter-field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+
+/* ── Status badges ── */
+.ex-badge {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 99px; font-size: 11px; font-weight: 700;
+}
+.ex-badge-published { background: #ecfdf5; color: #065f46; border: 1px solid #86efac; }
+.ex-badge-draft     { background: #fffbeb; color: #92400e; border: 1px solid #fcd34d; }
+
+/* ── Exam type badge ── */
+.ex-type {
+  display: inline-block; padding: 2px 9px;
+  border-radius: 99px; font-size: 11px; font-weight: 700;
+  background: #eef2ff; color: #4f46e5;
+}
+
+/* ── Action buttons in table ── */
+.ex-action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.ex-act {
+  padding: 5px 10px; border-radius: 8px; font-size: 12px;
+  font-weight: 600; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 4px;
+  text-decoration: none; transition: .15s; font-family: inherit;
+}
+.ex-act:hover { filter: brightness(.92); transform: translateY(-1px); }
+.ex-act-mark    { background: #eef2ff; color: #4f46e5; }
+.ex-act-merit   { background: #ecfdf5; color: #059669; }
+.ex-act-pub     { background: #f0fdf4; color: #166534; }
+.ex-act-unpub   { background: #fef9c3; color: #92400e; }
+.ex-act-del     { background: #fee2e2; color: #dc2626; }
+
+/* ── Modal ── */
+.ex-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,.6); backdrop-filter: blur(4px);
+  z-index: 9999; display: flex; align-items: center;
+  justify-content: center; padding: 24px 16px; overflow-y: auto;
+}
+.ex-modal-box {
+  background: #fff; border-radius: 20px;
+  width: 100%; max-width: 720px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.3);
+  animation: exSlide .25s cubic-bezier(.16,1,.3,1);
+  overflow: hidden;
+}
+@keyframes exSlide { from { opacity:0; transform:translateY(-16px) scale(.97); } to { opacity:1; transform:none; } }
+
+.ex-modal-hdr {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #fff; padding: 20px 26px;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+}
+.ex-modal-hdr h3 { margin: 0 0 3px; font-size: 18px; color: #fff; }
+.ex-modal-hdr p  { margin: 0; opacity: .8; font-size: 13px; }
+.ex-modal-close {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,.2); border: none; color: #fff;
+  cursor: pointer; display: grid; place-items: center; font-size: 15px; transition: .2s;
+}
+.ex-modal-close:hover { background: rgba(255,255,255,.35); transform: rotate(90deg); }
+
+.ex-modal-body { padding: 24px 26px; }
+
+/* ── Form inside modal ── */
+.ex-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ex-field { display: flex; flex-direction: column; gap: 5px; }
+.ex-field label { font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: .04em; }
+.ex-input {
+  padding: 11px 14px; border: 1.5px solid var(--border-color);
+  border-radius: 10px; font-size: 14px; font-weight: 500;
+  font-family: inherit; outline: none; transition: .2s; background: #fff;
+}
+.ex-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,.1); }
+
+.ex-demo-note {
+  font-size: 12px; color: #64748b; background: #f8fafc;
+  border: 1px solid var(--border-color); border-radius: 8px;
+  padding: 10px 14px; margin: 14px 0; line-height: 1.6;
+}
+.ex-demo-note i    { color: #4f46e5; margin-right: 5px; }
+.ex-demo-note code { background: #e0e7ff; color: #4f46e5; padding: 1px 5px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+
+.ex-modal-actions { display: flex; gap: 12px; justify-content: flex-end; padding-top: 16px; border-top: 1px solid var(--border-color); }
+
+/* ── Toast ── */
+.ex-toast {
+  position: fixed; bottom: 22px; right: 22px; z-index: 10001;
+  padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15); transition: .3s; max-width: 320px;
+  background: #dcfce7; color: #166534; border: 1px solid #86efac;
+}
+.ex-toast.hidden  { opacity: 0; transform: translateY(10px); pointer-events: none; }
+.ex-toast.error   { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) { .ex-stat-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 768px)  {
+  .ex-stat-grid  { grid-template-columns: 1fr 1fr; }
+  .ex-form-grid  { grid-template-columns: 1fr; }
+  .ex-filter-bar { flex-direction: column; }
+  .ex-banner     { flex-direction: column; }
+}
+@media (max-width: 480px)  { .ex-stat-grid { grid-template-columns: 1fr; } }

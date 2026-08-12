@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt — UCC Pabna Admin</title>
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="assets/css/design-system.css?v=2">
+    <link rel="stylesheet" href="assets/css/receipt-print.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- html2pdf for PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+      /* Standalone page wrapper for receipt */
+      body {
+        background: #f8fafc;
+        padding: 24px;
+      }
+      .action-bar {
+        max-width: 210mm;
+        margin: 0 auto 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #ffffff;
+        padding: 14px 24px;
+        border-radius: 14px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        border: 1px solid #e2e8f0;
+      }
+      .btn-back {
+        color: #4f46e5;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .paper-size-toggle {
+        display: flex;
+        background: #f1f5f9;
+        padding: 3px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+      }
+      .size-btn {
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 800;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .size-btn.active {
+        background: #4f46e5;
+        color: white;
+        box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+      }
+      .btn-print, .btn-download {
+        padding: 8px 18px;
+        font-size: 13px;
+        font-weight: 700;
+        border-radius: 50px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+      }
+      .btn-print { background: #4f46e5; color: white; }
+      .btn-print:hover { background: #4338ca; }
+      .btn-download { background: #059669; color: white; }
+      .btn-download:hover { background: #047857; }
+
+      .receipt-standalone-wrapper {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+</head>
+<body>
+
+    <!-- Action Bar (Hidden during print) -->
+    <div class="action-bar no-print">
+        <a href="payment.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Payment</a>
+        <div class="action-buttons">
+            <div class="paper-size-toggle">
+                <button class="size-btn" data-size="a4" onclick="changePaperSize('a4')">A4</button>
+                <button class="size-btn active" data-size="a5" onclick="changePaperSize('a5')">A5</button>
+            </div>
+            <button class="btn-print" onclick="printReceipt()"><i class="fas fa-print"></i> Print Receipt</button>
+            <button class="btn-download" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> Download PDF</button>
+        </div>
+    </div>
+
+    <!-- Receipt Container -->
+    <div class="receipt-standalone-wrapper">
+      <div class="receipt-container a5-paper" id="receiptContainer">
+          
+          <!-- Watermark -->
+          <div class="receipt-watermark">UCC RECEIPT</div>
+          
+          <!-- Inner Content -->
+          <div class="receipt-inner">
+          
+          <!-- Header -->
+          <div class="receipt-header">
+              <div class="header-shine"></div>
+              <div class="receipt-header-content">
+                  <div class="receipt-brand">
+                      <div class="logo-icon">
+                          <i class="fas fa-graduation-cap"></i>
+                      </div>
+                      <div class="institute-info">
+                          <h1>UCC Academic Care — Pabna Branch</h1>
+                          <p class="address"><i class="fas fa-map-marker-alt"></i> Pabna Town, Bangladesh</p>
+                          <p class="contact"><i class="fas fa-phone"></i> 01712345678 | <i class="fas fa-envelope"></i> info@uccpabna.edu.bd</p>
+                      </div>
+                  </div>
+
+                  <!-- Header Right Wrapper (Top-Right QR Code) -->
+                  <div class="header-right-wrapper">
+                      <div class="qr-code-box">
+                          <img id="receiptQrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=UCC-R-10001" alt="QR Code">
+                          <span class="qr-label">Scan to Verify</span>
+                      </div>
+                      <div class="receipt-title">
+                          <h2>PAYMENT RECEIPT</h2>
+                          <div class="receipt-meta">
+                              <div class="meta-item">
+                                  <span class="meta-label">Receipt No:</span>
+                                  <strong class="meta-value" id="receiptNo">UCC-R-10001</strong>
+                              </div>
+                              <div class="meta-item">
+                                  <span class="meta-label">Date:</span>
+                                  <strong class="meta-value" id="receiptDate">15 July 2026</strong>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Student & Payment Information Grid -->
+          <div class="receipt-section" style="margin-top:10px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                  
+                  <!-- Student Info -->
+                  <div style="background:#f8fafc;padding:10px 12px;border-radius:8px;border:1px solid #e2e8f0;">
+                      <h3 style="font-size:11px;font-weight:800;color:#4f46e5;margin:0 0 6px 0;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+                        <i class="fas fa-user-graduate"></i> Student Information
+                      </h3>
+                      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:9.5px;">
+                          <div><span style="color:#64748b;">Roll / ID:</span> <strong id="studentId" style="color:#0f172a;">STD1001</strong></div>
+                          <div><span style="color:#64748b;">Name:</span> <strong id="studentName" style="color:#0f172a;">Rahim Uddin</strong></div>
+                          <div><span style="color:#64748b;">Guardian:</span> <span id="fatherName" style="color:#334155;">Abdul Karim</span></div>
+                          <div><span style="color:#64748b;">Batch:</span> <strong id="batch" style="color:#4f46e5;">Medical-01</strong></div>
+                          <div><span style="color:#64748b;">Target Unit:</span> <span id="className" style="color:#334155;">Medical Special</span></div>
+                          <div><span style="color:#64748b;">Phone:</span> <span id="phone" style="color:#334155;">01711111111</span></div>
+                      </div>
+                  </div>
+
+                  <!-- Payment Info -->
+                  <div style="background:#f8fafc;padding:10px 12px;border-radius:8px;border:1px solid #e2e8f0;">
+                      <h3 style="font-size:11px;font-weight:800;color:#4f46e5;margin:0 0 6px 0;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+                        <i class="fas fa-credit-card"></i> Payment Information
+                      </h3>
+                      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:9.5px;">
+                          <div><span style="color:#64748b;">Txn ID:</span> <strong id="transactionId" style="color:#4f46e5;">TXN100125</strong></div>
+                          <div><span style="color:#64748b;">Method:</span> <strong id="paymentMethod" style="color:#0f172a;">bKash</strong></div>
+                          <div><span style="color:#64748b;">Date:</span> <span id="paymentMonth" style="color:#334155;">15 Jul 2026</span></div>
+                          <div><span style="color:#64748b;">Time:</span> <span id="paymentTime" style="color:#334155;">10:45 AM</span></div>
+                          <div><span style="color:#64748b;">Officer:</span> <span id="collectedBy" style="color:#334155;">Administrator</span></div>
+                          <div><span style="color:#64748b;">Status:</span> <span id="receiptStatus" style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:10px;font-weight:800;">Paid</span></div>
+                      </div>
+                  </div>
+
+              </div>
+          </div>
+
+          <!-- Fee Table Breakdown -->
+          <div class="receipt-section" style="margin-top:10px;">
+              <table style="width:100%;border-collapse:collapse;font-size:9.5px;">
+                  <thead>
+                      <tr style="background:#f1f5f9;color:#475569;text-align:left;">
+                          <th style="padding:6px 8px;border-radius:4px 0 0 4px;">SL</th>
+                          <th style="padding:6px 8px;">Description</th>
+                          <th style="padding:6px 8px;text-align:right;border-radius:0 4px 4px 0;">Amount (৳)</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr style="border-bottom:1px solid #e2e8f0;">
+                          <td style="padding:6px 8px;">01</td>
+                          <td style="padding:6px 8px;font-weight:600;" id="feeDescription">Course Tuition & Registration Fee</td>
+                          <td style="padding:6px 8px;text-align:right;font-weight:700;" id="totalCourseFeeItem">15,000.00</td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #e2e8f0;">
+                          <td style="padding:6px 8px;">02</td>
+                          <td style="padding:6px 8px;font-weight:600;">Lectures & Book Materials</td>
+                          <td style="padding:6px 8px;text-align:right;font-weight:700;">Included</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+
+          <!-- Summary Grid -->
+          <div style="margin-top:10px;background:#f8fafc;padding:10px 14px;border-radius:8px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:9.5px;color:#64748b;">
+                  <div>Total Course Fee: <strong id="totalFee" style="color:#0f172a;">৳15,000.00</strong></div>
+                  <div>Discount Applied: <strong id="totalDiscount" style="color:#7c3aed;">৳0.00</strong></div>
+                  <div id="discountRefRow" style="font-size:8.5px;color:#7c3aed;font-weight:700;margin-top:2px;display:none;">
+                      Discount Ref: <span id="discountRefName" style="color:#4f46e5;">Director Reference</span>
+                  </div>
+              </div>
+              <div style="text-align:right;">
+                  <div style="font-size:12px;font-weight:800;color:#059669;">PAID AMOUNT: <span id="paidAmount">৳15,000.00</span></div>
+                  <div style="font-size:10px;font-weight:700;color:#dc2626;">DUE REMAINING: <span id="dueAmount">৳0.00</span></div>
+              </div>
+          </div>
+
+          <!-- Signatures -->
+          <div class="receipt-signatures" style="margin-top:auto;padding-top:20px;display:flex;justify-content:space-between;align-items:flex-end;font-size:9.5px;">
+              <div style="text-align:center;width:110px;">
+                  <div style="border-top:1.5px solid #64748b;padding-top:4px;font-weight:700;">Student Signature</div>
+              </div>
+              <div style="text-align:center;width:110px;">
+                  <div style="border-top:1.5px solid #64748b;padding-top:4px;font-weight:700;">Account Officer</div>
+              </div>
+              <div style="text-align:center;width:110px;">
+                  <div style="border-top:1.5px solid #64748b;padding-top:4px;font-weight:700;">Authorized Signature</div>
+              </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="receipt-footer-main" style="margin-top:16px;">
+              <div class="thank-you-msg"><i class="fas fa-heart"></i> Thank you for choosing UCC Academic Care Pabna!</div>
+              <div class="institute-name-footer">UCC Pabna Branch | Admission & Executive Office</div>
+              <div class="institute-details-footer">Pabna Town, Bangladesh | Support Hotline: 01712345678 | Email: info@uccpabna.edu.bd</div>
+              <div class="tagline-footer">"Quality Education For Admission Success"</div>
+          </div>
+
+      </div>
+      </div>
+    </div>
+
+    <script src="assets/js/receipt.js"></script>
+</body>
+</html>

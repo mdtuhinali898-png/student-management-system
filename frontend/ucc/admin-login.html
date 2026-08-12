@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - UCC পাবনা</title>
+    <link rel="stylesheet" href="assets/css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .ucc-info-box {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem 1.5rem;
+            border-radius: 14px;
+            margin-top: auto;
+        }
+        .ucc-info-box .info-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.75;
+            margin-bottom: 0.75rem;
+        }
+        .ucc-info-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.88rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+        .ucc-info-row:last-child { margin-bottom: 0; }
+        .ucc-info-row i { font-size: 0.8rem; opacity: 0.7; width: 14px; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+
+            <!-- Left Panel -->
+            <div class="login-illustration" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #6366f1 100%);">
+                <div class="brand-header">
+                    <div class="brand-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <span>UCC পাবনা</span>
+                </div>
+
+                <div class="illustration-content">
+                    <h2>Admin Dashboard-এ স্বাগতম</h2>
+                    <p>Payment, Admission, Distribution এবং সম্পূর্ণ institute management এক জায়গায়।</p>
+                </div>
+
+                <div class="ucc-info-box">
+                    <div class="info-title">📍 UCC পাবনা শাখা</div>
+                    <div class="ucc-info-row">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>এডওয়ার্ড কলেজ, রাধানগর, পাবনা</span>
+                    </div>
+                    <div class="ucc-info-row">
+                        <i class="fas fa-phone"></i>
+                        <span>01312-427799 / 01775-932188</span>
+                    </div>
+                    <div class="ucc-info-row">
+                        <i class="fas fa-lock"></i>
+                        <span>Authorized Personnel Only</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Form Panel -->
+            <div class="login-form-section">
+                <div class="login-header">
+                    <h1>Admin Login</h1>
+                    <p>UCC পাবনা Admin Portal-এ প্রবেশ করুন</p>
+                </div>
+
+                <form id="adminLoginForm" class="login-form">
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="username" name="username"
+                                placeholder="Admin username লিখুন"
+                                autocomplete="username" required>
+                        </div>
+                        <small class="error-msg" id="usernameError"></small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password"
+                                placeholder="Password লিখুন"
+                                autocomplete="current-password" required>
+                            <i class="fas fa-eye toggle-password" id="togglePwd" style="cursor:pointer;"></i>
+                        </div>
+                        <small class="error-msg" id="passwordError"></small>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Remember Me</span>
+                        </label>
+                        <a href="index.html" class="forgot-link">
+                            <i class="fas fa-arrow-left"></i> Back to UCC Home
+                        </a>
+                    </div>
+
+                    <button type="submit" class="btn-login" id="adminLoginBtn">
+                        <span class="btn-text">
+                            <i class="fas fa-sign-in-alt"></i> Dashboard-এ প্রবেশ করুন
+                        </span>
+                        <i class="fas fa-spinner fa-spin loader" style="display:none;"></i>
+                    </button>
+                </form>
+
+                <div class="login-footer">
+                    <p>
+                        <a href="login.html" style="color:var(--primary);font-weight:600;text-decoration:none;">
+                            <i class="fas fa-user-graduate"></i> Student Login
+                        </a>
+                        &nbsp;&nbsp;|&nbsp;&nbsp;
+                        <a href="/index.html" style="color:var(--primary);font-weight:600;text-decoration:none;">
+                            <i class="fas fa-home"></i> EduSmart Home
+                        </a>
+                    </p>
+                    <p style="margin-top:8px;">© 2026 UCC পাবনা শাখা। All rights reserved. Designed and developed by Tuhin.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form       = document.getElementById('adminLoginForm');
+        const usernameEl = document.getElementById('username');
+        const passwordEl = document.getElementById('password');
+        const loginBtn   = document.getElementById('adminLoginBtn');
+        const btnText    = loginBtn.querySelector('.btn-text');
+        const loader     = loginBtn.querySelector('.loader');
+        const togglePwd  = document.getElementById('togglePwd');
+
+        // ── Password show/hide ──────────────────────────────────────
+        togglePwd.addEventListener('click', () => {
+            const type = passwordEl.type === 'password' ? 'text' : 'password';
+            passwordEl.type = type;
+            togglePwd.className = type === 'password'
+                ? 'fas fa-eye toggle-password'
+                : 'fas fa-eye-slash toggle-password';
+        });
+
+        // ── Form submit ─────────────────────────────────────────────
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearErrors();
+
+            const username = usernameEl.value.trim();
+            const password = passwordEl.value.trim();
+
+            let valid = true;
+            if (!username) { showError('usernameError', 'Username দিন।'); valid = false; }
+            if (!password) { showError('passwordError', 'Password দিন।'); valid = false; }
+            if (!valid) return;
+
+            // Loading state
+            loginBtn.disabled = true;
+            btnText.style.display = 'none';
+            loader.style.display  = 'inline-block';
+
+            await new Promise(r => setTimeout(r, 800));
+
+            try {
+                // Credentials (Phase 1 — mock; Phase 3 → real API)
+                const UCC_ADMIN = { username: 'ucc-admin', password: '123456' };
+
+                if (username === UCC_ADMIN.username && password === UCC_ADMIN.password) {
+                    sessionStorage.setItem('uccAdminToken', 'ucc-admin-' + Date.now());
+                    sessionStorage.setItem('uccAdminUser', JSON.stringify({
+                        username,
+                        role: 'ucc-admin',
+                        institute: 'UCC পাবনা শাখা',
+                        loginTime: new Date().toISOString()
+                    }));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    throw new Error('Username বা Password ভুল।');
+                }
+            } catch (err) {
+                showError('passwordError', err.message);
+                loginBtn.disabled = false;
+                btnText.style.display = 'inline';
+                loader.style.display  = 'none';
+            }
+        });
+
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = msg;
+        }
+        function clearErrors() {
+            document.querySelectorAll('.error-msg').forEach(el => el.textContent = '');
+        }
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+/* assets/css/students.css - ULTRA MODERN STUDENT DIRECTORY */
+@import url('design-system.css');
+
+/* Header Action Banner */
+.page-header-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+    padding: 28px 32px;
+    border-radius: var(--radius-lg);
+    color: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.page-header-action h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.page-header-action p {
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+/* Filter & Search Bar */
+.filter-section {
+    background: var(--bg-card);
+    padding: 22px 28px;
+    border-radius: var(--radius-lg);
+    margin-bottom: 28px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.filter-group {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-select, .search-box input {
+    padding: 12px 18px;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.93rem;
+    outline: none;
+    min-width: 170px;
+    background: #ffffff;
+    transition: all var(--transition-fast);
+}
+
+.filter-select:focus, .search-box input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 260px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    pointer-events: none;
+}
+
+.search-box input {
+    width: 100%;
+    padding-left: 46px;
+}
+
+/* Student Avatar Circle */
+.student-photo {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-light);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Table Action Buttons Grid */
+.action-btns {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-btns button, .action-btns a {
+    padding: 8px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all var(--transition-base);
+    text-decoration: none;
+}
+
+.btn-view {
+    background: linear-gradient(135deg, var(--cyan) 0%, #0891b2 100%);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+}
+
+.btn-edit {
+    background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-pay {
+    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, var(--danger) 0%, #e11d48 100%);
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+}
+
+.action-btns button:hover, .action-btns a:hover {
+    transform: translateY(-2px);
+}
+
+/* Pagination Bar */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 28px;
+    gap: 8px;
+}
+
+.page-btn {
+    padding: 9px 16px;
+    border: 1.5px solid var(--border-color);
+    background: #ffffff;
+    color: var(--text-main);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: all var(--transition-fast);
+}
+
+.page-btn:hover:not(:disabled) {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.page-btn.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35);
+}
+
+.page-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+    .page-header-action {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+    .filter-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-select, .search-box {
+        width: 100%;
+    }
+}

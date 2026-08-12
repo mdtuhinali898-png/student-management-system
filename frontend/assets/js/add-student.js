@@ -1,0 +1,359 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const apiBase = window.location.protocol === 'http:' && window.location.hostname === 'localhost' ? 'http://localhost:5002/api' : '/api';
+    const form = document.getElementById('addStudentForm');
+    const batchSelect = document.getElementById('batch');
+    const batchHelp = document.getElementById('batchHelp');
+    const monthlyFee = document.getElementById('monthlyFee');
+    const photoInput = document.getElementById('studentPhoto');
+    let batches = [];
+    let students = [];
+    let photo = '';
+
+    async function loadBatches() {
+        batchSelect.innerHTML = '<option value="">Loading batches...</option>';
+        try {
+            const [batchResponse, studentResponse] = await Promise.all([
+                fetch(`${apiBase}/batches`), fetch(`${apiBase}/students?limit=1000`)
+            ]);
+            const batchData = await batchResponse.json();
+            const studentData = await studentResponse.json();
+            if (!batchData.success) throw new Error(batchData.message || 'Could not load batches');
+            batches = (batchData.data || []).filter(batch => batch.status === 'Active');
+            students = studentData.students || [];
+            renderBatches();
+        } catch (error) {
+            console.error('Batch load error:', error);
+            loadLocalBatches();
+        }
+    }
+
+    function loadLocalBatches() {
+        const savedSettings = JSON.parse(localStorage.getItem('erp_settings') || '{}');
+        batches = (savedSettings.batches || []).filter(batch => !batch.status || batch.status === 'Active');
+        students = JSON.parse(localStorage.getItem('erp_students_data') || '[]');
+        renderBatches(true);
+    }
+
+    function renderBatches(offline = false) {
+        batchSelect.innerHTML = '<option value="">Select Batch...</option>';
+        if (!batches.length) {
+            batchSelect.innerHTML += '<option value="" disabled>No active batch available</option>';
+            batchHelp.innerHTML = 'আগে <a href="batches.html">Batch Management</a> থেকে একটি Active batch তৈরি করুন।';
+            return;
+        }
+        batches.forEach(batch => {
+            const option = document.createElement('option');
+            option.value = batch.name;
+            option.textContent = `${batch.name} — ৳${Number(batch.fee || 0).toLocaleString()}/month`;
+            batchSelect.appendChild(option);
+        });
+        batchHelp.textContent = offline ? 'Server পাওয়া যায়নি—এই browser-এ সংরক্ষিত batch দেখানো হচ্ছে।' : `${batches.length}টি Active batch পাওয়া গেছে।`;
+    }
+
+    batchSelect.addEventListener('change', () => {
+        const selected = batches.find(batch => batch.name === batchSelect.value);
+        if (selected && selected.fee !== undefined) monthlyFee.value = selected.fee;
+    });
+
+    photoInput.addEventListener('change', event => {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/') || file.size > 2 * 1024 * 1024) {
+            alert('Please select an image smaller than 2MB.'); photoInput.value = ''; return;
+        }
+        const reader = new FileReader();
+        reader.onload = e => { photo = e.target.result; };
+        reader.readAsDataURL(file);
+    });
+
+    function createStudentId(batchName) {
+        // Use the batch's stored prefix from the database
+        const batch = batches.find(b => b.name === batchName);
+        const prefix = (batch && batch.prefix)
+            ? batch.prefix.toUpperCase()
+            : batchName.split(/\s+/).map(word => word[0]).join('').toUpperCase().slice(0, 4) || 'STU';
+        const count = students.filter(student => student.batch === batchName).length + 1;
+        return `${prefix}-${String(count).padStart(3, '0')}`;
+    }
+
+    // Show processing overlay
+    function showProcessingOverlay(message) {
+        let overlay = document.getElementById('processingOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'processingOverlay';
+            overlay.className = 'processing-overlay';
+            overlay.innerHTML = `
+                <div class="processing-modal">
+                    <div class="spinner"></div>
+                    <h3>${message}</h3>
+                    <p>Please wait...</p>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+        overlay.style.display = 'flex';
+    }
+
+    function hideProcessingOverlay() {
+        const overlay = document.getElementById('processingOverlay');
+        if (overlay) overlay.style.display = 'none';
+    }
+
+    // Show admission success modal with student info and print button
+    async function showAdmissionSuccessModal(student, payload, receiptNo) {
+        // Fetch institute settings
+        let institute = { name: 'EduSmart Coaching Center', phone: '', email: '', address: '' };
+        try {
+            const res = await fetch(`${apiBase}/institute/public`);
+            if (res.ok) {
+                const result = await res.json();
+                if (result.success && result.data) institute = result.data;
+            }
+        } catch (e) { console.error('Institute fetch error:', e); }
+
+        // Populate modal
+        document.getElementById('modalStudentId').textContent = student.studentId;
+        document.getElementById('modalStudentName').textContent = student.name;
+        document.getElementById('modalBatch').textContent = student.batch;
+        document.getElementById('modalTotalAmount').textContent = '৳' + Number((payload.fee || 0) + (payload.admissionFee || 0)).toLocaleString();
+
+        // Store data for print
+        window.__admissionData = { student, payload, receiptNo, institute };
+
+        // Show modal
+        const modal = document.getElementById('admissionSuccessModal');
+        if (modal) modal.classList.add('show');
+    }
+
+    // Print admission receipt
+    function printAdmissionReceipt() {
+        const data = window.__admissionData;
+        if (!data) return;
+        const { student, payload, receiptNo, institute } = data;
+        const today = new Date();
+        const admissionDate = today.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+        const receiptId = receiptNo || student.studentId;
+        const monthlyFee = Number(payload.fee || 0);
+        const admissionFee = Number(payload.admissionFee || 0);
+        const totalAmount = monthlyFee + admissionFee;
+
+        const receiptHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Receipt - ${institute.name || 'EduSmart'}</title>
+    <link rel="stylesheet" href="assets/css/receipt.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @page { size: A5 portrait; margin: 3mm; }
+        body { margin: 0; padding: 0; font-size: 8.5px; }
+        .no-print { display: none; }
+    </style>
+</head>
+<body data-paper-size="a5">
+    <div class="receipt-container a5-paper" id="receiptContainer">
+        <div class="receipt-watermark">ADMISSION</div>
+        <div class="receipt-inner">
+            <div class="receipt-header">
+                <div class="header-shine"></div>
+                <div class="header-content">
+                    <div class="logo-section">
+                        <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="institute-info">
+                            <h1>${institute.name || 'EduSmart Coaching Center'}</h1>
+                            <p class="address"><i class="fas fa-map-marker-alt"></i> ${institute.address || 'Rajshahi, Bangladesh'}</p>
+                            <p class="contact"><i class="fas fa-phone"></i> ${institute.phone || 'N/A'} | <i class="fas fa-envelope"></i> ${institute.email || 'N/A'}</p>
+                        </div>
+                    </div>
+                    <div class="receipt-title">
+                        <h2>ADMISSION RECEIPT</h2>
+                        <div class="receipt-meta">
+                            <div class="meta-item"><span class="meta-label">Receipt No:</span><span class="meta-value">${receiptId}</span></div>
+                            <div class="meta-item"><span class="meta-label">Date:</span><span class="meta-value">${admissionDate}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-bottom-line"></div>
+            <div class="receipt-main-grid">
+                <div class="info-section">
+                    <h3 class="section-title"><i class="fas fa-user-graduate"></i> Student Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item"><span class="label">Student ID:</span><span class="value">${student.studentId}</span></div>
+                        <div class="info-item"><span class="label">Name:</span><span class="value">${student.name}</span></div>
+                        <div class="info-item"><span class="label">Father's Name:</span><span class="value">${student.guardianName || 'N/A'}</span></div>
+                        <div class="info-item"><span class="label">Mother's Name:</span><span class="value">${student.motherName || 'N/A'}</span></div>
+                        <div class="info-item"><span class="label">Course/Batch:</span><span class="value">${student.batch}</span></div>
+                        <div class="info-item"><span class="label">Phone:</span><span class="value">${student.phone}</span></div>
+                        <div class="info-item"><span class="label">Admission Date:</span><span class="value">${admissionDate}</span></div>
+                        <div class="info-item"><span class="label">Status:</span><span class="value status-badge status-active">Active</span></div>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h3 class="section-title"><i class="fas fa-credit-card"></i> Payment Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item"><span class="label">Payment Method:</span><span class="value">Cash</span></div>
+                        <div class="info-item"><span class="label">Collected By:</span><span class="value">Administrator</span></div>
+                        <div class="info-item"><span class="label">Payment Time:</span><span class="value">${today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span></div>
+                        <div class="info-item"><span class="label">Receipt Status:</span><span class="value status-badge status-paid">Paid</span></div>
+                        <div class="info-item"><span class="label">Previous School:</span><span class="value">${student.previousSchool || 'N/A'}</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="info-section">
+                <h3 class="section-title"><i class="fas fa-list-alt"></i> Payment Details</h3>
+                <table class="details-table">
+                    <thead>
+                        <tr><th>SL</th><th>Description</th><th>Amount (৳)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>01</td><td>Monthly Course Fee</td><td>${monthlyFee.toFixed(2)}</td></tr>
+                        <tr id="admissionFeeRow" style="${admissionFee > 0 ? '' : 'display:none;'}">
+                            <td>02</td><td>Admission Fee</td><td>${admissionFee.toFixed(2)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="summary-section">
+                <div class="summary-grid">
+                    <div class="summary-item"><span>Total Fee</span><strong>৳${totalAmount.toFixed(2)}</strong></div>
+                    <div class="summary-item"><span>Paid Amount</span><strong class="paid-amount">৳${totalAmount.toFixed(2)}</strong></div>
+                    <div class="summary-item"><span>Due Amount</span><strong class="due-amount">৳0.00</strong></div>
+                </div>
+            </div>
+            <div class="signature-section">
+                <div class="signature-box"><div class="signature-line"></div><p>Student Signature</p></div>
+                <div class="signature-box"><div class="signature-line"></div><p>Account Officer</p></div>
+                <div class="signature-box"><div class="signature-line"></div><p>Authorized Signature</p></div>
+            </div>
+            <div class="terms-section">
+                <h4><i class="fas fa-info-circle"></i> Terms & Conditions</h4>
+                <ul>
+                    <li>This is a computer-generated admission receipt.</li>
+                    <li>Keep this receipt safely for future reference.</li>
+                    <li>Tuition fees once paid are non-refundable.</li>
+                    <li>Discrepancy? Contact office within 7 days.</li>
+                </ul>
+            </div>
+            <div class="receipt-footer">
+                <div class="footer-content">
+                    <p class="thank-you"><i class="fas fa-heart"></i> Thank you for joining ${institute.name || 'EduSmart'}!</p>
+                    <p class="institute-name"><strong>${institute.name || 'EduSmart Coaching Center'}</strong></p>
+                    <p class="institute-details">${institute.address || 'Rajshahi, Bangladesh'} | Phone: ${institute.phone || 'N/A'} | Email: ${institute.email || 'N/A'}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.onload = function() { window.print(); };
+    </script>
+</body>
+</html>`;
+
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        printWindow.document.write(receiptHTML);
+        printWindow.document.close();
+    }
+
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        const batchName = batchSelect.value;
+        if (!batchName) return alert('Please select an active batch first.');
+        const payload = {
+            studentId: createStudentId(batchName), name: document.getElementById('studentName').value.trim(),
+            phone: document.getElementById('phone').value.trim(), guardianPhone: document.getElementById('guardianPhone').value.trim(),
+            previousSchool: document.getElementById('institution').value.trim(), batch: batchName,
+            roll: document.getElementById('rollNo').value.trim(), fee: Number(monthlyFee.value),
+            admissionFee: Number(document.getElementById('admissionFee').value || 0), photo, status: 'Active',
+            reference: document.getElementById('reference').value.trim() || ''
+        };
+        if (!payload.name || !payload.phone || !payload.guardianPhone || !payload.fee) return alert('Please fill in all required fields.');
+        const submitButton = form.querySelector('[type="submit"]');
+        submitButton.disabled = true;
+
+        showProcessingOverlay('Saving Admission...');
+
+        try {
+            // Step 1: Create the student
+            const response = await fetch(`${apiBase}/students`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.message || 'Student save failed');
+
+            const student = data.student;
+
+            // Step 2: If admission fee > 0, create a Payment record (existing process - not modified)
+            let receiptNo = null;
+            if (payload.admissionFee > 0) {
+                const today = new Date().toISOString().split('T')[0];
+                const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+                const currentYear = new Date().getFullYear();
+
+                const paymentData = {
+                    studentId: student.studentId,
+                    studentName: student.name,
+                    month: currentMonth,
+                    year: currentYear,
+                    fee: payload.admissionFee,
+                    monthlyFee: payload.fee,
+                    admissionFee: payload.admissionFee,
+                    discount: 0,
+                    fine: 0,
+                    amount: payload.admissionFee,
+                    paymentMethod: 'Cash',
+                    type: 'Admission',
+                    status: 'Paid',
+                    remarks: 'Admission fee payment',
+                    date: today
+                };
+
+                try {
+                    const paymentResponse = await fetch(`${apiBase}/payments`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(paymentData)
+                    });
+                    const paymentResult = await paymentResponse.json();
+                    if (paymentResult.success && paymentResult.payment) {
+                        receiptNo = paymentResult.payment.receiptNo;
+                    }
+                } catch (paymentError) {
+                    console.error('Error creating admission payment:', paymentError);
+                }
+            }
+
+            hideProcessingOverlay();
+
+            // Step 3: Show success modal with student info and print button
+            showAdmissionSuccessModal(student, payload, receiptNo);
+        } catch (error) {
+            hideProcessingOverlay();
+            alert(error.message || 'Could not save student. Ensure the backend server is running.');
+            submitButton.disabled = false;
+        }
+    });
+
+    // Modal event handlers
+    document.getElementById('modalClose')?.addEventListener('click', () => {
+        const modal = document.getElementById('admissionSuccessModal');
+        if (modal) modal.classList.remove('show');
+    });
+    document.getElementById('modalCloseBtn')?.addEventListener('click', () => {
+        const modal = document.getElementById('admissionSuccessModal');
+        if (modal) modal.classList.remove('show');
+    });
+    document.getElementById('modalPrintBtn')?.addEventListener('click', () => {
+        printAdmissionReceipt();
+    });
+    document.getElementById('admissionSuccessModal')?.addEventListener('click', (e) => {
+        const modal = document.getElementById('admissionSuccessModal');
+        if (e.target === modal && modal) {
+            modal.classList.remove('show');
+        }
+    });
+
+    document.getElementById('sidebarToggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+    loadBatches();
+});

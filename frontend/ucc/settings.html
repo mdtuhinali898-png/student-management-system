@@ -1,0 +1,2532 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — UCC পাবনা Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/design-system.css?v=2">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link rel="stylesheet" href="assets/css/settings.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html" class="sidebar-logo">
+      <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+      <span>UCC <span class="gradient-text">পাবনা</span> <small class="admin-badge">Admin</small></span>
+    </a>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+        <div class="sidebar-search">
+            <div class="search-box sidebar-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search student by ID, name or phone" autocomplete="off">
+            </div>
+            <div class="sidebar-search-results" id="sidebarSearchResults"></div>
+        </div>
+        <nav class="sidebar-nav">
+    <a href="dashboard.html"    class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="nav-tooltip">Dashboard</span></a>
+    <a href="students.html"     class="nav-item"><i class="fas fa-users"></i><span>Students</span><span class="nav-tooltip">Students</span></a>
+    <a href="admission.html"    class="nav-item"><i class="fas fa-user-plus"></i><span>Admission</span><span class="nav-tooltip">Admission</span></a>
+    <a href="payment.html"      class="nav-item"><i class="fas fa-money-bill-wave"></i><span>Payment</span><span class="nav-tooltip">Payment</span></a>
+    <a href="exams.html"        class="nav-item"><i class="fas fa-pencil-alt"></i><span>Exams</span><span class="nav-tooltip">Exams</span></a>
+    <a href="distribution.html" class="nav-item"><i class="fas fa-book-open"></i><span>Distribution</span><span class="nav-tooltip">Distribution</span></a>
+    <a href="batches.html"      class="nav-item"><i class="fas fa-layer-group"></i><span>Batches</span><span class="nav-tooltip">Batches</span></a>
+    <a href="reports.html"      class="nav-item"><i class="fas fa-chart-bar"></i><span>Reports</span><span class="nav-tooltip">Reports</span></a>
+    <a href="settings.html"     class="nav-item active"><i class="fas fa-cog"></i><span>Settings</span><span class="nav-tooltip">Settings</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="index.html"       class="nav-item website-link"><i class="fas fa-globe"></i><span>View Website</span><span class="nav-tooltip">View Website</span></a>
+    <a href="admin-login.html" class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span><span class="nav-tooltip">Logout</span></a>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main-content" id="mainContent">
+  <header class="top-header">
+    <h1 class="page-title"><i class="fas fa-cog" style="margin-right:10px; color:var(--primary);"></i>Settings</h1>
+    <div class="user-info">
+      <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100" alt="Admin" class="user-avatar">
+      <div class="user-details">
+        <span class="user-name" id="uccAdminName">UCC Admin</span>
+        <span class="user-role">UCC পাবনা শাখা</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <div class="page-header-action">
+    <div>
+      <h2><i class="fas fa-sliders-h" style="margin-right:8px; color:var(--primary);"></i> Settings & Configuration</h2>
+      <p>UCC পাবনা branch settings, preferences এবং system configuration পরিচালনা করুন</p>
+    </div>
+    <button class="btn btn-primary" onclick="saveAllSettings()">
+      <i class="fas fa-save"></i> Save All Changes
+    </button>
+  </div>
+
+  <!-- Settings Quick Stats -->
+  <div class="ucc-cards" style="margin-bottom:24px;">
+    <div class="ucc-card c-blue">
+      <div class="ucc-card-icon">🏫</div>
+      <div class="ucc-card-lbl">Institute</div>
+      <div class="ucc-card-val" id="statInstitute">UCC পাবনা</div>
+      <div class="ucc-card-sub">Branch Code: UCC-PABNA-2026</div>
+    </div>
+    <div class="ucc-card c-green">
+      <div class="ucc-card-icon">📚</div>
+      <div class="ucc-card-lbl">Active Session</div>
+      <div class="ucc-card-val" id="statSession">2026</div>
+      <div class="ucc-card-sub">Medical, Engineering, Varsity</div>
+    </div>
+    <div class="ucc-card c-yellow">
+      <div class="ucc-card-icon">👥</div>
+      <div class="ucc-card-lbl">Total Batches</div>
+      <div class="ucc-card-val" id="statBatches">5</div>
+      <div class="ucc-card-sub">Active Batch Groups</div>
+    </div>
+    <div class="ucc-card c-red">
+      <div class="ucc-card-icon">💳</div>
+      <div class="ucc-card-lbl">Default Fee</div>
+      <div class="ucc-card-val" id="statFee">৳3,500</div>
+      <div class="ucc-card-sub">Per Month</div>
+    </div>
+  </div>
+
+  <!-- Settings Tabs -->
+  <section class="settings-tabs" id="settingsTabs">
+    <button class="tab-btn active" data-tab="institute" onclick="switchTab('institute')">
+      <i class="fas fa-building"></i> Institute Info
+    </button>
+    <button class="tab-btn" data-tab="academic" onclick="switchTab('academic')">
+      <i class="fas fa-book"></i> Academic
+    </button>
+    <button class="tab-btn" data-tab="payment" onclick="switchTab('payment')">
+      <i class="fas fa-money-bill-wave"></i> Payment
+    </button>
+    <button class="tab-btn" data-tab="exam" onclick="switchTab('exam')">
+      <i class="fas fa-pencil-alt"></i> Exam
+    </button>
+    <button class="tab-btn" data-tab="profile" onclick="switchTab('profile')">
+      <i class="fas fa-user-cog"></i> Profile
+    </button>
+    <button class="tab-btn" data-tab="system" onclick="switchTab('system')">
+      <i class="fas fa-sliders-h"></i> System
+    </button>
+    <button class="tab-btn" data-tab="sms" onclick="switchTab('sms')">
+      <i class="fas fa-sms"></i> SMS & Alert
+    </button>
+    <button class="tab-btn" data-tab="landing" onclick="switchTab('landing')">
+      <i class="fas fa-palette"></i> Landing Content
+    </button>
+    <button class="tab-btn" data-tab="notices" onclick="switchTab('notices')">
+      <i class="fas fa-bullhorn"></i> Notices
+    </button>
+    <button class="tab-btn" data-tab="backup" onclick="switchTab('backup')">
+      <i class="fas fa-database"></i> Backup
+    </button>
+  </section>
+
+  <!-- Settings Content -->
+  <section class="settings-content">
+
+    <!-- ═══════════════ Institute Info Tab ═══════════════ -->
+    <div class="tab-content active" id="instituteTab">
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-building"></i> Institute Information</h3>
+          <span class="ucc-panel-badge green" style="background:#d1fae5; color:#065f46;"><i class="fas fa-check-circle"></i> Active</span>
+        </div>
+        <div class="card-body">
+          <!-- Logo Upload -->
+          <div class="logo-upload-section">
+            <div class="logo-preview" id="logoPreview">
+              <i class="fas fa-image"></i>
+              <p>Logo</p>
+            </div>
+            <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(event)">
+            <div class="logo-upload-info">
+              <h4>Institute Logo</h4>
+              <p>PNG, JPG অথবা SVG ফাইল আপলোড করুন। সর্বোচ্চ সাইজ 2MB। ল্যান্ডিং পেজ ও রিপোর্টে এই লোগো ব্যবহার হবে।</p>
+              <button type="button" class="btn-upload" onclick="document.getElementById('logoInput').click()" style="margin-top:10px;">
+                <i class="fas fa-upload"></i> Upload Logo
+              </button>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-school"></i> Institute Name <span class="required">*</span></label>
+              <input type="text" class="form-control" id="instituteName" value="UCC পাবনা শাখা" placeholder="Institute Name">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-code-branch"></i> Branch Code</label>
+              <input type="text" class="form-control" id="branchCode" value="UCC-PABNA-2026" placeholder="Branch Code">
+              <div class="form-hint">Paid প্রোগ্রামের জন্য ইউনিক Branch Code</div>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-user-tie"></i> Director / Principal</label>
+              <input type="text" class="form-control" id="directorName" value="" placeholder="Director Name">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-phone"></i> Phone Number <span class="required">*</span></label>
+              <input type="tel" class="form-control" id="institutePhone" value="01312-427799" placeholder="01XXXXXXXXX">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-phone-alt"></i> Secondary Phone</label>
+              <input type="tel" class="form-control" id="institutePhone2" value="01775-932188" placeholder="Secondary Phone">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-envelope"></i> Email Address</label>
+              <input type="email" class="form-control" id="instituteEmail" value="" placeholder="info@ucc-pabna.com">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-globe"></i> Website</label>
+              <input type="url" class="form-control" id="instituteWebsite" value="" placeholder="www.ucc-pabna.com">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calendar-alt"></i> Established Year</label>
+              <input type="number" class="form-control" id="establishedYear" value="2026" min="1990" max="2030">
+            </div>
+            <div class="form-group full-width">
+              <label><i class="fas fa-map-marker-alt"></i> Address <span class="required">*</span></label>
+              <textarea class="form-control" id="instituteAddress" rows="3">এডওয়ার্ড কলেজ, রথঘর সংলগ্ন, রাধানগর, পাবনা</textarea>
+            </div>
+            <div class="form-group full-width">
+              <label><i class="fas fa-info-circle"></i> About Institute</label>
+              <textarea class="form-control" id="instituteAbout" rows="4" placeholder="Institute সম্পর্কে সংক্ষিপ্ত বিবরণ..."></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveInstituteSettings()">
+              <i class="fas fa-save"></i> Save Institute Info
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ Academic Tab ═══════════════ -->
+    <div class="tab-content" id="academicTab">
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-calendar-alt"></i> Academic Year & Session</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-calendar-check"></i> Current Session</label>
+              <select class="form-control" id="academicSession">
+                <option value="2025" >2025</option>
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calendar-alt"></i> Session Start Month</label>
+              <select class="form-control" id="sessionStartMonth">
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July" selected>July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-layer-group"></i> Default Batch</label>
+              <select class="form-control" id="defaultBatch">
+                <option value="">Select Batch</option>
+                <option value="Medical-2026-A" selected>Medical-2026-A</option>
+                <option value="Medical-2026-B">Medical-2026-B</option>
+                <option value="Engineering-2026">Engineering-2026</option>
+                <option value="Varsity-A-2026">Varsity-A-2026</option>
+                <option value="Varsity-B-2026">Varsity-B-2026</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-hourglass-half"></i> Academic Term</label>
+              <select class="form-control" id="academicTerm">
+                <option value="Term-1" selected>Term 1 (Jan-Jun)</option>
+                <option value="Term-2">Term 2 (Jul-Dec)</option>
+                <option value="Yearly">Yearly</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveAcademicSettings()">
+              <i class="fas fa-save"></i> Save Academic Settings
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-layer-group"></i> Batch Management</h3>
+          <button class="ucc-btn ucc-btn-primary" onclick="addBatch()">
+            <i class="fas fa-plus"></i> Add Batch
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Batch Name</th>
+                  <th>Category</th>
+                  <th>Year</th>
+                  <th>Students</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="batchTableBody">
+                <tr><td colspan="6" style="text-align:center; padding:20px; color:#888;">Loading batches...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-graduation-cap"></i> Subjects & Group Configuration</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-flask"></i> Science Subjects</label>
+              <input type="text" class="form-control" value="Physics, Chemistry, Biology, Math, English" placeholder="Comma separated">
+              <div class="form-hint">Medical / Engineering বাচ্চাদের জন্য</div>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-book-open"></i> Humanities Subjects</label>
+              <input type="text" class="form-control" value="Bangla, English, History, Civics" placeholder="Comma separated">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calculator"></i> Business Subjects</label>
+              <input type="text" class="form-control" value="Accounting, Finance, Business Studies" placeholder="Comma separated">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-users"></i> Group Types</label>
+              <input type="text" class="form-control" value="Medical, Engineering, Varsity, HSC" placeholder="Comma separated">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveAcademicSettings()">
+              <i class="fas fa-save"></i> Save Subject Config
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ Payment Tab ═══════════════ -->
+    <div class="tab-content" id="paymentTab">
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-money-bill-wave"></i> Fee & Payment Settings</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-money-bill"></i> Default Monthly Fee (৳)</label>
+              <input type="number" class="form-control" id="defaultFee" value="3500" min="0">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-exclamation-circle"></i> Late Fee Fine (৳)</label>
+              <input type="number" class="form-control" id="lateFeeFine" value="100" min="0">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calendar-day"></i> Fee Due Date (Day of Month)</label>
+              <input type="number" class="form-control" id="feeDueDate" value="10" min="1" max="31">
+              <div class="form-hint">প্রতি মাসের এই তারিখের মধ্যে ফি জমা দিতে হবে</div>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-percentage"></i> Max Discount (%)</label>
+              <input type="number" class="form-control" id="maxDiscount" value="20" min="0" max="100">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calendar-plus"></i> Admission Fee (৳)</label>
+              <input type="number" class="form-control" id="admissionFee" value="1000" min="0">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-book"></i> Book Fee (৳)</label>
+              <input type="number" class="form-control" id="bookFee" value="500" min="0">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-university"></i> Registration Fee (৳)</label>
+              <input type="number" class="form-control" id="registrationFee" value="500" min="0">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-graduation-cap"></i> Certificate Fee (৳)</label>
+              <input type="number" class="form-control" id="certificateFee" value="200" min="0">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="savePaymentSettings()">
+              <i class="fas fa-save"></i> Save Fee Settings
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-table"></i> Batch-wise Fee Structure</h3>
+          <button class="ucc-btn ucc-btn-primary" onclick="addFeeRow()">
+            <i class="fas fa-plus"></i> Add Row
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="fee-table" id="feeTable">
+              <thead>
+                <tr>
+                  <th>Batch</th>
+                  <th>Monthly Fee (৳)</th>
+                  <th>Admission (৳)</th>
+                  <th>Book (৳)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" value="Medical-2026-A"></td>
+                  <td><input type="number" value="4500" min="0"></td>
+                  <td><input type="number" value="1500" min="0"></td>
+                  <td><input type="number" value="800" min="0"></td>
+                  <td><button class="ucc-btn ucc-btn-red ucc-btn-sm" onclick="removeFeeRow(this)"><i class="fas fa-trash"></i></button></td>
+                </tr>
+                <tr>
+                  <td><input type="text" value="Medical-2026-B"></td>
+                  <td><input type="number" value="4000" min="0"></td>
+                  <td><input type="number" value="1200" min="0"></td>
+                  <td><input type="number" value="700" min="0"></td>
+                  <td><button class="ucc-btn ucc-btn-red ucc-btn-sm" onclick="removeFeeRow(this)"><i class="fas fa-trash"></i></button></td>
+                </tr>
+                <tr>
+                  <td><input type="text" value="Engineering-2026"></td>
+                  <td><input type="number" value="3500" min="0"></td>
+                  <td><input type="number" value="1000" min="0"></td>
+                  <td><input type="number" value="500" min="0"></td>
+                  <td><button class="ucc-btn ucc-btn-red ucc-btn-sm" onclick="removeFeeRow(this)"><i class="fas fa-trash"></i></button></td>
+                </tr>
+                <tr>
+                  <td><input type="text" value="Varsity-A-2026"></td>
+                  <td><input type="number" value="3000" min="0"></td>
+                  <td><input type="number" value="1000" min="0"></td>
+                  <td><input type="number" value="500" min="0"></td>
+                  <td><button class="ucc-btn ucc-btn-red ucc-btn-sm" onclick="removeFeeRow(this)"><i class="fas fa-trash"></i></button></td>
+                </tr>
+                <tr>
+                  <td><input type="text" value="Varsity-B-2026"></td>
+                  <td><input type="number" value="2800" min="0"></td>
+                  <td><input type="number" value="800" min="0"></td>
+                  <td><input type="number" value="400" min="0"></td>
+                  <td><button class="ucc-btn ucc-btn-red ucc-btn-sm" onclick="removeFeeRow(this)"><i class="fas fa-trash"></i></button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveFeeStructure()">
+              <i class="fas fa-save"></i> Save Fee Structure
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-receipt"></i> Receipt Settings</h3>
+        </div>
+        <div class="card-body">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Receipt Footer Message</h4>
+              <p>রিসিটের নিচে দেখানোর জন্য মেসেজ</p>
+            </div>
+            <div class="setting-control" style="flex:1; max-width:400px;">
+              <input type="text" class="form-control" value="ধন্যবাদ! UCC পাবনা-তে ভর্তি হওয়ার জন্য">
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Show Discount in Receipt</h4>
+              <p>রিসিটে ডিসকাউন্টের পরিমাণ দেখান</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="showDiscountReceipt" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Show Due in Receipt</h4>
+              <p>রিসিটে বকেয়া (Due) পরিমাণ দেখান</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="showDueReceipt" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="savePaymentSettings()">
+              <i class="fas fa-save"></i> Save Receipt Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ Exam Tab ═══════════════ -->
+    <div class="tab-content" id="examTab">
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-pencil-alt"></i> Exam Settings</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-check-circle"></i> Pass Marks (%)</label>
+              <input type="number" class="form-control" id="passMarks" value="40" min="0" max="100">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-gavel"></i> Automatic Merit List</label>
+              <select class="form-control" id="autoMeritList">
+                <option value="true" selected>Enabled — স্বয়ংক্রিয়ভাবে তৈরি হবে</option>
+                <option value="false">Disabled — ম্যানুয়ালি তৈরি করুন</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-file-alt"></i> Result Publish</label>
+              <select class="form-control" id="resultPublish">
+                <option value="auto" selected>Swift Auto-Publish</option>
+                <option value="manual">Manual Publish</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-sort-numeric-up"></i> Grade System</label>
+              <select class="form-control" id="gradeSystem">
+                <option value="gpa" selected>GPA (0-5)</option>
+                <option value="percent">Percentage (%)</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-section-title" style="margin-top:24px;"><i class="fas fa-th-large"></i> Exam Types</div>
+          <div class="exam-type-grid">
+            <div class="exam-type-card selected" onclick="selectExamType(this)">
+              <i class="fas fa-book"></i>
+              <div class="t-name">Half-Yearly</div>
+            </div>
+            <div class="exam-type-card" onclick="selectExamType(this)">
+              <i class="fas fa-user-graduate"></i>
+              <div class="t-name">Final Exam</div>
+            </div>
+            <div class="exam-type-card" onclick="selectExamType(this)">
+              <i class="fas fa-spell-check"></i>
+              <div class="t-name">Model Test</div>
+            </div>
+            <div class="exam-type-card" onclick="selectExamType(this)">
+              <i class="fas fa-list-ol"></i>
+              <div class="t-name">Weekly Test</div>
+            </div>
+            <div class="exam-type-card" onclick="selectExamType(this)">
+              <i class="fas fa-bolt"></i>
+              <div class="t-name">Unit Test</div>
+            </div>
+            <div class="exam-type-card" onclick="selectExamType(this)">
+              <i class="fas fa-puzzle-piece"></i>
+              <div class="t-name">Custom Type</div>
+            </div>
+          </div>
+
+          <div class="modal-section-title"><i class="fas fa-chart-line"></i> Grading Scale</div>
+          <div class="table-responsive">
+            <table class="grading-table">
+              <thead>
+                <tr>
+                  <th>Grade</th>
+                  <th>Percentage Range</th>
+                  <th>GPA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>A+</td><td><input type="text" value="80 - 100"></td><td><input type="text" value="5.00"></td></tr>
+                <tr><td>A</td><td><input type="text" value="70 - 79"></td><td><input type="text" value="4.00"></td></tr>
+                <tr><td>A-</td><td><input type="text" value="60 - 69"></td><td><input type="text" value="3.50"></td></tr>
+                <tr><td>B</td><td><input type="text" value="50 - 59"></td><td><input type="text" value="3.00"></td></tr>
+                <tr><td>C</td><td><input type="text" value="40 - 49"></td><td><input type="text" value="2.00"></td></tr>
+                <tr><td>D</td><td><input type="text" value="33 - 39"></td><td><input type="text" value="1.00"></td></tr>
+                <tr><td>F</td><td><input type="text" value="0 - 32"></td><td><input type="text" value="0.00"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveExamSettings()">
+              <i class="fas fa-save"></i> Save Exam Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ Profile Tab ═══════════════ -->
+    <div class="tab-content" id="profileTab">
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-user-cog"></i> Admin Profile</h3>
+        </div>
+        <div class="card-body">
+          <div class="profile-photo-section">
+            <div class="profile-photo-preview" id="profilePhotoPreview">
+              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" alt="Admin">
+            </div>
+            <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;" onchange="handleProfilePhotoUpload(event)">
+            <div class="logo-upload-info">
+              <h4>Profile Photo</h4>
+              <p>প্রোফাইল ফটো পরিবর্তন করুন। সর্বোচ্চ সাইজ 1MB।</p>
+              <button type="button" class="btn-upload" onclick="document.getElementById('profilePhotoInput').click()" style="margin-top:10px;">
+                <i class="fas fa-camera"></i> Change Photo
+              </button>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-user"></i> Full Name <span class="required">*</span></label>
+              <input type="text" class="form-control" id="adminName" value="UCC Admin">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-user-tag"></i> Username</label>
+              <input type="text" class="form-control" id="adminUsername" value="uccadmin">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-envelope"></i> Email</label>
+              <input type="email" class="form-control" id="adminEmail" value="admin@ucc-pabna.com">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-phone"></i> Phone</label>
+              <input type="tel" class="form-control" id="adminPhone" value="01312-427799">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-users-cog"></i> Role</label>
+              <select class="form-control" id="adminRole">
+                <option value="Branch Head" selected>Branch Head</option>
+                <option value="Super Admin">Super Admin</option>
+                <option value="Admin">Admin</option>
+                <option value="Accountant">Accountant</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-briefcase"></i> Designation</label>
+              <input type="text" class="form-control" id="adminDesignation" value="Branch Coordinator">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveProfileSettings()">
+              <i class="fas fa-save"></i> Update Profile
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-lock"></i> Change Password</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label><i class="fas fa-key"></i> Current Password <span class="required">*</span></label>
+              <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-lock"></i> New Password <span class="required">*</span></label>
+              <input type="password" class="form-control" id="newPassword" placeholder="Enter new password" oninput="checkPasswordStrength(this.value)">
+              <div class="password-strength" id="passwordStrength">
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+              </div>
+              <div class="password-hint">পাসওয়ার্ডে কমপক্ষে ৮ অক্ষর, ১টি বড় হাতের, ১টি সংখ্যা ও ১টি বিশেষ চিহ্ন থাকতে হবে</div>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-check-double"></i> Confirm Password <span class="required">*</span></label>
+              <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="changePassword()">
+              <i class="fas fa-key"></i> Change Password
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ System Tab ═══════════════ -->
+    <div class="tab-content" id="systemTab">
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-palette"></i> Appearance</h3>
+        </div>
+        <div class="card-body">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Theme Mode</h4>
+              <p>Light অথবা Dark theme নির্বাচন করুন</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+              </label>
+              <span class="theme-label" id="themeLabel">Light Mode</span>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Primary Color</h4>
+              <p>Dashboard ও অ্যাপের মূল রঙ</p>
+            </div>
+            <div class="setting-control">
+              <input type="color" id="primaryColor" value="#6366f1">
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Animations</h4>
+              <p>UI অ্যানিমেশন চালু/বন্ধ করুন</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="animationsToggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Compact Mode</h4>
+              <p>ড্যাশবোর্ডে কমপ্যাক্ট লেআউট ব্যবহার করুন</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="compactMode">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-bell"></i> Notifications</h3>
+        </div>
+        <div class="card-body">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Email Notifications</h4>
+              <p>গুরুত্বপূর্ণ আপডেট ইমেইলে পান</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="emailNotifications" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Payment Reminders</h4>
+              <p>শিক্ষার্থীদের স্বয়ংক্রিয় পেমেন্ট রিমাইন্ডার পাঠান</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="paymentReminders" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Due Date Alerts</h4>
+              <p>ফি জমার শেষ তারিখের আগে অ্যালার্ট দেখান</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="dueDateAlerts" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Exam Result Alerts</h4>
+              <p>পরীক্ষার ফল প্রকাশ হলে নোটিফিকেশন পাঠান</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="examResultAlerts" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Sound Alerts</h4>
+              <p>নতুন নোটিফিকেশনে সাউন্ড বাজান</p>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="soundAlerts">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-globe"></i> Regional Settings</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-language"></i> Language</label>
+              <select class="form-control" id="language">
+                <option value="bn" selected>বাংলা (Bengali)</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-money-bill-wave"></i> Currency</label>
+              <select class="form-control" id="currency">
+                <option value="BDT" selected>BDT (৳)</option>
+                <option value="USD">USD ($)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calendar"></i> Date Format</label>
+              <select class="form-control" id="dateFormat">
+                <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-clock"></i> Timezone</label>
+              <select class="form-control" id="timezone">
+                <option value="Asia/Dhaka" selected>Asia/Dhaka (GMT+6)</option>
+                <option value="UTC">UTC (GMT+0)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveSystemSettings()">
+              <i class="fas fa-save"></i> Save System Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ SMS & Alert Tab ═══════════════ -->
+    <div class="tab-content" id="smsTab">
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-sms"></i> SMS & Alert Settings</h3>
+          <span class="ucc-panel-badge green" style="background:#d1fae5; color:#065f46;"><i class="fas fa-check-circle"></i> Active</span>
+        </div>
+        <div class="card-body">
+          <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <p>শিক্ষার্থীদের কাছে স্বয়ংক্রিয় SMS পাঠানোর জন্য টেমপ্লেট কাস্টমাইজ করুন। ভেরিয়েবল গুলো স্বয়ংক্রিয়ভাবে সঠিক তথ্য দিয়ে প্রতিস্থাপিত হবে।</p>
+          </div>
+
+          <div class="form-grid" style="margin-bottom:10px;">
+            <div class="form-group">
+              <label><i class="fas fa-toggle-on"></i> Enable SMS Notifications</label>
+              <select class="form-control" id="smsEnabled">
+                <option value="true" selected>Enabled</option>
+                <option value="false">Disabled</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-clock"></i> Reminder Days Before Due</label>
+              <input type="number" class="form-control" id="reminderDays" value="3" min="1" max="10">
+              <div class="form-hint">ফি জমার কত দিন আগে রিমাইন্ডার পাঠানো হবে</div>
+            </div>
+          </div>
+
+          <div class="modal-section-title"><i class="fas fa-comments"></i> SMS Templates</div>
+          <div class="sms-template-grid">
+            <div class="sms-template-card selected" onclick="selectSmsTemplate(this, 'smsPayment')">
+              <div class="t-icon"><i class="fas fa-money-bill-wave"></i></div>
+              <div class="t-name">Payment Reminder</div>
+              <div class="t-desc">ফি জমার রিমাইন্ডার SMS</div>
+            </div>
+            <div class="sms-template-card" onclick="selectSmsTemplate(this, 'smsDue')">
+              <div class="t-icon"><i class="fas fa-exclamation-circle"></i></div>
+              <div class="t-name">Due Notice</div>
+              <div class="t-desc">বকেয়া ফির নোটিশ SMS</div>
+            </div>
+            <div class="sms-template-card" onclick="selectSmsTemplate(this, 'smsResult')">
+              <div class="t-icon"><i class="fas fa-file-alt"></i></div>
+              <div class="t-name">Result Published</div>
+              <div class="t-desc">পরীক্ষার ফল প্রকাশের SMS</div>
+            </div>
+            <div class="sms-template-card" onclick="selectSmsTemplate(this, 'smsAdmission')">
+              <div class="t-icon"><i class="fas fa-user-plus"></i></div>
+              <div class="t-name">Admission Confirmation</div>
+              <div class="t-desc">ভর্তি নিশ্চিতকরণ SMS</div>
+            </div>
+          </div>
+
+          <div class="sms-template-preview">
+            <label><i class="fas fa-edit"></i> <span id="smsTemplateTitle">Payment Reminder Template</span></label>
+            <textarea id="smsTemplateContent">প্রিয় {{student_name}}, {{institute_name}}-এ আপনার {{month}} মাসের ফি ({{amount}} টাকা) জমা দেওয়ার শেষ তারিখ {{due_date}}। অনুগ্রহ করে সময়মতো ফি জমা দিন। ধন্যবাদ।</textarea>
+            <div class="sms-variables">
+              <span class="sms-var-chip" onclick="insertSmsVar('{{student_name}}')">Student Name</span>
+              <span class="sms-var-chip" onclick="insertSmsVar('{{institute_name}}')">Institute</span>
+              <span class="sms-var-chip" onclick="insertSmsVar('{{batch_name}}')">Batch</span>
+              <span class="sms-var-chip" onclick="insertSmsVar('{{month}}')">Month</span>
+              <span class="sms-var-chip" onclick="insertSmsVar('{{amount}}')">Amount</span>
+              <span class="sms-var-chip" onclick="insertSmsVar('{{due_date}}')">Due Date</span>
+              <span class="sms-var-chip" onclick="insertSmsVar('{{guardian_phone}}')">Guardian Phone</span>
+              <span class="sms-var-chip" onclick="insertSmsVar('{{result_summary}}')">Result</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveSmsSettings()">
+              <i class="fas fa-save"></i> Save SMS Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ Landing Content Tab ═══════════════ -->
+    <div class="tab-content" id="landingTab">
+      <!-- Hero/Banner Settings -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-image"></i> Hero & Banner Content</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <p>ল্যান্ডিং পেজের Hero Section-এর সব টেক্সট ও ব্যানার ইমেজ এখান থেকে পরিবর্তন করুন। পরিবর্তন সেভ করলে নিচের "View Website" বাটনে ক্লিক করে লাইভ দেখা যাবে।</p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-tag"></i> Badge Text</label>
+              <input type="text" class="form-control" id="landingBadge" value="স্বপ্ন যেখানে সার্থক">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-heading"></i> Hero Title</label>
+              <input type="text" class="form-control" id="landingHeroTitle" value="UCC পাবনা শাখায় স্বাগতম">
+            </div>
+            <div class="form-group full-width">
+              <label><i class="fas fa-align-left"></i> Hero Description</label>
+              <textarea class="form-control" id="landingHeroDesc" rows="3">এডওয়ার্ড কলেজ, রথঘর সংলগ্ন, রাধানগর, পাবনা — Medical, Engineering, Varsity Admission প্রস্তুতির জন্য পাবনার সেরা কোচিং সেন্টার। অভিজ্ঞ শিক্ষক, সাপ্তাহিক মডেল টেস্ট এবং ব্যক্তিগত যত্ন।</textarea>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-bullhorn"></i> Programs Section Sub-title</label>
+              <input type="text" class="form-control" id="landingProgSubtitle" value="আমাদের কোর্সসমূহ">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-heading"></i> Programs Section Title</label>
+              <input type="text" class="form-control" id="landingProgTitle" value="UCC পাবনার জনপ্রিয় কোর্স">
+            </div>
+            <div class="form-group full-width">
+              <label><i class="fas fa-align-left"></i> Programs Section Description</label>
+              <textarea class="form-control" id="landingProgDesc" rows="2">অভিজ্ঞ শিক্ষকদের তত্ত্বাবধানে Medical, Engineering এবং Varsity Admission-এর জন্য বিশেষায়িত কোর্স।</textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveLandingContent()">
+              <i class="fas fa-save"></i> Save Hero Content
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Program Cards Management -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-th-large"></i> Program Cards Management</h3>
+          <button class="ucc-btn ucc-btn-primary" onclick="openProgramEditor()">
+            <i class="fas fa-plus"></i> Add New Card
+          </button>
+        </div>
+        <div class="card-body">
+          <p class="content-help" style="margin-bottom:16px; color:var(--text-muted); font-size:0.88rem;">
+            ল্যান্ডিং পেজে দেখানো Program Cards এখান থেকে Add, Edit, Delete ও Reorder করুন।
+          </p>
+          <div id="landingProgramsList" class="landing-programs-list">
+            <!-- Program cards will be rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Content -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-globe"></i> Footer & Contact Content</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-building"></i> Footer About Text</label>
+              <textarea class="form-control" id="landingFooterAbout" rows="3">UCC পাবনা — Medical, Engineering ও Varsity Admission-এর জন্য পাবনার আধুনিক কোচিং সেন্টার। অভিজ্ঞ শিক্ষক ও ব্যক্তিগত যত্নে সাফল্যের পথে এগিয়ে চলুন।</textarea>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-clock"></i> Office Hours</label>
+              <input type="text" class="form-control" id="landingOfficeHours" value="শনি - বৃহঃ: সকাল ৮:০০ - রাত ৮:০০">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-phone"></i> Contact Phone</label>
+              <input type="text" class="form-control" id="landingContactPhone" value="01312-427799 / 01775-932188">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-envelope"></i> Contact Email</label>
+              <input type="email" class="form-control" id="landingContactEmail" value="info@ucc-pabna.com">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="saveLandingContent()">
+              <i class="fas fa-save"></i> Save Footer Content
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Program Card Editor Modal -->
+      <div class="ucc-modal-overlay hidden" id="programEditorModal">
+        <div class="ucc-modal-box" style="max-width:650px;">
+          <div class="ucc-modal-title" style="margin-bottom:20px;">
+            <span id="programEditorTitle">Add New Program Card</span>
+          </div>
+          <form id="programEditorForm" onsubmit="event.preventDefault(); saveProgramCard();">
+            <input type="hidden" id="programEditIndex" value="-1">
+            <div class="form-grid" style="max-height:60vh; overflow-y:auto; padding-right:8px;">
+              <div class="form-group">
+                <label><i class="fas fa-tag"></i> Card Title <span class="required">*</span></label>
+                <input type="text" class="form-control" id="programTitle" placeholder="e.g. Medical Admission Program" required>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-dollar-sign"></i> Price</label>
+                <input type="text" class="form-control" id="programPrice" placeholder="৳ 15,000 / কোর্স">
+              </div>
+              <div class="form-group full-width">
+                <label><i class="fas fa-align-left"></i> Description <span class="required">*</span></label>
+                <textarea class="form-control" id="programDescription" rows="3" required></textarea>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-icons"></i> Icon (Font Awesome class)</label>
+                <input type="text" class="form-control" id="programIcon" value="fas fa-book" placeholder="fas fa-stethoscope">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-shield-alt"></i> Icon Color Class</label>
+                <select class="form-control" id="programIconColor">
+                  <option value="prog-icon-medical">Medical (Green)</option>
+                  <option value="prog-icon-engineering">Engineering (Blue)</option>
+                  <option value="prog-icon-varsity-a">Varsity A (Purple)</option>
+                  <option value="prog-icon-varsity-b">Varsity B (Orange)</option>
+                  <option value="prog-icon-hsc">HSC (Red)</option>
+                  <option value="prog-icon-ssc">SSC (Teal)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-layer-group"></i> Class Filter</label>
+                <select class="form-control" id="programClass">
+                  <option value="admission">Admission</option>
+                  <option value="hsc">HSC</option>
+                  <option value="ssc">SSC</option>
+                  <option value="all">All</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-book-open"></i> Program Type (Filter)</label>
+                <select class="form-control" id="programType">
+                  <option value="medical">Medical</option>
+                  <option value="engineering">Engineering</option>
+                  <option value="varsity">Varsity</option>
+                  <option value="academic">Academic</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-clock"></i> Batch Type (Filter)</label>
+                <select class="form-control" id="programBatchType">
+                  <option value="regular">Regular</option>
+                  <option value="crash">Crash Course</option>
+                  <option value="model-test">Model Test</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label><i class="fas fa-list-check"></i> Features (১টি করে লাইনে)</label>
+                <textarea class="form-control" id="programFeatures" rows="3" placeholder="১০০+ OMR মডেল টেস্ট&#10;Biology Trick Notes&#10;অভিজ্ঞ ডাক্তার Mentor" required></textarea>
+                <div class="form-hint">প্রতিটি ফিচার নতুন লাইনে লিখুন</div>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-info-circle"></i> Modal Detail Text</label>
+                <textarea class="form-control" id="programModalDetails" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-clock"></i> Modal Duration</label>
+                <input type="text" class="form-control" id="programModalDuration" value="৬ মাস Intensive">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-calendar-alt"></i> Modal Schedule</label>
+                <input type="text" class="form-control" id="programModalSchedule" value="রবি, মঙ্গল, বৃহঃ">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-toggle-on"></i> Status</label>
+                <select class="form-control" id="programStatus">
+                  <option value="true">Active</option>
+                  <option value="false">Inactive</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions" style="margin-top:20px;">
+              <button type="button" class="ucc-btn ucc-btn-outline" onclick="closeProgramEditor()"><i class="fas fa-times"></i> Cancel</button>
+              <button type="submit" class="ucc-btn ucc-btn-primary"><i class="fas fa-save"></i> Save Card</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ Notices Tab ═══════════════ -->
+    <div class="tab-content" id="noticesTab">
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-bullhorn"></i> Notice Management</h3>
+          <button class="ucc-btn ucc-btn-primary" onclick="openNoticeEditor()">
+            <i class="fas fa-plus"></i> Add Notice
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <p>ল্যান্ডিং পেজের Notice Section-এ দেখানো নোটিশগুলো এখান থেকে Add, Edit, Delete ও Enable/Disable করুন। PDF অ্যাটাচমেন্টও যোগ করা যাবে।</p>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Badge</th>
+                  <th>Status</th>
+                  <th>Order</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="noticesTableBody">
+                <tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">Loading notices...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notice Editor Modal -->
+      <div class="ucc-modal-overlay hidden" id="noticeEditorModal">
+        <div class="ucc-modal-box" style="max-width:600px;">
+          <div class="ucc-modal-title" style="margin-bottom:20px;">
+            <span id="noticeEditorTitle">Add New Notice</span>
+          </div>
+          <form id="noticeEditorForm" onsubmit="event.preventDefault(); saveNotice();">
+            <input type="hidden" id="noticeEditIndex" value="-1">
+            <div class="form-grid" style="max-height:60vh; overflow-y:auto; padding-right:8px;">
+              <div class="form-group full-width">
+                <label><i class="fas fa-heading"></i> Notice Title <span class="required">*</span></label>
+                <input type="text" class="form-control" id="noticeTitle" placeholder="e.g. Admission Alert" required>
+              </div>
+              <div class="form-group full-width">
+                <label><i class="fas fa-align-left"></i> Description <span class="required">*</span></label>
+                <textarea class="form-control" id="noticeDescription" rows="3" required></textarea>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-tag"></i> Badge Text</label>
+                <input type="text" class="form-control" id="noticeBadge" value="Notice">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-palette"></i> Badge Color</label>
+                <select class="form-control" id="noticeBadgeColor">
+                  <option value="primary">Primary</option>
+                  <option value="success">Success</option>
+                  <option value="warning">Warning</option>
+                  <option value="danger">Danger</option>
+                  <option value="info">Info</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-button"></i> Button Text</label>
+                <input type="text" class="form-control" id="noticeButtonText" value="Learn More">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-link"></i> Button Link</label>
+                <input type="text" class="form-control" id="noticeButtonLink" value="#">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-icons"></i> Icon (Font Awesome)</label>
+                <input type="text" class="form-control" id="noticeIcon" value="fas fa-bullhorn">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-sort-numeric-up"></i> Sort Order</label>
+                <input type="number" class="form-control" id="noticeSortOrder" value="0">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-toggle-on"></i> Status</label>
+                <select class="form-control" id="noticeStatus">
+                  <option value="true">Active</option>
+                  <option value="false">Inactive</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label><i class="fas fa-file-pdf"></i> PDF Attachment (max 5MB)</label>
+                <input type="file" id="noticePdfInput" accept="application/pdf" style="display:none;" onchange="handleNoticePdfUpload(event)">
+                <button type="button" class="btn-upload" onclick="document.getElementById('noticePdfInput').click()">
+                  <i class="fas fa-file-pdf"></i> Choose PDF File
+                </button>
+                <div id="noticePdfPreview" style="margin-top:8px; font-size:0.85rem; color:var(--text-muted);"></div>
+              </div>
+            </div>
+            <div class="form-actions" style="margin-top:20px;">
+              <button type="button" class="ucc-btn ucc-btn-outline" onclick="closeNoticeEditor()"><i class="fas fa-times"></i> Cancel</button>
+              <button type="submit" class="ucc-btn ucc-btn-primary"><i class="fas fa-save"></i> Save Notice</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ Backup Tab ═══════════════ -->
+    <div class="tab-content" id="backupTab">
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-download"></i> Data Backup</h3>
+        </div>
+        <div class="card-body">
+          <div class="backup-info">
+            <i class="fas fa-info-circle"></i>
+            <p>সমস্ত ডেটা ব্যাকআপ করুন — শিক্ষার্থী, পেমেন্ট, পরীক্ষার ফল, ব্যাচ ও সেটিংস। ব্যাকআপ ফাইলটি JSON ফরম্যাটে ডাউনলোড হবে। নিয়মিত ব্যাকআপ রাখুন।</p>
+          </div>
+
+          <div class="backup-stats">
+            <div class="stat-item">
+              <i class="fas fa-users"></i>
+              <h4 id="backupStudents">0</h4>
+              <p>Students</p>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-receipt"></i>
+              <h4 id="backupPayments">0</h4>
+              <p>Payments</p>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-database"></i>
+              <h4 id="backupSize">0 KB</h4>
+              <p>Data Size</p>
+            </div>
+          </div>
+
+          <div class="backup-actions">
+            <button class="btn-backup" onclick="createBackup()">
+              <i class="fas fa-download"></i> Create Backup
+            </button>
+            <button class="btn-restore" onclick="document.getElementById('restoreInput').click()">
+              <i class="fas fa-upload"></i> Restore Backup
+            </button>
+            <input type="file" id="restoreInput" accept=".json" style="display:none;" onchange="restoreBackup(event)">
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h3><i class="fas fa-history"></i> Backup History</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Size</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="backupHistoryBody">
+                <tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">No backup history available</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card danger-zone">
+        <div class="card-header">
+          <h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
+        </div>
+        <div class="card-body">
+          <div class="danger-item">
+            <div class="danger-info">
+              <h4><i class="fas fa-trash-alt"></i> Clear All Data</h4>
+              <p>এটি সমস্ত শিক্ষার্থী, পেমেন্ট, পরীক্ষার ফল ও সেটিংস স্থায়ীভাবে মুছে ফেলবে। এই কাজটি ফিরিয়ে আনা যাবে না!</p>
+            </div>
+            <button class="btn-danger" onclick="clearAllData()">
+              <i class="fas fa-trash"></i> Clear All Data
+            </button>
+          </div>
+          <div class="danger-item">
+            <div class="danger-info">
+              <h4><i class="fas fa-redo-alt"></i> Reset to Default</h4>
+              <p>সমস্ত সেটিংস ডিফল্ট মানে রিসেট করুন। শিক্ষার্থী ও পেমেন্ট ডেটা অক্ষত থাকবে।</p>
+            </div>
+            <button class="btn-warning" onclick="resetToDefault()">
+              <i class="fas fa-undo"></i> Reset Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="main-footer">© 2026 UCC পাবনা শাখা। All rights reserved. Designed and developed by Tuhin.</footer>
+</main>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Toast Notification -->
+<div class="ex-toast hidden" id="exToast"></div>
+
+<!-- Confirm Modal -->
+<div class="ucc-modal-overlay hidden" id="confirmModal">
+  <div class="ucc-modal-box">
+    <div class="ucc-modal-icon" id="confirmModalIcon">⚠️</div>
+    <div class="ucc-modal-title" id="confirmModalTitle">Are you sure?</div>
+    <div class="ucc-modal-body" id="confirmModalBody">This action cannot be undone.</div>
+    <div class="ucc-modal-actions">
+      <button class="ucc-modal-cancel" onclick="closeConfirmModal()">Cancel</button>
+      <button class="ucc-modal-del" id="confirmModalAction" onclick="confirmAction()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/sidebar.js?v=2"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   UCC Settings Page - Professional Settings Logic
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Tab Switching ─────────────────────────────────────────────── */
+let activeTab = 'institute';
+let pendingConfirmCallback = null;
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === tab + 'Tab'));
+  
+  // Store active tab
+  localStorage.setItem('uccActiveSettingsTab', tab);
+}
+
+/* ── Toast Helper ──────────────────────────────────────────────── */
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('exToast');
+  toast.textContent = message;
+  toast.className = 'ex-toast';
+  if (type === 'error') toast.style.background = '#fee2e2';
+  if (type === 'error') toast.style.color = '#dc2626';
+  setTimeout(() => {
+    toast.className = 'ex-toast hidden';
+    toast.style.background = '';
+    toast.style.color = '';
+  }, 3000);
+}
+
+/* ── Institute Settings ────────────────────────────────────────── */
+function saveInstituteSettings() {
+  const data = {
+    instituteName: document.getElementById('instituteName').value,
+    branchCode: document.getElementById('branchCode').value,
+    directorName: document.getElementById('directorName').value,
+    phone: document.getElementById('institutePhone').value,
+    phone2: document.getElementById('institutePhone2').value,
+    email: document.getElementById('instituteEmail').value,
+    website: document.getElementById('instituteWebsite').value,
+    establishedYear: document.getElementById('establishedYear').value,
+    address: document.getElementById('instituteAddress').value,
+    about: document.getElementById('instituteAbout').value
+  };
+  
+  try {
+    localStorage.setItem('uccInstituteSettings', JSON.stringify(data));
+    showToast('✅ Institute information saved successfully!');
+  } catch (e) {
+    showToast('❌ Failed to save settings', 'error');
+  }
+}
+
+function handleLogoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (file.size > 2 * 1024 * 1024) {
+    showToast('❌ Logo size must be under 2MB', 'error');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const preview = document.getElementById('logoPreview');
+    preview.innerHTML = '<img src="' + e.target.result + '" alt="Logo">';
+    localStorage.setItem('uccLogo', e.target.result);
+    showToast('✅ Logo uploaded successfully!');
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── Academic Settings ─────────────────────────────────────────── */
+function saveAcademicSettings() {
+  const data = {
+    session: document.getElementById('academicSession').value,
+    sessionStart: document.getElementById('sessionStartMonth').value,
+    defaultBatch: document.getElementById('defaultBatch').value,
+    term: document.getElementById('academicTerm').value
+  };
+  
+  try {
+    localStorage.setItem('uccAcademicSettings', JSON.stringify(data));
+    document.getElementById('statSession').textContent = data.session;
+    showToast('✅ Academic settings saved successfully!');
+  } catch (e) {
+    showToast('❌ Failed to save academic settings', 'error');
+  }
+}
+
+/* ── Batch Management ──────────────────────────────────────────── */
+function loadBatches() {
+  const tbody = document.getElementById('batchTableBody');
+  const batches = [
+    { name: 'Medical-2026-A', category: 'Medical', year: '2026', students: 45, status: 'active' },
+    { name: 'Medical-2026-B', category: 'Medical', year: '2026', students: 38, status: 'active' },
+    { name: 'Engineering-2026', category: 'Engineering', year: '2026', students: 32, status: 'active' },
+    { name: 'Varsity-A-2026', category: 'Varsity', year: '2026', students: 25, status: 'active' },
+    { name: 'Varsity-B-2026', category: 'Varsity', year: '2026', students: 20, status: 'inactive' }
+  ];
+  
+  tbody.innerHTML = batches.map(b => `
+    <tr>
+      <td style="font-weight:700;">${b.name}</td>
+      <td><span class="badge badge-info" style="background:#dbeafe; color:#1e40af; border:1px solid rgba(59,130,246,0.25);">${b.category}</span></td>
+      <td>${b.year}</td>
+      <td>${b.students} জন</td>
+      <td><span class="badge ${b.status === 'active' ? 'badge-success' : 'badge-danger'}">${b.status === 'active' ? 'Active' : 'Inactive'}</span></td>
+      <td>
+        <button class="ucc-btn ucc-btn-sm ucc-btn-outline" onclick="editBatch('${b.name}')"><i class="fas fa-edit"></i></button>
+        <button class="ucc-btn ucc-btn-sm ${b.status === 'active' ? 'ucc-btn-orange' : 'ucc-btn-green'}" onclick="toggleBatch('${b.name}')">
+          ${b.status === 'active' ? '<i class="fas fa-ban"></i>' : '<i class="fas fa-check"></i>'}
+        </button>
+      </td>
+    </tr>
+  `).join('');
+  
+  document.getElementById('statBatches').textContent = batches.length;
+}
+
+function addBatch() {
+  showModal(
+    '➕',
+    'Add New Batch',
+    'নতুন ব্যাচের তথ্য লিখুন',
+    function() {
+      showToast('✅ New batch added successfully!');
+    }
+  );
+}
+
+function editBatch(name) {
+  showModal('✏️', 'Edit Batch: ' + name, 'ব্যাচের তথ্য সম্পাদনা করুন', function() {
+    showToast('✅ Batch updated successfully!');
+  });
+}
+
+function toggleBatch(name) {
+  showModal('🔄', 'Toggle Batch Status', name + ' ব্যাচের স্ট্যাটাস পরিবর্তন করবেন?', function() {
+    showToast('✅ Batch status updated!');
+  });
+}
+
+/* ── Payment Settings ──────────────────────────────────────────── */
+function savePaymentSettings() {
+  const data = {
+    defaultFee: document.getElementById('defaultFee').value,
+    lateFee: document.getElementById('lateFeeFine').value,
+    dueDate: document.getElementById('feeDueDate').value,
+    maxDiscount: document.getElementById('maxDiscount').value,
+    admissionFee: document.getElementById('admissionFee').value,
+    bookFee: document.getElementById('bookFee').value,
+    registrationFee: document.getElementById('registrationFee').value,
+    certificateFee: document.getElementById('certificateFee').value
+  };
+  
+  try {
+    localStorage.setItem('uccPaymentSettings', JSON.stringify(data));
+    document.getElementById('statFee').textContent = '৳' + Number(data.defaultFee).toLocaleString();
+    showToast('✅ Payment settings saved successfully!');
+  } catch (e) {
+    showToast('❌ Failed to save payment settings', 'error');
+  }
+}
+
+function saveFeeStructure() {
+  showToast('✅ Fee structure saved successfully!');
+}
+
+function addFeeRow() {
+  const tbody = document.querySelector('#feeTable tbody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" placeholder="Batch Name"></td>
+    <td><input type="number" value="3000" min="0" placeholder="Monthly Fee"></td>
+    <td><input type="number" value="1000" min="0" placeholder="Admission"></td>
+    <td><input type="number" value="500" min="0" placeholder="Book"></td>
+    <td><button class="ucc-btn ucc-btn-red ucc-btn-sm" onclick="removeFeeRow(this)"><i class="fas fa-trash"></i></button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function removeFeeRow(btn) {
+  const tbody = btn.closest('tbody');
+  if (tbody.querySelectorAll('tr').length <= 1) {
+    showToast('⚠️ Minimum one row required', 'error');
+    return;
+  }
+  btn.closest('tr').remove();
+}
+
+/* ── Exam Settings ─────────────────────────────────────────────── */
+function selectExamType(el) {
+  document.querySelectorAll('.exam-type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function saveExamSettings() {
+  const data = {
+    passMarks: document.getElementById('passMarks').value,
+    autoMeritList: document.getElementById('autoMeritList').value,
+    resultPublish: document.getElementById('resultPublish').value,
+    gradeSystem: document.getElementById('gradeSystem').value
+  };
+  
+  try {
+    localStorage.setItem('uccExamSettings', JSON.stringify(data));
+    showToast('✅ Exam settings saved successfully!');
+  } catch (e) {
+    showToast('❌ Failed to save exam settings', 'error');
+  }
+}
+
+/* ── Profile Settings ──────────────────────────────────────────── */
+function saveProfileSettings() {
+  const data = {
+    name: document.getElementById('adminName').value,
+    username: document.getElementById('adminUsername').value,
+    email: document.getElementById('adminEmail').value,
+    phone: document.getElementById('adminPhone').value,
+    role: document.getElementById('adminRole').value,
+    designation: document.getElementById('adminDesignation').value
+  };
+  
+  try {
+    localStorage.setItem('uccAdminProfile', JSON.stringify(data));
+    document.getElementById('uccAdminName').textContent = data.name;
+    showToast('✅ Profile updated successfully!');
+  } catch (e) {
+    showToast('❌ Failed to update profile', 'error');
+  }
+}
+
+function handleProfilePhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (file.size > 1 * 1024 * 1024) {
+    showToast('❌ Photo size must be under 1MB', 'error');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('profilePhotoPreview').innerHTML = '<img src="' + e.target.result + '" alt="Admin">';
+    localStorage.setItem('uccAdminPhoto', e.target.result);
+    showToast('✅ Profile photo updated!');
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── Password Strength Checker ────────────────────────────────── */
+function checkPasswordStrength(password) {
+  const bars = document.querySelectorAll('#passwordStrength .strength-bar');
+  let strength = 0;
+  
+  if (password.length >= 8) strength++;
+  if (password.match(/[A-Z]/)) strength++;
+  if (password.match(/[0-9]/)) strength++;
+  if (password.match(/[^a-zA-Z0-9]/)) strength++;
+  
+  bars.forEach((bar, i) => {
+    bar.className = 'strength-bar';
+    if (i < strength) {
+      if (strength <= 1) bar.classList.add('weak');
+      else if (strength <= 3) bar.classList.add('medium');
+      else bar.classList.add('strong');
+    }
+  });
+}
+
+function changePassword() {
+  const current = document.getElementById('currentPassword').value;
+  const newPass = document.getElementById('newPassword').value;
+  const confirm = document.getElementById('confirmPassword').value;
+  
+  if (!current) {
+    showToast('❌ Please enter current password', 'error');
+    return;
+  }
+  if (newPass.length < 8) {
+    showToast('❌ Password must be at least 8 characters', 'error');
+    return;
+  }
+  if (newPass !== confirm) {
+    showToast('❌ Passwords do not match!', 'error');
+    return;
+  }
+  
+  showToast('✅ Password changed successfully!');
+  document.getElementById('currentPassword').value = '';
+  document.getElementById('newPassword').value = '';
+  document.getElementById('confirmPassword').value = '';
+  document.querySelectorAll('#passwordStrength .strength-bar').forEach(b => b.className = 'strength-bar');
+}
+
+/* ── System Settings ───────────────────────────────────────────── */
+function saveSystemSettings() {
+  const data = {
+    darkMode: document.getElementById('darkModeToggle').checked,
+    primaryColor: document.getElementById('primaryColor').value,
+    animations: document.getElementById('animationsToggle').checked,
+    compact: document.getElementById('compactMode').checked,
+    emailNotif: document.getElementById('emailNotifications').checked,
+    paymentReminders: document.getElementById('paymentReminders').checked,
+    dueAlerts: document.getElementById('dueDateAlerts').checked,
+    examAlerts: document.getElementById('examResultAlerts').checked,
+    soundAlerts: document.getElementById('soundAlerts').checked,
+    language: document.getElementById('language').value,
+    currency: document.getElementById('currency').value,
+    dateFormat: document.getElementById('dateFormat').value,
+    timezone: document.getElementById('timezone').value
+  };
+  
+  try {
+    localStorage.setItem('uccSystemSettings', JSON.stringify(data));
+    showToast('✅ System settings saved successfully!');
+  } catch (e) {
+    showToast('❌ Failed to save system settings', 'error');
+  }
+}
+
+/* ── Theme Toggle ──────────────────────────────────────────────── */
+function initThemeToggle() {
+  const darkToggle = document.getElementById('darkModeToggle');
+  const themeLabel = document.getElementById('themeLabel');
+  
+  // Load saved preference
+  const saved = JSON.parse(localStorage.getItem('uccSystemSettings') || '{}');
+  if (saved.darkMode) {
+    darkToggle.checked = true;
+    themeLabel.textContent = 'Dark Mode';
+  }
+  
+  darkToggle.addEventListener('change', function() {
+    if (this.checked) {
+      themeLabel.textContent = 'Dark Mode';
+      document.body.classList.add('dark-theme');
+    } else {
+      themeLabel.textContent = 'Light Mode';
+      document.body.classList.remove('dark-theme');
+    }
+  });
+}
+
+/* ── SMS Settings ──────────────────────────────────────────────── */
+const smsTemplates = {
+  smsPayment: {
+    title: 'Payment Reminder Template',
+    content: 'প্রিয় {{student_name}}, {{institute_name}}-এ আপনার {{month}} মাসের ফি ({{amount}} টাকা) জমা দেওয়ার শেষ তারিখ {{due_date}}। অনুগ্রহ করে সময়মতো ফি জমা দিন। ধন্যবাদ।'
+  },
+  smsDue: {
+    title: 'Due Notice Template',
+    content: 'প্রিয় {{student_name}}, আপনার {{institute_name}}-এ বকেয়া ফি {{amount}} টাকা। অনুগ্রহ করে {{due_date}}-এর মধ্যে ফি পরিশোধ করুন। বিস্তারিত জানতে {{institute_phone}} নম্বরে যোগাযোগ করুন।'
+  },
+  smsResult: {
+    title: 'Result Published Template',
+    content: 'প্রিয় {{student_name}}, আপনার {{batch_name}} ব্যাচের {{exam_name}} পরীক্ষার ফল প্রকাশ হয়েছে। আপনার ফলাফল: {{result_summary}}। বিস্তারিত লগইন করে দেখুন।'
+  },
+  smsAdmission: {
+    title: 'Admission Confirmation Template',
+    content: 'অভিনন্দন {{student_name}}! আপনি {{institute_name}}-এ সফলভাবে ভর্তি হয়েছেন। আপনার ব্যাচ: {{batch_name}}। ভর্তি ফি: {{amount}} টাকা। যোগাযোগ: {{institute_phone}}'
+  }
+};
+
+let selectedSmsTemplate = 'smsPayment';
+
+function selectSmsTemplate(el, templateId) {
+  document.querySelectorAll('.sms-template-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSmsTemplate = templateId;
+  
+  const template = smsTemplates[templateId];
+  document.getElementById('smsTemplateTitle').textContent = template.title;
+  document.getElementById('smsTemplateContent').value = template.content;
+}
+
+function insertSmsVar(variable) {
+  const textarea = document.getElementById('smsTemplateContent');
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const current = textarea.value;
+  textarea.value = current.substring(0, start) + variable + current.substring(end);
+  textarea.focus();
+  textarea.selectionStart = textarea.selectionEnd = start + variable.length;
+}
+
+function saveSmsSettings() {
+  const data = {
+    enabled: document.getElementById('smsEnabled').value,
+    reminderDays: document.getElementById('reminderDays').value,
+    templates: smsTemplates,
+    currentTemplate: selectedSmsTemplate,
+    content: document.getElementById('smsTemplateContent').value
+  };
+  
+  try {
+    localStorage.setItem('uccSmsSettings', JSON.stringify(data));
+    showToast('✅ SMS settings saved successfully!');
+  } catch (e) {
+    showToast('❌ Failed to save SMS settings', 'error');
+  }
+}
+
+/* ── Backup Functions ──────────────────────────────────────────── */
+function createBackup() {
+  const backupData = {
+    type: 'UCC-PABNA-BACKUP',
+    version: '1.0',
+    date: new Date().toISOString(),
+    institute: JSON.parse(localStorage.getItem('uccInstituteSettings') || '{}'),
+    academic: JSON.parse(localStorage.getItem('uccAcademicSettings') || '{}'),
+    payment: JSON.parse(localStorage.getItem('uccPaymentSettings') || '{}'),
+    exam: JSON.parse(localStorage.getItem('uccExamSettings') || '{}'),
+    profile: JSON.parse(localStorage.getItem('uccAdminProfile') || '{}'),
+    system: JSON.parse(localStorage.getItem('uccSystemSettings') || '{}'),
+    sms: JSON.parse(localStorage.getItem('uccSmsSettings') || '{}')
+  };
+  
+  const json = JSON.stringify(backupData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ucc-pabna-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  // Update stats and history
+  document.getElementById('backupStudents').textContent = Math.floor(Math.random() * 200) + 50;
+  document.getElementById('backupPayments').textContent = Math.floor(Math.random() * 500) + 100;
+  document.getElementById('backupSize').textContent = (json.length / 1024).toFixed(1) + ' KB';
+  
+  const historyBody = document.getElementById('backupHistoryBody');
+  const now = new Date();
+  historyBody.innerHTML = `
+    <tr>
+      <td>${now.toLocaleDateString()}</td>
+      <td>${now.toLocaleTimeString()}</td>
+      <td>${(json.length / 1024).toFixed(1)} KB</td>
+      <td>Manual</td>
+      <td><span class="badge badge-success">✓ Successful</span></td>
+    </tr>
+    <tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">Previous backups not available</td></tr>
+  `;
+  
+  showToast('✅ Backup created and downloaded successfully!');
+}
+
+function restoreBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.type !== 'UCC-PABNA-BACKUP') {
+        showToast('❌ Invalid backup file format!', 'error');
+        return;
+      }
+      
+      // Restore settings from backup
+      if (data.institute && data.institute.instituteName) {
+        document.getElementById('instituteName').value = data.institute.instituteName;
+        document.getElementById('branchCode').value = data.institute.branchCode || '';
+        document.getElementById('institutePhone').value = data.institute.phone || '';
+        document.getElementById('institutePhone2').value = data.institute.phone2 || '';
+        document.getElementById('instituteEmail').value = data.institute.email || '';
+        document.getElementById('instituteAddress').value = data.institute.address || '';
+      }
+      
+      if (data.academic) {
+        document.getElementById('academicSession').value = data.academic.session || '2026';
+        document.getElementById('defaultBatch').value = data.academic.defaultBatch || '';
+      }
+      
+      if (data.payment) {
+        document.getElementById('defaultFee').value = data.payment.defaultFee || '3500';
+        document.getElementById('lateFeeFine').value = data.payment.lateFee || '100';
+        document.getElementById('feeDueDate').value = data.payment.dueDate || '10';
+        document.getElementById('maxDiscount').value = data.payment.maxDiscount || '20';
+      }
+      
+      showToast('✅ Backup restored successfully!');
+    } catch (err) {
+      showToast('❌ Invalid backup file!', 'error');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+/* ── Danger Zone ──────────────────────────────────────────────── */
+function clearAllData() {
+  showModal(
+    '⚠️',
+    'Clear All Data?',
+    'এটি সমস্ত শিক্ষার্থী, পেমেন্ট, পরীক্ষার ফল ও সেটিংস স্থায়ীভাবে মুছে ফেলবে! এই কাজটি ফিরিয়ে আনা যাবে না। আপনি কী নিশ্চিত?',
+    function() {
+      showToast('❌ All data has been cleared');
+    }
+  );
+}
+
+function resetToDefault() {
+  showModal(
+    '🔄',
+    'Reset to Default?',
+    'সমস্ত সেটিংস ডিফল্ট মানে রিসেট হবে। শিক্ষার্থী ও পেমেন্ট ডেটা অক্ষত থাকবে। আপনি কী নিশ্চিত?',
+    function() {
+      localStorage.removeItem('uccInstituteSettings');
+      localStorage.removeItem('uccAcademicSettings');
+      localStorage.removeItem('uccPaymentSettings');
+      localStorage.removeItem('uccExamSettings');
+      localStorage.removeItem('uccSystemSettings');
+      localStorage.removeItem('uccSmsSettings');
+      showToast('✅ Settings reset to default!');
+      setTimeout(() => location.reload(), 1500);
+    }
+  );
+}
+
+/* ── Confirm Modal ─────────────────────────────────────────────── */
+function showModal(icon, title, body, callback) {
+  document.getElementById('confirmModalIcon').textContent = icon;
+  document.getElementById('confirmModalTitle').textContent = title;
+  document.getElementById('confirmModalBody').textContent = body;
+  pendingConfirmCallback = callback;
+  document.getElementById('confirmModal').classList.remove('hidden');
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirmModal').classList.add('hidden');
+  pendingConfirmCallback = null;
+}
+
+function confirmAction() {
+  if (pendingConfirmCallback) {
+    pendingConfirmCallback();
+    pendingConfirmCallback = null;
+  }
+  document.getElementById('confirmModal').classList.add('hidden');
+}
+
+/* ── Landing Content Management ──────────────────────────────── */
+let landingPrograms = [
+  {
+    id: 1,
+    title: 'Medical Admission Program',
+    price: '৳ 15,000 / কোর্স',
+    description: 'DMC, SSMC, SOMC-সহ সকল মেডিকেল কলেজের জন্য Biology, Chemistry, Physics ও GK-এর সম্পূর্ণ প্রস্তুতি।',
+    features: ['১০০+ OMR ভিত্তিক মডেল টেস্ট', 'Biology Trick Notes', 'অভিজ্ঞ ডাক্তার Mentor'],
+    icon: 'fas fa-stethoscope',
+    iconColor: 'prog-icon-medical',
+    class: 'admission',
+    type: 'medical',
+    batchType: 'regular',
+    modalDetails: 'DMC, SSMC, SOMC-সহ সকল মেডিকেল কলেজের জন্য Biology, Chemistry, Physics ও GK-এর সম্পূর্ণ প্রস্তুতি। ১০০+ OMR মডেল টেস্ট ও অভিজ্ঞ Doctor Mentor।',
+    modalDuration: '৬ মাস Intensive',
+    modalSchedule: 'রবি, মঙ্গল, বৃহঃ (সকাল ৮:০০ – ১২:০০)',
+    status: true
+  },
+  {
+    id: 2,
+    title: 'Engineering Admission Program',
+    price: '৳ 18,000 / কোর্স',
+    description: 'BUET, CUET, RUET এবং অন্যান্য প্রকৌশল বিশ্ববিদ্যালয়ের জন্য Higher Math, Physics ও Chemistry।',
+    features: ['BUET Alum শিক্ষক', '৪০+ Written Model Test', 'সপ্তাহান্তে Doubt Clearing'],
+    icon: 'fas fa-laptop-code',
+    iconColor: 'prog-icon-engineering',
+    class: 'admission',
+    type: 'engineering',
+    batchType: 'regular',
+    modalDetails: 'BUET, CUET, RUET ও অন্যান্য প্রকৌশল বিশ্ববিদ্যালয়ের জন্য Higher Math, Physics ও Chemistry। ৪০+ Written Model Test এবং BUET Alumni শিক্ষক।',
+    modalDuration: '৬ মাস Comprehensive',
+    modalSchedule: 'শনি, সোম, বুধ (দুপুর ২:০০ – ৬:০০)',
+    status: true
+  },
+  {
+    id: 3,
+    title: 'Varsity A Unit Program',
+    price: '৳ 12,000 / কোর্স',
+    description: 'ঢাকা বিশ্ববিদ্যালয় A Unit, জাহাঙ্গীরনগর বিশ্ববিদ্যালয় এবং GST Science Alliance-এর জন্য বিশেষ প্রস্তুতি।',
+    features: ['Speed Solving Shortcut', 'Chapter-wise MCQ Bank', 'Weekly Performance Report'],
+    icon: 'fas fa-atom',
+    iconColor: 'prog-icon-varsity-a',
+    class: 'admission',
+    type: 'varsity',
+    batchType: 'regular',
+    modalDetails: 'ঢাকা বিশ্ববিদ্যালয় A Unit, জাহাঙ্গীরনগর ও GST Science Alliance-এর জন্য বিশেষ প্রস্তুতি। MCQ Shortcut ও Speed Test।',
+    modalDuration: '৫ মাস',
+    modalSchedule: 'প্রতিদিন বিকেলের ব্যাচ',
+    status: true
+  },
+  {
+    id: 4,
+    title: 'Varsity B Unit Program',
+    price: '৳ 10,000 / কোর্স',
+    description: 'ঢাকা বিশ্ববিদ্যালয় B Unit-এর জন্য English Grammar, Bangla Literature ও General Knowledge।',
+    features: ['Vocabulary & Writing', 'Daily GK Quiz', 'DU Alumni Guided'],
+    icon: 'fas fa-landmark',
+    iconColor: 'prog-icon-varsity-b',
+    class: 'admission',
+    type: 'varsity',
+    batchType: 'regular',
+    modalDetails: 'ঢাকা বিশ্ববিদ্যালয় B Unit-এর জন্য English Grammar, Bangla Literature, GK ও Critical Thinking।',
+    modalDuration: '৫ মাস',
+    modalSchedule: 'সকাল ও সন্ধ্যা ব্যাচ',
+    status: true
+  },
+  {
+    id: 5,
+    title: 'HSC Academic Care Program',
+    price: '৳ 2,000 / মাস',
+    description: 'HSC ১ম ও ২য় বর্ষের শিক্ষার্থীদের Board পরীক্ষার সম্পূর্ণ প্রস্তুতি। CQ ও MCQ দক্ষতা বৃদ্ধি।',
+    features: ['Board MCQ Practise', 'CQ Writing Skill', 'সাপ্তাহিক মূল্যায়ন পরীক্ষা'],
+    icon: 'fas fa-book-open',
+    iconColor: 'prog-icon-hsc',
+    class: 'hsc',
+    type: 'academic',
+    batchType: 'regular',
+    modalDetails: 'HSC ১ম ও ২য় বর্ষের শিক্ষার্থীদের Board পরীক্ষার সম্পূর্ণ প্রস্তুতি। CQ ও MCQ দক্ষতা বৃদ্ধি এবং সাপ্তাহিক মূল্যায়ন পরীক্ষা।',
+    modalDuration: 'সম্পূর্ণ শিক্ষাবর্ষ',
+    modalSchedule: 'সপ্তাহে ৩ দিন',
+    status: true
+  },
+  {
+    id: 6,
+    title: 'SSC Golden A+ Program',
+    price: '৳ 1,500 / মাস',
+    description: '৯ম ও ১০ম শ্রেণির শিক্ষার্থীদের জন্য সমন্বিত পাঠ পরিকল্পনা। Fundamental Math ও Science Focus।',
+    features: ['Fundamental Math', 'Science Practical', 'Regular Model Test'],
+    icon: 'fas fa-user-graduate',
+    iconColor: 'prog-icon-ssc',
+    class: 'ssc',
+    type: 'academic',
+    batchType: 'regular',
+    modalDetails: '৯ম ও ১০ম শ্রেণির শিক্ষার্থীদের জন্য সমন্বিত পাঠ পরিকল্পনা। Fundamental Math ও Science Focus এবং Regular Model Test।',
+    modalDuration: 'সম্পূর্ণ শিক্ষাবর্ষ',
+    modalSchedule: 'সপ্তাহে ৪ দিন',
+    status: true
+  }
+];
+
+function loadLandingPrograms() {
+  const saved = localStorage.getItem('uccLandingPrograms');
+  if (saved) {
+    try {
+      landingPrograms = JSON.parse(saved);
+    } catch (e) {
+      console.error('Error loading landing programs:', e);
+    }
+  }
+  renderLandingPrograms();
+}
+
+function renderLandingPrograms() {
+  const container = document.getElementById('landingProgramsList');
+  if (!container) return;
+  
+  if (landingPrograms.length === 0) {
+    container.innerHTML = '<div style="text-align:center; padding:30px; color:#888;"><i class="fas fa-inbox" style="font-size:2rem; margin-bottom:10px; display:block;"></i>কোন Program Card নেই। "Add New Card" বাটনে ক্লিক করে যোগ করুন।</div>';
+    return;
+  }
+  
+  container.innerHTML = landingPrograms.map((prog, idx) => `
+    <div class="landing-program-item" style="display:flex; align-items:center; gap:14px; padding:14px 16px; background:#f8fafc; border:1px solid var(--border-color); border-radius:12px; margin-bottom:10px; transition:all 0.2s;">
+      <div class="prog-icon-box ${prog.iconColor}" style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; background: #eef2ff;">
+        <i class="${prog.icon}"></i>
+      </div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-weight:700; font-size:0.95rem; color:var(--text-main);">${prog.title}</div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">${prog.price} • ${prog.class} • ${prog.type}</div>
+        <div style="margin-top:4px;">
+          <span class="badge ${prog.status ? 'badge-success' : 'badge-danger'}" style="font-size:0.7rem;">${prog.status ? 'Active' : 'Inactive'}</span>
+          <span class="badge badge-info" style="font-size:0.7rem; background:#dbeafe; color:#1e40af;">${prog.features.length} Features</span>
+        </div>
+      </div>
+      <div style="display:flex; gap:6px; flex-shrink:0;">
+        <button class="ucc-btn ucc-btn-sm ucc-btn-outline" onclick="moveProgramCard(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.4;"' : ''} title="Move Up"><i class="fas fa-arrow-up"></i></button>
+        <button class="ucc-btn ucc-btn-sm ucc-btn-outline" onclick="moveProgramCard(${idx}, 1)" ${idx === landingPrograms.length - 1 ? 'disabled style="opacity:0.4;"' : ''} title="Move Down"><i class="fas fa-arrow-down"></i></button>
+        <button class="ucc-btn ucc-btn-sm ucc-btn-outline" onclick="editProgramCard(${idx})" title="Edit"><i class="fas fa-edit"></i></button>
+        <button class="ucc-btn ucc-btn-sm ucc-btn-red" onclick="deleteProgramCard(${idx})" title="Delete"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function saveLandingContent() {
+  const data = {
+    badge: document.getElementById('landingBadge').value,
+    heroTitle: document.getElementById('landingHeroTitle').value,
+    heroDesc: document.getElementById('landingHeroDesc').value,
+    progSubtitle: document.getElementById('landingProgSubtitle').value,
+    progTitle: document.getElementById('landingProgTitle').value,
+    progDesc: document.getElementById('landingProgDesc').value,
+    footerAbout: document.getElementById('landingFooterAbout').value,
+    officeHours: document.getElementById('landingOfficeHours').value,
+    contactPhone: document.getElementById('landingContactPhone').value,
+    contactEmail: document.getElementById('landingContactEmail').value
+  };
+  
+  try {
+    localStorage.setItem('uccLandingContent', JSON.stringify(data));
+    localStorage.setItem('uccLandingPrograms', JSON.stringify(landingPrograms));
+    showToast('✅ Landing content saved successfully!');
+  } catch (e) {
+    showToast('❌ Failed to save landing content', 'error');
+  }
+}
+
+function loadLandingContent() {
+  const saved = JSON.parse(localStorage.getItem('uccLandingContent') || '{}');
+  if (saved.badge) document.getElementById('landingBadge').value = saved.badge;
+  if (saved.heroTitle) document.getElementById('landingHeroTitle').value = saved.heroTitle;
+  if (saved.heroDesc) document.getElementById('landingHeroDesc').value = saved.heroDesc;
+  if (saved.progSubtitle) document.getElementById('landingProgSubtitle').value = saved.progSubtitle;
+  if (saved.progTitle) document.getElementById('landingProgTitle').value = saved.progTitle;
+  if (saved.progDesc) document.getElementById('landingProgDesc').value = saved.progDesc;
+  if (saved.footerAbout) document.getElementById('landingFooterAbout').value = saved.footerAbout;
+  if (saved.officeHours) document.getElementById('landingOfficeHours').value = saved.officeHours;
+  if (saved.contactPhone) document.getElementById('landingContactPhone').value = saved.contactPhone;
+  if (saved.contactEmail) document.getElementById('landingContactEmail').value = saved.contactEmail;
+}
+
+/* Program Card Editor */
+let editingProgramIndex = -1;
+
+function openProgramEditor() {
+  editingProgramIndex = -1;
+  document.getElementById('programEditorTitle').textContent = 'Add New Program Card';
+  document.getElementById('programEditIndex').value = '-1';
+  
+  // Reset form
+  document.getElementById('programTitle').value = '';
+  document.getElementById('programPrice').value = '';
+  document.getElementById('programDescription').value = '';
+  document.getElementById('programIcon').value = 'fas fa-book';
+  document.getElementById('programIconColor').value = 'prog-icon-medical';
+  document.getElementById('programClass').value = 'admission';
+  document.getElementById('programType').value = 'medical';
+  document.getElementById('programBatchType').value = 'regular';
+  document.getElementById('programFeatures').value = '';
+  document.getElementById('programModalDetails').value = '';
+  document.getElementById('programModalDuration').value = '৬ মাস Intensive';
+  document.getElementById('programModalSchedule').value = 'রবি, মঙ্গল, বৃহঃ';
+  document.getElementById('programStatus').value = 'true';
+  
+  document.getElementById('programEditorModal').classList.remove('hidden');
+}
+
+function editProgramCard(index) {
+  const prog = landingPrograms[index];
+  if (!prog) return;
+  
+  editingProgramIndex = index;
+  document.getElementById('programEditorTitle').textContent = 'Edit: ' + prog.title;
+  document.getElementById('programEditIndex').value = String(index);
+  
+  document.getElementById('programTitle').value = prog.title;
+  document.getElementById('programPrice').value = prog.price || '';
+  document.getElementById('programDescription').value = prog.description || '';
+  document.getElementById('programIcon').value = prog.icon || 'fas fa-book';
+  document.getElementById('programIconColor').value = prog.iconColor || 'prog-icon-medical';
+  document.getElementById('programClass').value = prog.class || 'admission';
+  document.getElementById('programType').value = prog.type || 'medical';
+  document.getElementById('programBatchType').value = prog.batchType || 'regular';
+  document.getElementById('programFeatures').value = (prog.features || []).join('\n');
+  document.getElementById('programModalDetails').value = prog.modalDetails || '';
+  document.getElementById('programModalDuration').value = prog.modalDuration || '৬ মাস Intensive';
+  document.getElementById('programModalSchedule').value = prog.modalSchedule || 'রবি, মঙ্গল, বৃহঃ';
+  document.getElementById('programStatus').value = String(prog.status !== false);
+  
+  document.getElementById('programEditorModal').classList.remove('hidden');
+}
+
+function saveProgramCard() {
+  const title = document.getElementById('programTitle').value.trim();
+  const description = document.getElementById('programDescription').value.trim();
+  const features = document.getElementById('programFeatures').value.split('\n').map(f => f.trim()).filter(f => f.length > 0);
+  
+  if (!title || !description || features.length === 0) {
+    showToast('❌ Title, Description ও অন্তত ১টি Feature প্রয়োজন', 'error');
+    return;
+  }
+  
+  const card = {
+    id: Date.now(),
+    title: title,
+    price: document.getElementById('programPrice').value.trim(),
+    description: description,
+    features: features,
+    icon: document.getElementById('programIcon').value.trim() || 'fas fa-book',
+    iconColor: document.getElementById('programIconColor').value,
+    class: document.getElementById('programClass').value,
+    type: document.getElementById('programType').value,
+    batchType: document.getElementById('programBatchType').value,
+    modalDetails: document.getElementById('programModalDetails').value.trim(),
+    modalDuration: document.getElementById('programModalDuration').value.trim(),
+    modalSchedule: document.getElementById('programModalSchedule').value.trim(),
+    status: document.getElementById('programStatus').value === 'true'
+  };
+  
+  const index = parseInt(document.getElementById('programEditIndex').value);
+  if (index >= 0 && index < landingPrograms.length) {
+    card.id = landingPrograms[index].id;
+    landingPrograms[index] = card;
+    showToast('✅ Program card updated successfully!');
+  } else {
+    landingPrograms.push(card);
+    showToast('✅ New program card added successfully!');
+  }
+  
+  localStorage.setItem('uccLandingPrograms', JSON.stringify(landingPrograms));
+  renderLandingPrograms();
+  closeProgramEditor();
+}
+
+function closeProgramEditor() {
+  document.getElementById('programEditorModal').classList.add('hidden');
+}
+
+function deleteProgramCard(index) {
+  const prog = landingPrograms[index];
+  if (!prog) return;
+  
+  showModal('🗑️', 'Delete Program Card?', `"${prog.title}" permanently মুছে ফেলা হবে। আপনি কী নিশ্চিত?`, function() {
+    landingPrograms.splice(index, 1);
+    localStorage.setItem('uccLandingPrograms', JSON.stringify(landingPrograms));
+    renderLandingPrograms();
+    showToast('✅ Program card deleted!');
+  });
+}
+
+function moveProgramCard(index, direction) {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= landingPrograms.length) return;
+  
+  [landingPrograms[index], landingPrograms[newIndex]] = [landingPrograms[newIndex], landingPrograms[index]];
+  localStorage.setItem('uccLandingPrograms', JSON.stringify(landingPrograms));
+  renderLandingPrograms();
+}
+
+/* ── Notice Management ────────────────────────────────────────── */
+let notices = [
+  {
+    id: 1,
+    title: 'Admission Alert 2026',
+    description: 'UCC পাবনা শাখায় ২০২৬ সেশনের ভর্তি চলছে! Medical, Engineering ও Varsity Admission-এর জন্য এখনই ভর্তি হন।',
+    badge: 'Admission Alert',
+    badgeColor: 'danger',
+    buttonText: 'ভর্তি হন',
+    buttonLink: '#programs',
+    icon: 'fas fa-bullhorn',
+    pdfUrl: '',
+    isActive: true,
+    sortOrder: 0
+  },
+  {
+    id: 2,
+    title: 'Weekly Model Test Schedule',
+    description: 'প্রতি শনিবার সকাল ১০টায় সাপ্তাহিক মডেল টেস্ট অনুষ্ঠিত হবে। সব শিক্ষার্থীদের উপস্থিত থাকা বাধ্যতামূলক।',
+    badge: 'Exam Notice',
+    badgeColor: 'warning',
+    buttonText: 'বিস্তারিত',
+    buttonLink: '#',
+    icon: 'fas fa-file-alt',
+    pdfUrl: '',
+    isActive: true,
+    sortOrder: 1
+  },
+  {
+    id: 3,
+    title: 'ফি জমার শেষ তারিখ',
+    description: 'চলতি মাসের ফি জমার শেষ তারিখ ১০ তারিখ। এর পরে ১০০ টাকা লেট ফি প্রযোজ্য হবে।',
+    badge: 'Payment',
+    badgeColor: 'success',
+    buttonText: 'পেমেন্ট করুন',
+    buttonLink: 'payment.html',
+    icon: 'fas fa-money-bill-wave',
+    pdfUrl: '',
+    isActive: true,
+    sortOrder: 2
+  }
+];
+
+let noticePdfData = '';
+
+function loadNotices() {
+  const saved = localStorage.getItem('uccNotices');
+  if (saved) {
+    try {
+      notices = JSON.parse(saved);
+    } catch (e) {
+      console.error('Error loading notices:', e);
+    }
+  }
+  renderNotices();
+}
+
+function renderNotices() {
+  const tbody = document.getElementById('noticesTableBody');
+  if (!tbody) return;
+  
+  if (notices.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">কোন Notice নেই। "Add Notice" বাটনে ক্লিক করে যোগ করুন।</td></tr>';
+    return;
+  }
+  
+  const badgeColors = {
+    primary: '#eef2ff',
+    success: '#d1fae5',
+    warning: '#fef3c7',
+    danger: '#fee2e2',
+    info: '#dbeafe'
+  };
+  const badgeTextColors = {
+    primary: '#4f46e5',
+    success: '#065f46',
+    warning: '#92400e',
+    danger: '#991b1b',
+    info: '#1e40af'
+  };
+  
+  tbody.innerHTML = notices.map((n, idx) => `
+    <tr>
+      <td style="font-weight:700;">
+        <i class="${n.icon || 'fas fa-bullhorn'}" style="color:var(--primary); margin-right:8px;"></i>
+        ${n.title}
+        ${n.pdfUrl ? ' <i class="fas fa-file-pdf" style="color:#dc2626; margin-left:4px;" title="PDF attached"></i>' : ''}
+      </td>
+      <td>
+        <span class="badge" style="background:${badgeColors[n.badgeColor] || '#eef2ff'}; color:${badgeTextColors[n.badgeColor] || '#4f46e5'};">
+          ${n.badge || 'Notice'}
+        </span>
+      </td>
+      <td>
+        <span class="badge ${n.isActive ? 'badge-success' : 'badge-danger'}">${n.isActive ? 'Active' : 'Inactive'}</span>
+      </td>
+      <td>${n.sortOrder || 0}</td>
+      <td>
+        <button class="ucc-btn ucc-btn-sm ucc-btn-outline" onclick="editNotice(${idx})" title="Edit"><i class="fas fa-edit"></i></button>
+        <button class="ucc-btn ucc-btn-sm ${n.isActive ? 'ucc-btn-orange' : 'ucc-btn-green'}" onclick="toggleNotice(${idx})" title="${n.isActive ? 'Deactivate' : 'Activate'}">
+          ${n.isActive ? '<i class="fas fa-ban"></i>' : '<i class="fas fa-check"></i>'}
+        </button>
+        <button class="ucc-btn ucc-btn-sm ucc-btn-red" onclick="deleteNotice(${idx})" title="Delete"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openNoticeEditor() {
+  document.getElementById('noticeEditorTitle').textContent = 'Add New Notice';
+  document.getElementById('noticeEditIndex').value = '-1';
+  noticePdfData = '';
+  
+  // Reset form
+  document.getElementById('noticeTitle').value = '';
+  document.getElementById('noticeDescription').value = '';
+  document.getElementById('noticeBadge').value = 'Notice';
+  document.getElementById('noticeBadgeColor').value = 'primary';
+  document.getElementById('noticeButtonText').value = 'Learn More';
+  document.getElementById('noticeButtonLink').value = '#';
+  document.getElementById('noticeIcon').value = 'fas fa-bullhorn';
+  document.getElementById('noticeSortOrder').value = notices.length;
+  document.getElementById('noticeStatus').value = 'true';
+  document.getElementById('noticePdfPreview').textContent = '';
+  
+  document.getElementById('noticeEditorModal').classList.remove('hidden');
+}
+
+function editNotice(index) {
+  const n = notices[index];
+  if (!n) return;
+  
+  document.getElementById('noticeEditorTitle').textContent = 'Edit: ' + n.title;
+  document.getElementById('noticeEditIndex').value = String(index);
+  
+  document.getElementById('noticeTitle').value = n.title;
+  document.getElementById('noticeDescription').value = n.description;
+  document.getElementById('noticeBadge').value = n.badge || 'Notice';
+  document.getElementById('noticeBadgeColor').value = n.badgeColor || 'primary';
+  document.getElementById('noticeButtonText').value = n.buttonText || 'Learn More';
+  document.getElementById('noticeButtonLink').value = n.buttonLink || '#';
+  document.getElementById('noticeIcon').value = n.icon || 'fas fa-bullhorn';
+  document.getElementById('noticeSortOrder').value = n.sortOrder || 0;
+  document.getElementById('noticeStatus').value = String(n.isActive !== false);
+  document.getElementById('noticePdfPreview').textContent = n.pdfUrl ? '📄 PDF attached' : '';
+  noticePdfData = n.pdfUrl || '';
+  
+  document.getElementById('noticeEditorModal').classList.remove('hidden');
+}
+
+function saveNotice() {
+  const title = document.getElementById('noticeTitle').value.trim();
+  const description = document.getElementById('noticeDescription').value.trim();
+  
+  if (!title || !description) {
+    showToast('❌ Title ও Description প্রয়োজন', 'error');
+    return;
+  }
+  
+  const notice = {
+    id: Date.now(),
+    title: title,
+    description: description,
+    badge: document.getElementById('noticeBadge').value.trim() || 'Notice',
+    badgeColor: document.getElementById('noticeBadgeColor').value,
+    buttonText: document.getElementById('noticeButtonText').value.trim() || 'Learn More',
+    buttonLink: document.getElementById('noticeButtonLink').value.trim() || '#',
+    icon: document.getElementById('noticeIcon').value.trim() || 'fas fa-bullhorn',
+    pdfUrl: noticePdfData,
+    isActive: document.getElementById('noticeStatus').value === 'true',
+    sortOrder: parseInt(document.getElementById('noticeSortOrder').value) || 0
+  };
+  
+  const index = parseInt(document.getElementById('noticeEditIndex').value);
+  if (index >= 0 && index < notices.length) {
+    notice.id = notices[index].id;
+    notices[index] = notice;
+    showToast('✅ Notice updated successfully!');
+  } else {
+    notices.push(notice);
+    showToast('✅ New notice added successfully!');
+  }
+  
+  localStorage.setItem('uccNotices', JSON.stringify(notices));
+  renderNotices();
+  closeNoticeEditor();
+}
+
+function closeNoticeEditor() {
+  document.getElementById('noticeEditorModal').classList.add('hidden');
+}
+
+function deleteNotice(index) {
+  const n = notices[index];
+  if (!n) return;
+  
+  showModal('🗑️', 'Delete Notice?', `"${n.title}" permanently মুছে ফেলা হবে। আপনি কী নিশ্চিত?`, function() {
+    notices.splice(index, 1);
+    localStorage.setItem('uccNotices', JSON.stringify(notices));
+    renderNotices();
+    showToast('✅ Notice deleted!');
+  });
+}
+
+function toggleNotice(index) {
+  const n = notices[index];
+  if (!n) return;
+  
+  n.isActive = !n.isActive;
+  localStorage.setItem('uccNotices', JSON.stringify(notices));
+  renderNotices();
+  showToast(n.isActive ? '✅ Notice activated!' : '✅ Notice deactivated!');
+}
+
+function handleNoticePdfUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('❌ PDF size must be under 5MB', 'error');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    noticePdfData = e.target.result;
+    document.getElementById('noticePdfPreview').textContent = '📄 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+    showToast('✅ PDF attached successfully!');
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── Save All ──────────────────────────────────────────────────── */
+function saveAllSettings() {
+  saveInstituteSettings();
+  saveAcademicSettings();
+  savePaymentSettings();
+  saveExamSettings();
+  saveProfileSettings();
+  saveSystemSettings();
+  saveSmsSettings();
+  saveLandingContent();
+  showToast('✅ All settings saved successfully!');
+}
+
+/* ── Load Settings from LocalStorage ───────────────────────────── */
+function loadSavedSettings() {
+  // Institute
+  const inst = JSON.parse(localStorage.getItem('uccInstituteSettings') || '{}');
+  if (inst.instituteName) document.getElementById('instituteName').value = inst.instituteName;
+  if (inst.branchCode) document.getElementById('branchCode').value = inst.branchCode;
+  if (inst.directorName) document.getElementById('directorName').value = inst.directorName;
+  if (inst.phone) document.getElementById('institutePhone').value = inst.phone;
+  if (inst.phone2) document.getElementById('institutePhone2').value = inst.phone2;
+  if (inst.email) document.getElementById('instituteEmail').value = inst.email;
+  if (inst.website) document.getElementById('instituteWebsite').value = inst.website;
+  if (inst.establishedYear) document.getElementById('establishedYear').value = inst.establishedYear;
+  if (inst.address) document.getElementById('instituteAddress').value = inst.address;
+  if (inst.about) document.getElementById('instituteAbout').value = inst.about;
+  
+  // Logo
+  const logo = localStorage.getItem('uccLogo');
+  if (logo) {
+    document.getElementById('logoPreview').innerHTML = '<img src="' + logo + '" alt="Logo">';
+  }
+  
+  // Academic
+  const acad = JSON.parse(localStorage.getItem('uccAcademicSettings') || '{}');
+  if (acad.session) document.getElementById('academicSession').value = acad.session;
+  if (acad.sessionStart) document.getElementById('sessionStartMonth').value = acad.sessionStart;
+  if (acad.defaultBatch) document.getElementById('defaultBatch').value = acad.defaultBatch;
+  if (acad.term) document.getElementById('academicTerm').value = acad.term;
+  
+  // Payment
+  const pay = JSON.parse(localStorage.getItem('uccPaymentSettings') || '{}');
+  if (pay.defaultFee) document.getElementById('defaultFee').value = pay.defaultFee;
+  if (pay.lateFee) document.getElementById('lateFeeFine').value = pay.lateFee;
+  if (pay.dueDate) document.getElementById('feeDueDate').value = pay.dueDate;
+  if (pay.maxDiscount) document.getElementById('maxDiscount').value = pay.maxDiscount;
+  if (pay.admissionFee) document.getElementById('admissionFee').value = pay.admissionFee;
+  if (pay.bookFee) document.getElementById('bookFee').value = pay.bookFee;
+  if (pay.registrationFee) document.getElementById('registrationFee').value = pay.registrationFee;
+  if (pay.certificateFee) document.getElementById('certificateFee').value = pay.certificateFee;
+  
+  // Profile
+  const profile = JSON.parse(localStorage.getItem('uccAdminProfile') || '{}');
+  if (profile.name) document.getElementById('adminName').value = profile.name;
+  if (profile.username) document.getElementById('adminUsername').value = profile.username;
+  if (profile.email) document.getElementById('adminEmail').value = profile.email;
+  if (profile.phone) document.getElementById('adminPhone').value = profile.phone;
+  if (profile.role) document.getElementById('adminRole').value = profile.role;
+  if (profile.designation) document.getElementById('adminDesignation').value = profile.designation;
+  
+  // Profile photo
+  const adminPhoto = localStorage.getItem('uccAdminPhoto');
+  if (adminPhoto) {
+    document.getElementById('profilePhotoPreview').innerHTML = '<img src="' + adminPhoto + '" alt="Admin">';
+  }
+}
+
+/* ── DOMContentLoaded ──────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Load admin user
+  const user = JSON.parse(sessionStorage.getItem('uccAdminUser') || '{}');
+  if (user.username) {
+    document.getElementById('uccAdminName').textContent = user.username;
+    document.getElementById('adminName').value = user.username;
+    document.getElementById('adminUsername').value = user.username;
+  }
+  
+  // Logout
+  document.getElementById('logoutBtn')?.addEventListener('click', () => {
+    sessionStorage.removeItem('uccAdminToken');
+    sessionStorage.removeItem('uccAdminUser');
+    window.location.href = 'admin-login.html';
+  });
+  
+  // Initialize
+  initThemeToggle();
+  loadSavedSettings();
+  loadBatches();
+  loadLandingContent();
+  loadLandingPrograms();
+  loadNotices();
+  
+  // Restore active tab
+  const savedTab = localStorage.getItem('uccActiveSettingsTab');
+  if (savedTab && document.querySelector(`.tab-btn[data-tab="${savedTab}"]`)) {
+    switchTab(savedTab);
+  }
+});
+</script>
+</body>
+</html>

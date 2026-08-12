@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard | EduSmart</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/student-dashboard.css">
+</head>
+<body>
+  <header class="portal-header"><a class="brand" href="/"><i class="fas fa-graduation-cap"></i> EduSmart</a><div class="header-actions"><span id="headerStudentName"></span><button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button></div></header>
+  <main class="portal-shell" id="portalContent">
+    <section class="welcome-card"><div id="studentAvatar" class="avatar"></div><div><p class="eyebrow">STUDENT PORTAL</p><h1 id="studentName">Loading...</h1><p id="studentMeta"></p></div><a class="profile-link" href="#profile"><i class="fas fa-user"></i> My Profile</a></section>
+    <section class="stats-grid">
+      <article class="stat-card"><i class="fas fa-chart-line icon blue"></i><div><span>Average Performance</span><strong id="averageScore">—</strong></div></article>
+      <article class="stat-card"><i class="fas fa-file-alt icon purple"></i><div><span>Published Results</span><strong id="resultCount">—</strong></div></article>
+      <article class="stat-card"><i class="fas fa-wallet icon green"></i><div><span>Total Fee Paid</span><strong id="totalPaid">—</strong></div></article>
+      <article class="stat-card"><i class="fas fa-trophy icon gold"></i><div><span>Latest Grade</span><strong id="latestGrade">—</strong></div></article>
+    </section>
+    <section class="dashboard-grid">
+      <article class="panel progress-panel"><div class="panel-title"><div><p class="eyebrow">ACADEMIC PROGRESS</p><h2>Recent Results</h2></div><a href="#results">View all</a></div><div id="resultList" class="result-list"></div></article>
+      <article class="panel"><div class="panel-title"><div><p class="eyebrow">PAYMENTS</p><h2>Recent Fee Payments</h2></div><a href="#payments">History</a></div><div id="paymentList" class="payment-list"></div></article>
+    </section>
+    <section class="dashboard-grid lower-grid">
+      <article class="panel" id="profile"><div class="panel-title"><div><p class="eyebrow">MY PROFILE</p><h2>Student Information</h2></div></div><div id="profileDetails" class="profile-details"></div></article>
+      <article class="panel"><div class="panel-title"><div><p class="eyebrow">ACADEMIC SERVICES</p><h2>Coming Next</h2></div></div><div class="service-list"><div><i class="fas fa-calendar-check"></i><span><strong>Class & exam routine</strong><small>Routine management যোগ হলে এখানে দেখা যাবে।</small></span></div><div><i class="fas fa-clipboard-check"></i><span><strong>Attendance</strong><small>Daily attendance যোগ করলে উপস্থিতির হিসাব দেখাবে।</small></span></div><div><i class="fas fa-bullhorn"></i><span><strong>Batch notices</strong><small>নিজের batch-এর গুরুত্বপূর্ণ notice পাবেন।</small></span></div></div></article>
+    </section>
+  </main>
+  <script src="assets/js/student-dashboard.js"></script>
+</body>
+</html>

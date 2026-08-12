@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Backend Connection Test</h1>
+    
+    <h2>How you're accessing this page:</h2>
+    <p id="accessMethod" class="info"></p>
+    
+    <h2>API Test Results:</h2>
+    <div id="results"></div>
+    
+    <script>
+        // Show how the page is being accessed
+        document.getElementById('accessMethod').innerHTML = 
+            '<strong>URL:</strong> ' + window.location.href + '<br>' +
+            '<strong>Protocol:</strong> ' + window.location.protocol;
+        
+        const resultsDiv = document.getElementById('results');
+        
+        // Test 1: Health Check
+        fetch('http://localhost:5000/api/health')
+            .then(res => res.json())
+            .then(data => {
+                resultsDiv.innerHTML += '<p class="success">✅ Health Check: ' + data.message + '</p>';
+                
+                // Test 2: Get Students
+                return fetch('http://localhost:5000/api/students');
+            })
+            .then(res => res.json())
+            .then(data => {
+                resultsDiv.innerHTML += '<p class="success">✅ Students API: Working (Found ' + data.total + ' students)</p>';
+                
+                // Test 3: Get Batches
+                return fetch('http://localhost:5000/api/batches');
+            })
+            .then(res => res.json())
+            .then(data => {
+                resultsDiv.innerHTML += '<p class="success">✅ Batches API: Working (Found ' + (data.data ? data.data.length : 0) + ' batches)</p>';
+                resultsDiv.innerHTML += '<hr><h3>Summary:</h3>';
+                resultsDiv.innerHTML += '<p class="success">✅ Backend is connected and working!</p>';
+                resultsDiv.innerHTML += '<p><a href="http://localhost:5000">Click here to access the full application</a></p>';
+            })
+            .catch(error => {
+                resultsDiv.innerHTML += '<p class="error">❌ Error: ' + error.message + '</p>';
+                resultsDiv.innerHTML += '<p class="error">This usually means you are opening the file directly (file:// protocol)</p>';
+                resultsDiv.innerHTML += '<p class="info"><strong>Solution:</strong> Go to <a href="http://localhost:5000">http://localhost:5000</a></p>';
+            });
+    </script>
+</body>
+</html>

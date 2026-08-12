@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduSmart - Smart Coaching Center & Student Management System</title>
+  <meta name="description" content="Empower your coaching institute with EduSmart. All-in-one SaaS platform for student admissions, online exams, fee collection, SMS alerts, and AI result analytics.">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="assets/css/landing.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. STICKY NAVBAR
+       ========================================================================== -->
+  <div class="navbar-wrapper">
+    <nav class="navbar">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <a href="/index.html" class="logo">
+          <div class="logo-icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <span id="landingBrandName">Edu<span class="gradient-text">Smart</span></span>
+        </a>
+        <a href="/ucc/index.html" class="logo branch-switcher-btn" title="UCC পাবনা শাখায় যান" style="
+          font-size:0.85rem;
+          padding:0.35rem 0.85rem;
+          border-radius:9999px;
+          border:1.5px solid var(--primary-200);
+          color:var(--primary-700);
+          font-weight:700;
+          background:var(--primary-50);
+          margin-left:0.25rem;
+          transition:all 0.25s ease;
+          white-space:nowrap;
+          text-decoration:none;
+          display:inline-flex;
+          align-items:center;
+          gap:0.4rem;
+        ">
+          <i class="fas fa-school" style="font-size:0.8rem;"></i> UCC পাবনা
+        </a>
+      </div>
+
+      <ul class="nav-menu">
+        <li><a href="#home" class="nav-link active"><i class="fas fa-house"></i> Home</a></li>
+        <li><a href="#programs" class="nav-link"><i class="fas fa-book-open"></i> Programs</a></li>
+        <li><a href="#why-us" class="nav-link"><i class="fas fa-star"></i> Why Us</a></li>
+        <li><a href="#teachers" class="nav-link"><i class="fas fa-chalkboard-user"></i> Teachers</a></li>
+        <li><a href="#notice" class="nav-link"><i class="fas fa-bullhorn"></i> Notice</a></li>
+        <li><a href="#faq" class="nav-link"><i class="fas fa-circle-question"></i> FAQ</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn btn-outline btn-sm btn-student-login">
+          <i class="fas fa-user"></i> Student Login
+        </button>
+        <button class="btn btn-primary btn-sm btn-admin-login">
+          <i class="fas fa-shield-alt"></i> Admin Login
+        </button>
+        <button class="mobile-toggle" aria-label="Toggle Navigation Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ==========================================================================
+       2. HERO SECTION
+       ========================================================================== -->
+  <section class="hero-section" id="home">
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+
+    <div class="container hero-container">
+      <div class="hero-content">
+        <div class="hero-pill">
+          <span class="badge badge-primary">
+            <i class="fas fa-sparkles"></i> Next-Gen Coaching Management 2.0
+          </span>
+        </div>
+        <h1 id="landingHeroTitle">
+          Smart Way to Manage Your <span class="gradient-text">Coaching Center</span>
+        </h1>
+        <p id="landingHeroDescription">
+          Empower your educational institute with an all-in-one smart management platform. Simplify admissions, attendance, automated fees, SMS alerts, and AI-powered result analytics.
+        </p>
+
+        <div class="hero-ctas">
+          <button class="btn btn-primary btn-lg btn-student-login">
+            Get Started Free <i class="fas fa-arrow-right"></i>
+          </button>
+          <a href="#programs" class="btn btn-secondary btn-lg">
+            <i class="fas fa-play-circle" style="color: var(--primary-600);"></i> Explore Programs
+          </a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="avatar-group">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Student">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" alt="Student">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" alt="Student">
+            <div class="avatar-placeholder">5k+</div>
+          </div>
+          <div class="trust-text">
+            Trusted by <strong>500+ Institutes</strong> & <strong>5,000+ Students</strong> across Bangladesh
+          </div>
+        </div>
+      </div>
+
+        <!-- Hero Visual with Student & Floating Glass Dashboard -->
+        <div class="hero-visual">
+          <div class="hero-img-wrapper">
+            <img id="landingHeroImage" src="assets/images/hero-student.jpg" alt="EduSmart Student holding Laptop">
+          </div>
+
+          <!-- Floating Glass Badge 1 -->
+          <div class="glass-card dashboard-floating-card-2">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-50); color: var(--primary-600); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                <i class="fas fa-award"></i>
+              </div>
+              <div>
+                <div style="font-weight: 800; font-size: 1.1rem; color: var(--dark-900);">98.4%</div>
+                <div style="font-size: 0.75rem; color: var(--gray-500);">Admission Success Rate</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       3. SEARCH & FILTER SECTION
+       ========================================================================== -->
+  <section class="search-section">
+    <div class="container">
+      <div class="search-box-wrapper">
+        <div class="filter-group">
+          <label for="selectClass"><i class="fas fa-layer-group"></i> Select Class</label>
+          <select id="selectClass" class="custom-select">
+            <option value="all">All Classes</option>
+            <option value="hsc">Class 11 - 12 (HSC)</option>
+            <option value="ssc">Class 9 - 10 (SSC)</option>
+            <option value="admission">Admission Candidate</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="selectProgram"><i class="fas fa-book-open"></i> Select Program</label>
+          <select id="selectProgram" class="custom-select">
+            <option value="all">All Programs</option>
+            <option value="medical">Medical Prep</option>
+            <option value="engineering">Engineering Prep</option>
+            <option value="varsity">Varsity Admission</option>
+            <option value="academic">Academic Care</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="selectType"><i class="fas fa-clock"></i> Select Batch Type</label>
+          <select id="selectType" class="custom-select">
+            <option value="all">All Types</option>
+            <option value="regular">Regular Batch</option>
+            <option value="crash">Crash Course</option>
+            <option value="model-test">Special Model Test</option>
+          </select>
+        </div>
+
+        <div>
+          <button class="btn btn-primary btn-search" id="searchProgramsBtn">
+            <i class="fas fa-search"></i> Search Program
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       4. POPULAR PROGRAMS
+       ========================================================================== -->
+  <section class="programs-section" id="programs">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-title">Tailored Courses</span>
+        <h2>Popular Admission & Academic Programs</h2>
+        <p>Expertly curated courses designed to guarantee academic excellence and competitive rank boost.</p>
+      </div>
+
+      <div class="programs-grid" id="programsGrid">
+        
+        <!-- Program 1 -->
+        <div class="program-card" data-class="admission" data-program="medical" data-type="regular">
+          <div>
+            <div class="prog-icon-box prog-icon-medical">
+              <i class="fas fa-stethoscope"></i>
+            </div>
+            <h3>Medical Admission Program</h3>
+            <p>Comprehensive preparation for Medical & Dental Colleges with focus on Biology, Chemistry, & GK.</p>
+
+            <div class="feature-list">
+              <div class="feature-item"><i class="fas fa-check-circle"></i> 100+ OMR Based Model Tests</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Specialized Biology Trick Notes</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Experienced Doctor Mentors</div>
+            </div>
+          </div>
+
+          <div class="card-footer-action">
+            <div class="price-tag">৳ 18,500 <span>/ course</span></div>
+            <button class="btn btn-outline btn-sm btn-view-details" data-program-key="medical">
+              View Details <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Program 2 -->
+        <div class="program-card" data-class="admission" data-program="engineering" data-type="regular">
+          <div>
+            <div class="prog-icon-box prog-icon-engineering">
+              <i class="fas fa-laptop-code"></i>
+            </div>
+            <h3>Engineering Admission Program</h3>
+            <p>Rigorous problem solving in Higher Math, Physics, and Organic Chemistry for BUET, CKRUET & MIST.</p>
+
+            <div class="feature-list">
+              <div class="feature-item"><i class="fas fa-check-circle"></i> BUET Alum Problem Solving</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> 40+ Written Model Tests</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Concept Clearing Doubt Hub</div>
+            </div>
+          </div>
+
+          <div class="card-footer-action">
+            <div class="price-tag">৳ 20,000 <span>/ course</span></div>
+            <button class="btn btn-outline btn-sm btn-view-details" data-program-key="engineering">
+              View Details <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Program 3 -->
+        <div class="program-card" data-class="admission" data-program="varsity" data-type="crash">
+          <div>
+            <div class="prog-icon-box prog-icon-varsity-a">
+              <i class="fas fa-atom"></i>
+            </div>
+            <h3>Varsity A Unit Program</h3>
+            <p>Targeted preparation for Dhaka University A Unit, JU, and GST Science Alliance entrance exams.</p>
+
+            <div class="feature-list">
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Speed Solving Shortcut Techniques</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Chapter-wise MCQ Question Bank</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Instant Mobile Performance Report</div>
+            </div>
+          </div>
+
+          <div class="card-footer-action">
+            <div class="price-tag">৳ 15,000 <span>/ course</span></div>
+            <button class="btn btn-outline btn-sm btn-view-details" data-program-key="varsity_a">
+              View Details <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Program 4 -->
+        <div class="program-card" data-class="admission" data-program="varsity" data-type="regular">
+          <div>
+            <div class="prog-icon-box prog-icon-varsity-b">
+              <i class="fas fa-landmark"></i>
+            </div>
+            <h3>Varsity B Unit Program</h3>
+            <p>Comprehensive syllabus covering English Grammar, Literature, General Knowledge & Bangla.</p>
+
+            <div class="feature-list">
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Vocabulary & Analytical Writing</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Daily GK Digest & Quiz</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> DU Faculty Guided Sessions</div>
+            </div>
+          </div>
+
+          <div class="card-footer-action">
+            <div class="price-tag">৳ 14,000 <span>/ course</span></div>
+            <button class="btn btn-outline btn-sm btn-view-details" data-program-key="varsity_b">
+              View Details <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Program 5 -->
+        <div class="program-card" data-class="hsc" data-program="academic" data-type="regular">
+          <div>
+            <div class="prog-icon-box prog-icon-hsc">
+              <i class="fas fa-book-reader"></i>
+            </div>
+            <h3>HSC Academic Care</h3>
+            <p>Mastering Board exam syllabus for 1st & 2nd year students. Creative CQ & MCQ mastery.</p>
+
+            <div class="feature-list">
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Board Exam CQ Solutions</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Weekly Assessment Tests</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Parent Mobile Progress SMS</div>
+            </div>
+          </div>
+
+          <div class="card-footer-action">
+            <div class="price-tag">৳ 2,500 <span>/ month</span></div>
+            <button class="btn btn-outline btn-sm btn-view-details" data-program-key="hsc">
+              View Details <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Program 6 -->
+        <div class="program-card" data-class="ssc" data-program="academic" data-type="regular">
+          <div>
+            <div class="prog-icon-box prog-icon-ssc">
+              <i class="fas fa-shapes"></i>
+            </div>
+            <h3>SSC Academic Care</h3>
+            <p>Strong core building for Grade 9 & 10 students ensuring Golden A+ results in SSC board exams.</p>
+
+            <div class="feature-list">
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Fundamental Math & Science Focus</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Interactive Smart Classrooms</div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i> Special Revision Batches</div>
+            </div>
+          </div>
+
+          <div class="card-footer-action">
+            <div class="price-tag">৳ 2,000 <span>/ month</span></div>
+            <button class="btn btn-outline btn-sm btn-view-details" data-program-key="ssc">
+              View Details <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       5. WHY CHOOSE US
+       ========================================================================== -->
+  <section class="why-us-section" id="why-us">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-title">Our Distinction</span>
+        <h2>Why EduSmart Leads the Industry</h2>
+        <p>We blend world-class pedagogy with modern SaaS tools to deliver unparalleled learning outcomes.</p>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon-wrapper">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <h3>Experienced Teachers</h3>
+          <p>Learn from top-tier alumni from BUET, DMC, and Dhaka University with 10+ years of teaching excellence.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon-wrapper">
+            <i class="fas fa-chalkboard"></i>
+          </div>
+          <h3>Smart Classroom</h3>
+          <p>Interactive 4K smart boards, digital note sharing, and recorded lectures for offline review.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon-wrapper">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h3>24/7 Online Support</h3>
+          <p>Dedicated student portal with instant doubt-clearing forums and direct teacher Q&A access.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon-wrapper">
+            <i class="fas fa-file-pdf"></i>
+          </div>
+          <h3>PDF Study Notes</h3>
+          <p>Access high-yield summary sheets, previous years' solved question banks, and formula cheat-sheets.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon-wrapper">
+            <i class="fas fa-tasks"></i>
+          </div>
+          <h3>Weekly Exam & SMS</h3>
+          <p>OMR-evaluated weekly exams with instant SMS notifications sent to parents' mobile numbers.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon-wrapper">
+            <i class="fas fa-chart-pie"></i>
+          </div>
+          <h3>AI Result Analytics</h3>
+          <p>Detailed performance breakdown charts revealing weak topics, speed accuracy, and merit ranks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       6. STATISTICS SECTION
+       ========================================================================== -->
+  <section class="stats-section">
+    <div class="stats-bg-pattern"></div>
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number" data-target="5000" data-suffix="+">0</div>
+          <div class="stat-label">Active Students</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-number" data-target="150" data-suffix="+">0</div>
+          <div class="stat-label">Expert Faculty</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-number" data-target="36" data-suffix="+">0</div>
+          <div class="stat-label">Specialized Courses</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-number" data-target="98" data-suffix="%">0</div>
+          <div class="stat-label">Success Rate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       7. MEET OUR TEACHERS
+       ========================================================================== -->
+  <section class="teachers-section" id="teachers">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-title">Expert Faculty</span>
+        <h2>Guided by the Nation's Best Educators</h2>
+        <p>Our renowned instructors bring deep subject expertise and inspiring mentorship to every lesson.</p>
+      </div>
+
+      <div class="teachers-grid">
+        
+        <!-- Teacher 1 -->
+        <div class="teacher-card">
+          <div class="teacher-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400" alt="Dr. Rafiqul Islam">
+          </div>
+          <div class="teacher-info">
+            <span class="teacher-subject-tag">Physics</span>
+            <h3>Dr. Rafiqul Islam</h3>
+            <div class="teacher-deg">BUET CSE & M.Sc (Physics)</div>
+            <p style="font-size: 0.85rem; color: var(--gray-500);">12+ Years Teaching Experience in Admission Coaching</p>
+            <div class="teacher-socials">
+              <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+              <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teacher 2 -->
+        <div class="teacher-card">
+          <div class="teacher-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400" alt="Dr. Sharmin Akter">
+          </div>
+          <div class="teacher-info">
+            <span class="teacher-subject-tag">Biology</span>
+            <h3>Dr. Sharmin Akter</h3>
+            <div class="teacher-deg">MBBS (Dhaka Medical College)</div>
+            <p style="font-size: 0.85rem; color: var(--gray-500);">Specialist in Human Physiology & Botany Tricks</p>
+            <div class="teacher-socials">
+              <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+              <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teacher 3 -->
+        <div class="teacher-card">
+          <div class="teacher-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400" alt="Engr. Mahmudul Hasan">
+          </div>
+          <div class="teacher-info">
+            <span class="teacher-subject-tag">Higher Math</span>
+            <h3>Engr. Mahmudul Hasan</h3>
+            <div class="teacher-deg">BUET EEE (Merit 18th)</div>
+            <p style="font-size: 0.85rem; color: var(--gray-500);">Renowned for Shortcut Calculus & Coordinate Geometry</p>
+            <div class="teacher-socials">
+              <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+              <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teacher 4 -->
+        <div class="teacher-card">
+          <div class="teacher-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1580894732413-a7042745307a?auto=format&fit=crop&q=80&w=400" alt="Prof. Farhana Yeasmin">
+          </div>
+          <div class="teacher-info">
+            <span class="teacher-subject-tag">Chemistry</span>
+            <h3>Prof. Farhana Yeasmin</h3>
+            <div class="teacher-deg">Dhaka University (Chemistry)</div>
+            <p style="font-size: 0.85rem; color: var(--gray-500);">Organic Chemistry Mastermind & Book Author</p>
+            <div class="teacher-socials">
+              <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+              <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       8. STUDENT TESTIMONIALS SLIDER
+       ========================================================================== -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-title">Success Stories</span>
+        <h2>What Our Stars Say</h2>
+        <p>Read inspiring testimonials from top rankers who achieved their dream university spots.</p>
+      </div>
+
+      <div class="testimonial-carousel-container">
+        <div class="testimonial-card" id="testimonialCard">
+          <div class="stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <p class="quote-text">
+            "EduSmart changed the way I prepare for exams. The weekly analytical model tests helped me pinpoint my exact weak areas in Organic Chemistry, securing my spot at DMC!"
+          </p>
+
+          <div class="student-meta">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Student Avatar" class="student-avatar">
+            <div class="student-details">
+              <div class="student-name">Tanvir Hasan</div>
+              <div class="student-achievement">Admitted to Dhaka Medical College (14th Position)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-controls">
+          <button class="carousel-btn" id="prevTestimonial" aria-label="Previous Review"><i class="fas fa-arrow-left"></i></button>
+          <button class="carousel-btn" id="nextTestimonial" aria-label="Next Review"><i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       9. LATEST NOTICE
+       ========================================================================== -->
+  <section class="notice-section" id="notice">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-title">Updates & Announcements</span>
+        <h2>Latest Notices & Schedules</h2>
+        <p>Stay informed with official routine changes, upcoming exams, and admission deadlines.</p>
+      </div>
+
+      <div class="notice-grid">
+        
+        <!-- Notice 1 -->
+        <div class="notice-card">
+          <div>
+            <div class="notice-header">
+              <span class="badge badge-amber"><i class="fas fa-bullhorn"></i> Admission Alert</span>
+              <div class="notice-date-badge"><i class="far fa-calendar-alt"></i> JUL 24, 2026</div>
+            </div>
+            <h3>Medical Admission Crash Course 2026 Registration</h3>
+            <p>Seat reservations are now open for Batch 03. Early bird discounts available until July 30.</p>
+          </div>
+          <button class="btn btn-outline btn-sm btn-student-login">
+            Register Online <i class="fas fa-external-link-alt"></i>
+          </button>
+        </div>
+
+        <!-- Notice 2 -->
+        <div class="notice-card">
+          <div>
+            <div class="notice-header">
+              <span class="badge badge-primary"><i class="fas fa-file-alt"></i> Exam Routine</span>
+              <div class="notice-date-badge"><i class="far fa-calendar-alt"></i> JUL 22, 2026</div>
+            </div>
+            <h3>HSC Model Test Series Schedule Published</h3>
+            <p>Complete subject-wise exam schedule for HSC 2026 examinees is now available for download.</p>
+          </div>
+          <button class="btn btn-outline btn-sm btn-student-login">
+            Download Routine PDF <i class="fas fa-download"></i>
+          </button>
+        </div>
+
+        <!-- Notice 3 -->
+        <div class="notice-card">
+          <div>
+            <div class="notice-header">
+              <span class="badge badge-success"><i class="fas fa-trophy"></i> Merit List</span>
+              <div class="notice-date-badge"><i class="far fa-calendar-alt"></i> JUL 18, 2026</div>
+            </div>
+            <h3>BUET Model Test 04 Result & Rank List Released</h3>
+            <p>View your individual percentile rank, OMR score sheet, and answer keys in the student portal.</p>
+          </div>
+          <button class="btn btn-outline btn-sm btn-student-login">
+            Check Your Result <i class="fas fa-chart-line"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       10. FAQ ACCORDION
+       ========================================================================== -->
+  <section class="faq-section" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-title">Got Questions?</span>
+        <h2>Frequently Asked Questions</h2>
+        <p>Everything you need to know about EduSmart admission, portal access, and model tests.</p>
+      </div>
+
+      <div class="faq-container">
+        
+        <div class="faq-item active">
+          <button class="faq-question">
+            <span>How do students access the EduSmart online dashboard?</span>
+            <div class="faq-icon"><i class="fas fa-chevron-down"></i></div>
+          </button>
+          <div class="faq-answer">
+            Upon enrollment, every student receives a unique Student ID and secure password via SMS. Simply click the "Student Login" button on the top right to view your profile, class schedule, PDF lecture notes, exam results, and fee receipts.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can parents monitor their child's attendance and exam marks?</span>
+            <div class="faq-icon"><i class="fas fa-chevron-down"></i></div>
+          </button>
+          <div class="faq-answer">
+            Yes! EduSmart sends automated SMS alerts to parents immediately after every weekly model test or daily class attendance check. Parents can also log into the Parent Portal to view analytical growth charts.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What payment methods are supported for course fees?</span>
+            <div class="faq-icon"><i class="fas fa-chevron-down"></i></div>
+          </button>
+          <div class="faq-answer">
+            We support both cash payments at our institute counter and online payments via bKash, Nagad, Rocket, credit/debit cards, and net banking with instant digital receipt generation.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Are missed classes recorded for online review?</span>
+            <div class="faq-icon"><i class="fas fa-chevron-down"></i></div>
+          </button>
+          <div class="faq-answer">
+            Yes. All key lectures delivered in our Smart Classrooms are archived in high-definition inside the student portal so students can re-watch missed topics anytime.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       11. CTA BANNER
+       ========================================================================== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Ready to Start Your Journey?</h2>
+        <p>Join over 5,000+ ambitious students who transformed their learning experience and cracked top university admissions with EduSmart.</p>
+        
+        <div class="cta-actions">
+          <button class="btn btn-cta-white btn-lg btn-student-login">
+            Join Now & Enroll <i class="fas fa-rocket"></i>
+          </button>
+          <button class="btn btn-cta-glass btn-lg btn-admin-login">
+            <i class="fas fa-laptop"></i> Admin Portal Demo
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       12. PREMIUM FOOTER
+       ========================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <!-- Brand Info -->
+        <div class="footer-col-brand">
+          <h3>
+            <div class="logo-icon" style="width: 32px; height: 32px; font-size: 0.9rem;">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            EduSmart
+          </h3>
+          <p id="landingFooterDescription">
+            The next-generation smart coaching management software & learning ecosystem empowering students, teachers, and administrators.
+          </p>
+          <div class="social-links">
+            <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <div class="footer-links">
+            <a href="#home">Home</a>
+            <a href="#programs">Programs</a>
+            <a href="#why-us">Why Choose Us</a>
+            <a href="#teachers">Meet Faculty</a>
+            <a href="#notice">Latest Notices</a>
+            <a href="login.html">Login Portal</a>
+          </div>
+        </div>
+
+        <!-- Programs -->
+        <div class="footer-col">
+          <h4>Our Programs</h4>
+          <div class="footer-links">
+            <a href="#programs">Medical Admission</a>
+            <a href="#programs">Engineering Prep</a>
+            <a href="#programs">Varsity A Unit</a>
+            <a href="#programs">Varsity B Unit</a>
+            <a href="#programs">HSC Academic Care</a>
+            <a href="#programs">SSC Golden A+</a>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="footer-col">
+          <h4>Contact & Location</h4>
+          <div class="footer-contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Farmgate Main Campus, Dhaka - 1215, Bangladesh</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-phone-alt"></i>
+            <span>+880 1700-000000 / +880 1800-000000</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>support@edusmart.edu.bd</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-clock"></i>
+            <span id="landingOfficeHours">Sat - Thu: 8:00 AM - 8:00 PM</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 EduSmart Coaching & Student Management System. All rights reserved.</div>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Dynamic Modal Overlay -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container" id="modalContainer">
+      <!-- Populated via landing.js -->
+    </div>
+  </div>
+
+  <!-- JavaScript Script -->
+  <script src="assets/js/landing.js"></script>
+</body>
+</html>

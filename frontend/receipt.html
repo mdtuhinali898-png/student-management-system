@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt - Student ERP</title>
+    <link rel="stylesheet" href="assets/css/receipt.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Action Buttons (Hidden during print) -->
+    <div class="action-bar no-print">
+        <a href="payments.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Payments</a>
+        <div class="action-buttons">
+            <div class="paper-size-toggle">
+                <button class="size-btn" data-size="a4" onclick="changePaperSize('a4')">A4</button>
+                <button class="size-btn active" data-size="a5" onclick="changePaperSize('a5')">A5</button>
+            </div>
+            <button class="btn-print" onclick="window.print()"><i class="fas fa-print"></i> Print Receipt</button>
+            <button class="btn-download" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> Download PDF</button>
+        </div>
+    </div>
+
+    <!-- Receipt Container -->
+    <div class="receipt-container a5-paper" id="receiptContainer">
+        
+        <!-- Watermark -->
+        <div class="receipt-watermark">RECEIPT</div>
+        
+        <!-- Inner Content -->
+        <div class="receipt-inner">
+        
+        <!-- Header -->
+        <div class="receipt-header">
+            <div class="header-shine"></div>
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="institute-info">
+                        <h1>ABC Coaching Center</h1>
+                        <p class="address"><i class="fas fa-map-marker-alt"></i> Rajshahi, Bangladesh</p>
+                        <p class="contact"><i class="fas fa-phone"></i> 017XXXXXXXX | <i class="fas fa-envelope"></i> info@abccoaching.com</p>
+                    </div>
+                </div>
+                <div class="header-right-wrapper">
+                    <div class="qr-code-box">
+                        <img id="receiptQrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=R-10001" alt="QR Code">
+                        <span class="qr-label">Scan to Verify</span>
+                    </div>
+                    <div class="receipt-title">
+                        <h2>PAYMENT RECEIPT</h2>
+                        <div class="receipt-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Receipt No:</span>
+                                <span class="meta-value" id="receiptNo">R-10001</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Date:</span>
+                                <span class="meta-value" id="receiptDate">15 July 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Header Bottom Decorative Line -->
+        <div class="header-bottom-line"></div>
+
+        <!-- Student + Payment Information Grid -->
+        <div class="receipt-main-grid">
+            <div class="info-section">
+                <h3 class="section-title"><i class="fas fa-user-graduate"></i> Student Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Student ID:</span>
+                        <span class="value" id="studentId">STD1001</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Name:</span>
+                        <span class="value" id="studentName">Rahim Uddin</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Father's Name:</span>
+                        <span class="value" id="fatherName">Abdul Karim</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Mother's Name:</span>
+                        <span class="value" id="motherName">Ayesha Begum</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Batch:</span>
+                        <span class="value" id="batch">HSC 2026</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Class:</span>
+                        <span class="value" id="className">HSC 2nd Year</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Phone:</span>
+                        <span class="value" id="phone">01711111111</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Status:</span>
+                        <span class="value status-badge status-active" id="studentStatus">Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3 class="section-title"><i class="fas fa-credit-card"></i> Payment Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Payment Month:</span>
+                        <span class="value" id="paymentMonth">July 2026</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Payment Method:</span>
+                        <span class="value" id="paymentMethod">Cash</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Transaction ID:</span>
+                        <span class="value" id="transactionId">TXN100125</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Collected By:</span>
+                        <span class="value" id="collectedBy">Administrator</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Payment Time:</span>
+                        <span class="value" id="paymentTime">10:45 AM</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Receipt Status:</span>
+                        <span class="value status-badge status-paid" id="receiptStatus">Paid</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Details Table -->
+        <div class="info-section">
+            <h3 class="section-title"><i class="fas fa-list-alt"></i> Payment Details</h3>
+            <table class="details-table">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Description</th>
+                        <th>Amount (৳)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>01</td>
+                        <td>Monthly Tuition Fee</td>
+                        <td id="monthlyFee">1500.00</td>
+                    </tr>
+                    <tr id="admissionFeeRow" style="display:none;">
+                        <td>02</td>
+                        <td>Admission Fee</td>
+                        <td id="admissionFee">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>03</td>
+                        <td>Exam Fee</td>
+                        <td>0.00</td>
+                    </tr>
+                    <tr>
+                        <td>04</td>
+                        <td>Fine</td>
+                        <td id="fine">0.00</td>
+                    </tr>
+                    <tr class="discount-row">
+                        <td>05</td>
+                        <td>Discount</td>
+                        <td id="discount">-0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Payment Summary -->
+        <div class="summary-section">
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <span>Total Fee</span>
+                    <strong id="totalFee">৳1500.00</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Discount</span>
+                    <strong id="totalDiscount">৳0.00</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Fine</span>
+                    <strong id="totalFine">৳0.00</strong>
+                </div>
+                <div class="summary-item grand-total">
+                    <span>Grand Total</span>
+                    <strong id="grandTotal">৳1500.00</strong>
+                </div>
+                <div class="summary-item paid-amount">
+                    <span>Paid Amount</span>
+                    <strong id="paidAmount">৳1500.00</strong>
+                </div>
+                <div class="summary-item due-amount">
+                    <span>Due Amount</span>
+                    <strong id="dueAmount">৳0.00</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signatures -->
+        <div class="signature-section">
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <p>Student Signature</p>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <p>Account Officer</p>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <p>Authorized Signature</p>
+            </div>
+        </div>
+
+        <!-- Terms & Conditions -->
+        <div class="terms-section">
+            <h4><i class="fas fa-info-circle"></i> Terms & Conditions</h4>
+            <ul>
+                <li>This is a computer-generated receipt.</li>
+                <li>Keep this receipt safely for future reference.</li>
+                <li>Tuition fees once paid are non-refundable.</li>
+                <li>Discrepancy? Contact office within 7 days.</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="receipt-footer">
+            <div class="footer-content">
+                <p class="thank-you"><i class="fas fa-heart"></i> Thank you for your payment!</p>
+                <p class="institute-name"><strong>ABC Coaching Center</strong></p>
+                <p class="institute-details">Rajshahi, Bangladesh | Phone: 017XXXXXXXX | Email: info@abccoaching.com</p>
+                <p class="tagline">"Quality Education For Everyone"</p>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+    <script src="assets/js/receipt.js"></script>
+</body>
+</html>
